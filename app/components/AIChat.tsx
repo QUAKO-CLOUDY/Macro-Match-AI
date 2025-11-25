@@ -5,8 +5,8 @@ import { Send, Sparkles, Mic, Plus, Minus, Flame, Zap } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
-import { mockMeals } from "../data/mockData"; 
-import type { UserProfile, Meal } from "../types"; // Using the shared types
+import { mockMeals } from "../data/mockData";
+import type { UserProfile, Meal } from "../types";
 
 type Props = {
   userProfile: UserProfile;
@@ -36,13 +36,14 @@ const macroAdjustments = [
 ];
 
 export function AIChat({ userProfile, onMealSelect }: Props) {
-  const userName = userProfile?.name || "Guest";
-  
+  const userName = userProfile?.name || "Friend";
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
       type: "ai",
-      content: `Hi ${userName}, I'm your AI meal assistant. Type any calories, macros, cravings, or foods you want and I'll scrape menus to find the best options.`,
+      content:
+        "Your personal meal finder is online. Tell me your calories, macros, or cravings and I’ll do the rest.",
       timestamp: new Date(),
     },
   ]);
@@ -51,9 +52,7 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -61,7 +60,7 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
   }, [messages]);
 
   const generateAIResponse = (
-    userMessage: string,
+    userMessage: string
   ): { content: string; meals?: Meal[] } => {
     const lowerMessage = userMessage.toLowerCase();
     let filteredMeals = [...mockMeals];
@@ -76,12 +75,17 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
       filteredMeals = filteredMeals.filter((m) => m.carbs < 20);
     }
     if (lowerMessage.includes("vegan")) {
-      filteredMeals = filteredMeals.filter((m) => m.name.toLowerCase().includes("vegan"));
+      filteredMeals = filteredMeals.filter((m) =>
+        m.name.toLowerCase().includes("vegan")
+      );
     }
 
-    const content = filteredMeals.length > 0 
-      ? `I found ${filteredMeals.length} great option${filteredMeals.length !== 1 ? "s" : ""} for you! Tap any meal to see full details.`
-      : "I couldn't find exact matches, but here are some popular choices:";
+    const content =
+      filteredMeals.length > 0
+        ? `I found ${filteredMeals.length} great option${
+            filteredMeals.length !== 1 ? "s" : ""
+          } for you! Tap any meal to see full details.`
+        : "I couldn't find exact matches, but here are some popular choices:";
 
     return { content, meals: filteredMeals };
   };
@@ -121,41 +125,49 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
   };
 
   const toggleVoiceInput = () => {
-    setIsListening(!isListening);
+    setIsListening((prev) => !prev);
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-background">
+    <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-slate-950 text-white">
       {/* Header */}
-      <div className="bg-gradient-to-br from-purple-900 via-pink-900/50 to-background text-white p-6">
+      <div className="bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 text-white p-5 shadow-lg shadow-cyan-500/20">
         <div className="flex items-center gap-3">
-          <div className="size-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/50">
+          <div className="size-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/50">
             <Sparkles className="size-6 text-white" />
           </div>
           <div>
-            <h1 className="text-white font-semibold text-lg">AI Assistant</h1>
-            <p className="text-purple-200 text-sm">
-              Ask me anything about meals
+            <h1 className="text-white font-semibold text-lg">AI Meal Assistant</h1>
+            <p className="text-cyan-100 text-sm">
+              Scanning menus for your perfect meal, {userName}.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-background">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-6 space-y-4">
         {messages.map((message) => (
           <div key={message.id}>
             <div
-              className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
+              className={`flex ${
+                message.type === "user" ? "justify-end" : "justify-start"
+              }`}
             >
               <div
-                className={`max-w-[85%] rounded-3xl px-5 py-4 ${
+                className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                   message.type === "user"
-                    ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30"
-                    : "bg-muted border text-foreground"
+                    ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white ml-auto shadow-lg shadow-teal-500/30"
+                    : "bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 text-white"
                 }`}
               >
                 <p className="text-sm leading-relaxed">{message.content}</p>
+                <p className="text-[10px] mt-1 text-white/60">
+                  {message.timestamp.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
               </div>
             </div>
 
@@ -166,7 +178,7 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
                   <div
                     key={meal.id}
                     onClick={() => onMealSelect(meal)}
-                    className="bg-card text-card-foreground rounded-2xl border p-4 cursor-pointer hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group"
+                    className="bg-slate-900/80 text-white rounded-2xl border border-slate-700 p-4 cursor-pointer hover:border-cyan-500/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 group"
                   >
                     <div className="flex gap-3">
                       <img
@@ -175,18 +187,24 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
                         className="size-20 rounded-xl object-cover"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm mb-1 group-hover:text-purple-400 transition-colors">
+                        <p className="font-semibold text-sm mb-1 group-hover:text-cyan-300 transition-colors">
                           {meal.name}
                         </p>
-                        <p className="text-muted-foreground text-xs mb-2">
+                        <p className="text-slate-400 text-xs mb-2">
                           {meal.restaurant}
                         </p>
                         <div className="flex flex-wrap gap-2">
-                          <Badge variant="outline" className="rounded-full bg-pink-500/10 text-pink-500 border-pink-500/20 px-2 py-0 h-5 text-[10px]">
+                          <Badge
+                            variant="outline"
+                            className="rounded-full bg-pink-500/10 text-pink-300 border-pink-500/30 px-2 py-0 h-5 text-[10px]"
+                          >
                             <Flame className="size-3 mr-1" />
                             {meal.calories} cal
                           </Badge>
-                          <Badge variant="outline" className="rounded-full bg-cyan-500/10 text-cyan-500 border-cyan-500/20 px-2 py-0 h-5 text-[10px]">
+                          <Badge
+                            variant="outline"
+                            className="rounded-full bg-cyan-500/10 text-cyan-300 border-cyan-500/30 px-2 py-0 h-5 text-[10px]"
+                          >
                             <Zap className="size-3 mr-1" />
                             {meal.protein}g pro
                           </Badge>
@@ -202,18 +220,35 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick Actions */}
-      <div className="px-4 py-2 bg-background/95 border-t">
+      {/* Quick prompts */}
+      <div className="px-4 py-2 bg-slate-950 border-t border-slate-800">
+        <div className="flex flex-wrap gap-2">
+          {quickPrompts.map((prompt) => (
+            <Button
+              key={prompt}
+              variant="outline"
+              size="sm"
+              className="rounded-full h-7 text-xs whitespace-nowrap bg-slate-800 border-slate-600 text-slate-100 hover:border-cyan-500 hover:text-cyan-300 hover:bg-slate-900 transition-all"
+              onClick={() => handleSendMessage(prompt)}
+            >
+              {prompt}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Macro adjustments */}
+      <div className="px-4 py-2 bg-slate-950 border-t border-slate-800">
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           {macroAdjustments.map((adjustment, index) => (
             <Button
               key={index}
               variant="outline"
               size="sm"
-              className="rounded-full h-7 text-xs whitespace-nowrap bg-muted/50 border-muted-foreground/20 hover:border-purple-500/50 hover:bg-purple-500/10 hover:text-purple-500 transition-all"
+              className="rounded-full h-7 text-xs whitespace-nowrap bg-slate-800 border-slate-600 text-slate-100 hover:border-cyan-500 hover:text-cyan-300 hover:bg-slate-900 transition-all"
               onClick={() =>
                 handleSendMessage(
-                  `Show me meals with ${adjustment.label.toLowerCase()}`,
+                  `Show me meals with ${adjustment.label.toLowerCase()}`
                 )
               }
             >
@@ -225,15 +260,15 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
       </div>
 
       {/* Input */}
-      <div className="p-4 bg-background border-t">
+      <div className="p-4 bg-gradient-to-r from-cyan-900 via-slate-950 to-blue-900 border-t border-slate-800">
         <div className="flex gap-2 items-end">
           <div className="flex-1 relative">
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Ask about meals..."
-              className="rounded-full pr-10 py-5 bg-muted/50 border-muted-foreground/20 focus-visible:ring-purple-500/20"
+              placeholder="Ask AI to find meals, macros, or cravings..."
+              className="rounded-full pr-10 py-5 bg-slate-900/90 border-slate-600 text-white placeholder:text-slate-500 focus-visible:ring-cyan-500/40 focus-visible:border-cyan-500"
             />
             <Button
               variant="ghost"
@@ -241,8 +276,8 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
               onClick={toggleVoiceInput}
               className={`absolute right-1 top-1/2 -translate-y-1/2 rounded-full h-8 w-8 ${
                 isListening
-                  ? "bg-pink-500/20 text-pink-500"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-pink-500/20 text-pink-400"
+                  : "text-slate-300 hover:text-white"
               }`}
             >
               <Mic className="size-4" />
@@ -251,7 +286,7 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
           <Button
             onClick={() => handleSendMessage()}
             disabled={!inputValue.trim()}
-            className="rounded-full size-10 bg-gradient-to-br from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-md shrink-0"
+            className="rounded-full size-10 bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-md shadow-cyan-500/40 shrink-0 disabled:opacity-50"
           >
             <Send className="size-4 text-white" />
           </Button>

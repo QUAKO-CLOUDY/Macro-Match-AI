@@ -9,25 +9,36 @@ type Props = {
   onComplete: (profile: UserProfile) => void;
 };
 
-// Data for the requested UI
+// Define valid goal types based on your UserProfile interface
+type GoalType = "lose-fat" | "build-muscle" | "maintain";
+
+// Data for the requested UI with IDs matching your types
 const goals = [
-  { id: 'lose-weight', label: 'Lose Weight', icon: '📉' },
-  { id: 'build-muscle', label: 'Build Muscle', icon: '💪' },
-  { id: 'stay-healthy', label: 'Stay Healthy', icon: '⚖️' },
-  { id: 'performance', label: 'Athletic Performance', icon: '🏃' },
+  { id: 'lose-fat', label: 'Lose Weight', icon: '📉' },      // ID matched to type
+  { id: 'build-muscle', label: 'Build Muscle', icon: '💪' }, // ID matched to type
+  { id: 'maintain', label: 'Stay Healthy', icon: '⚖️' },     // ID matched to type
+  { id: 'performance', label: 'Athletic Performance', icon: '🏃' }, // Will map this to 'build-muscle'
 ];
 
 export function SimplifiedOnboarding({ onComplete }: Props) {
   const [step, setStep] = useState(1);
-  const [goal, setGoal] = useState('');
+  const [goal, setGoal] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Logic to finish onboarding (Used in Step 2 later)
+  // Logic to finish onboarding
   const handleFinish = () => {
     setIsSubmitting(true);
+    
+    // Map the selected goal to a valid GoalType
+    // If 'performance' is selected, we default to 'build-muscle' for the backend type
+    let finalGoal: GoalType = 'maintain';
+    if (goal === 'lose-fat') finalGoal = 'lose-fat';
+    if (goal === 'build-muscle' || goal === 'performance') finalGoal = 'build-muscle';
+    if (goal === 'maintain') finalGoal = 'maintain';
+
     setTimeout(() => {
       onComplete({
-        goal: goal || 'maintain',
+        goal: finalGoal,
         dietaryType: 'Balanced',
         allergens: [],
         calorieTarget: 2000,
@@ -35,7 +46,7 @@ export function SimplifiedOnboarding({ onComplete }: Props) {
         carbsTarget: 200,
         fatsTarget: 65,
         name: "Guest",
-        nutritionGoals: [goal],
+        nutritionGoals: [goal], // We can keep the specific string here if needed
         preferredCuisines: [],
         preferredMealTypes: [],
         eatingStyles: [],
@@ -46,7 +57,7 @@ export function SimplifiedOnboarding({ onComplete }: Props) {
     }, 1000);
   };
 
-  // --- STEP 1: GOAL SELECTION (Your Figma Design) ---
+  // --- STEP 1: GOAL SELECTION ---
   if (step === 1) {
     return (
       <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
@@ -109,7 +120,7 @@ export function SimplifiedOnboarding({ onComplete }: Props) {
     );
   }
 
-  // --- STEP 2: Placeholder for next screen (Prevent crash) ---
+  // --- STEP 2: Placeholder ---
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-6 text-center">
       <div className="max-w-md w-full">

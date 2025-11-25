@@ -1,32 +1,39 @@
 "use client";
 
-import { useState } from 'react';
-import { Search, MapPin, Lightbulb, AlertCircle, ArrowRight } from 'lucide-react';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
-import { MealCard } from './MealCard';
-import { CircularProgress } from './CircularProgress';
-import { mockMeals } from '../data/mockData'; 
-import type { UserProfile, Meal } from '../types'; 
+import { useState } from "react";
+import {
+  SlidersHorizontal,
+  Check,
+  Flame,
+  Sparkles,
+  MapPin,
+} from "lucide-react";
+import { mockMeals } from "../data/mockData";
+import type { UserProfile, Meal } from "../types";
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 
-// --- 1. THE MATCH ALGORITHM ---
-// This runs instantly to rank meals based on user goals
+// Simple image wrapper
+function ImageWithFallback({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+}) {
+  return <img src={src} alt={alt} className={className} />;
+}
+
+// --- MATCH ALGORITHM ---
 function calculateMatchScore(meal: Meal, user: UserProfile): number {
-  let score = 90; // Start with a high baseline
+  let score = 90;
 
-  // Penalty: If meal uses > 40% of daily calories
-  if (meal.calories > (user.calorieTarget * 0.4)) score -= 15;
+  if (meal.calories > user.calorieTarget * 0.4) score -= 15;
+  if (user.goal === "lose-fat" && meal.fats > 30) score -= 10;
+  if (user.goal === "build-muscle" && meal.protein > 35) score += 5;
+  if (user.dietaryType === "Keto" && meal.carbs < 15) score += 8;
 
-  // Penalty: If fat is too high for a cut (using plural 'fats')
-  if (user.goal === 'lose-fat' && meal.fats > 30) score -= 10;
-
-  // Bonus: High protein for muscle building
-  if (user.goal === 'build-muscle' && meal.protein > 35) score += 5;
-
-  // Bonus: Low carb for keto preference
-  if (user.dietaryType === 'Keto' && meal.carbs < 15) score += 8;
-
-  // Ensure score stays between 65 and 99 for realism
   return Math.max(65, Math.min(99, score));
 }
 
@@ -37,147 +44,180 @@ type Props = {
   onOpenAI?: () => void;
 };
 
-const quickFilters = [
-  { id: 'high-protein', label: 'High Protein', icon: '💪' },
-  { id: 'under-1000', label: 'Under 1000 Calories', icon: '📉' },
-  { id: 'low-carb', label: 'Low Carb', icon: '🥑' },
-  { id: 'budget', label: 'Budget Friendly', icon: '💰' },
-  { id: 'fast', label: 'Fast', icon: '⚡' },
-  { id: 'nearby', label: 'Nearby', icon: '📍' },
+const filterOptions = [
+  { id: "best", label: "Best Match", icon: Sparkles },
+  { id: "protein", label: "Highest Protein", icon: Flame },
+  { id: "nearby", label: "Closest to You", icon: MapPin },
 ];
 
-export function HomeScreen({ 
+export function HomeScreen({
   userProfile,
-  onMealSelect, 
-  favoriteMeals = [] 
+  onMealSelect,
+  favoriteMeals = [],
 }: Props) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<'restaurant' | 'grocery'>('restaurant');
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<string>("best");
 
-  // Mock current consumption
-  const currentCalories = 845;
-  const currentProtein = 62;
-  const currentCarbs = 78;
-  const currentFats = 28;
+  // mock streak for now
+  const streakDays = 3;
 
-  // Insight Logic
-  const caloriePercentage = (currentCalories / userProfile.calorieTarget) * 100;
-  let insightMessage = "Great start! You have plenty of room for more meals today.";
-  let InsightIcon = Lightbulb;
-  
-  if (caloriePercentage > 100) {
-    insightMessage = "You've exceeded your calorie goal. Consider a lighter meal.";
-    InsightIcon = AlertCircle;
-  }
+  // score and sort meals
+  const scoredMeals = mockMeals
+    .map((meal) => ({
+      ...meal,
+      matchScore: calculateMatchScore(meal, userProfile),
+    }))
+    .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
 
-  const toggleFilter = (filterId: string) => {
-    setActiveFilters(prev =>
-      prev.includes(filterId) ? prev.filter(f => f !== filterId) : [...prev, filterId]
-    );
-  };
-
-  // --- 2. APPLY SCORES & FILTER ---
-  const scoredMeals = mockMeals.map(meal => ({
-    ...meal,
-    matchScore: calculateMatchScore(meal, userProfile)
-  }));
-
-  const filteredMeals = scoredMeals.filter(meal => {
-    const matchesCategory = meal.category === selectedCategory;
-    const matchesSearch = searchQuery === '' || 
-      meal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      meal.restaurant.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    let matchesFilters = true;
-    if (activeFilters.includes('high-protein')) matchesFilters = matchesFilters && meal.protein >= 30;
-    if (activeFilters.includes('under-1000')) matchesFilters = matchesFilters && meal.calories < 1000;
-    
-    if (activeFilters.includes('nearby')) {
-       const dist = meal.distance ?? 999; 
-       matchesFilters = matchesFilters && dist < 5;
-    }
-    
-    return matchesCategory && matchesSearch && matchesFilters;
-  }).sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0)); // Sort highest score first
+  const trendingMeals = scoredMeals.slice(0, 4);
+  const reorderMeals = scoredMeals.slice(4, 10);
 
   return (
-    <div className="flex-1 flex flex-col h-full w-full bg-background overflow-hidden">
+    <div className="flex-1 flex flex-col h-full w-full bg-[#020617] overflow-hidden">
       <div className="flex-1 overflow-y-auto">
-        {/* Hero Section */}
-        <div className="bg-gradient-to-br from-background via-muted/50 to-background px-6 pt-8 pb-6 flex flex-col justify-center">
-          <div className="mb-8">
-            <p className="text-muted-foreground text-center font-medium">Hey there, let's eat smart today 👋</p>
-          </div>
+        {/* TOP BAR: MacroMatch + streak pill */}
+        <div className="px-4 pt-4 pb-3 flex items-center justify-between bg-[#020617]">
+          <p className="text-xs text-sky-400 font-semibold tracking-wide">
+            MacroMatch
+          </p>
 
-          {/* Circular Progress Rings */}
-          <div className="flex items-center justify-center mb-8 relative py-4">
-            <div className="relative w-44 h-44 flex items-center justify-center">
-              <CircularProgress percentage={(currentCalories / userProfile.calorieTarget) * 100} colorStart="#ec4899" colorEnd="#d946ef" size={176} strokeWidth={12} />
-              <CircularProgress percentage={(currentProtein / userProfile.proteinTarget) * 100} colorStart="#06b6d4" colorEnd="#0ea5e9" size={152} strokeWidth={11} />
-              <CircularProgress percentage={(currentCarbs / userProfile.carbsTarget) * 100} colorStart="#22c55e" colorEnd="#16a34a" size={130} strokeWidth={10} />
-              <CircularProgress percentage={(currentFats / userProfile.fatsTarget) * 100} colorStart="#f59e0b" colorEnd="#f97316" size={110} strokeWidth={9} />
-              
-              <div className="absolute flex flex-col items-center justify-center z-10">
-                <p className="text-muted-foreground text-[10px] uppercase tracking-wider">Remaining</p>
-                <p className="text-3xl font-bold text-foreground">{Math.max(0, userProfile.calorieTarget - currentCalories)}</p>
-                <p className="text-muted-foreground text-xs">calories</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Insight Card */}
-          <div className="bg-blue-500/10 rounded-2xl p-4 border border-blue-500/20 mb-6 flex items-start gap-3">
-            <InsightIcon className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-            <p className="text-blue-700 dark:text-blue-300 text-sm font-medium">{insightMessage}</p>
-          </div>
-
-          <Button className="w-full h-12 rounded-full font-semibold shadow-lg bg-primary text-primary-foreground hover:bg-primary/90 mb-6">
-            Find My Meal <ArrowRight className="ml-2 w-4 h-4" />
-          </Button>
-
-          {/* Quick Filters */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            {quickFilters.map(filter => (
-              <button
-                key={filter.id}
-                onClick={() => toggleFilter(filter.id)}
-                className={`flex items-center justify-center gap-1.5 px-2 py-2 rounded-full transition-all text-xs font-medium border ${
-                  activeFilters.includes(filter.id)
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-card text-muted-foreground border-border hover:border-primary/50'
-                }`}
-              >
-                <span>{filter.icon}</span>
-                <span className="truncate">{filter.label}</span>
-              </button>
-            ))}
-          </div>
+          <button
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium
+                       bg-slate-900 border border-cyan-500/50 text-cyan-200 shadow-sm
+                       hover:border-cyan-400 hover:bg-slate-900/80 transition-all"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>{streakDays} day streak</span>
+          </button>
         </div>
 
-        {/* Content Area */}
-        <div className="bg-background pb-20">
-          <div className="px-6 py-4 sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search meals..."
-                className="pl-9 pr-4 rounded-full bg-muted border-transparent focus:bg-background focus:border-primary"
-              />
+        {/* MAIN CONTENT */}
+        <div className="px-4 pt-4 pb-6">
+          {/* TRENDING NEAR YOU */}
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-white text-base font-semibold">
+                Trending Near You
+              </h2>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    className="px-3 py-1.5 rounded-full flex items-center gap-2 transition-all backdrop-blur-md hover:bg-white/20"
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      border: "1px solid rgba(255, 255, 255, 0.15)",
+                    }}
+                  >
+                    <SlidersHorizontal className="w-3.5 h-3.5 text-zinc-300" />
+                    <span className="text-xs text-zinc-400">Sort</span>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-56 p-2 bg-gray-900 border-zinc-700 shadow-2xl"
+                  align="end"
+                  sideOffset={8}
+                >
+                  <div className="space-y-1">
+                    {filterOptions.map((option) => {
+                      const IconComponent = option.icon;
+                      const isSelected = selectedFilter === option.id;
+
+                      return (
+                        <button
+                          key={option.id}
+                          onClick={() => setSelectedFilter(option.id)}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+                            isSelected
+                              ? "bg-cyan-500/20 text-cyan-400"
+                              : "hover:bg-white/5 text-zinc-300 hover:text-white"
+                          }`}
+                        >
+                          <IconComponent
+                            className={`w-4 h-4 ${
+                              isSelected ? "text-cyan-400" : "text-zinc-400"
+                            }`}
+                          />
+                          <span className="text-sm flex-1 text-left">
+                            {option.label}
+                          </span>
+                          {isSelected && (
+                            <Check className="w-4 h-4 text-cyan-400" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className="space-y-3">
+              {trendingMeals.map((meal) => (
+                <div
+                  key={meal.id}
+                  onClick={() => onMealSelect(meal)}
+                  className="rounded-2xl overflow-hidden cursor-pointer transition-all hover:scale-[1.02]"
+                  style={{ backgroundColor: "#020617", borderRadius: 18 }}
+                >
+                  <div className="flex items-stretch border border-slate-800/80">
+                    <div className="w-24 h-24 m-2 rounded-2xl relative overflow-hidden flex-shrink-0 bg-slate-800">
+                      <ImageWithFallback
+                        src={meal.image}
+                        alt={meal.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    <div className="flex-1 pr-4 py-3 flex flex-col justify-center">
+                      <h3 className="text-sm font-semibold text-white mb-1">
+                        {meal.name}
+                      </h3>
+                      <p className="text-xs text-zinc-400 mb-2">
+                        {meal.restaurant}
+                      </p>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-sky-400 flex items-center gap-1">
+                          <Flame className="w-3 h-3" />
+                          {meal.protein}g Protein
+                        </span>
+                        <span className="text-gray-500">•</span>
+                        <span className="text-orange-400">
+                          {meal.calories} cal
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="px-6 py-4 space-y-4">
-            {filteredMeals.map(meal => (
-              <MealCard
-                key={meal.id}
-                meal={meal}
-                isFavorite={favoriteMeals.includes(meal.id)}
-                onClick={() => onMealSelect(meal)}
-              />
-            ))}
+          {/* QUICK RE-ORDER */}
+          <div className="mb-8">
+            <h2 className="text-white text-base font-semibold mb-4">
+              Quick Re-Order
+            </h2>
+
+            <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+              {reorderMeals.map((meal) => (
+                <div
+                  key={meal.id}
+                  onClick={() => onMealSelect(meal)}
+                  className="flex-shrink-0 w-32 cursor-pointer"
+                >
+                  <div className="aspect-square rounded-xl overflow-hidden mb-2 bg-slate-800">
+                    <ImageWithFallback
+                      src={meal.image}
+                      alt={meal.name}
+                      className="w-full h-full object-cover hover:scale-110 transition-transform"
+                    />
+                  </div>
+                  <p className="text-white text-sm text-center truncate">
+                    {meal.name}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
