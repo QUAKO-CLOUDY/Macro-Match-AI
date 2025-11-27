@@ -1,226 +1,370 @@
 "use client";
 
-import { useState } from "react";
+
+import { useState, useEffect, useMemo } from "react";
 import {
-  SlidersHorizontal,
+  RefreshCw,
+  ChevronDown,
   Check,
-  Flame,
-  Sparkles,
-  MapPin,
+  Image as ImageIcon,
+  ArrowUpDown,
+  Search,
 } from "lucide-react";
 import { mockMeals } from "../data/mockData";
 import type { UserProfile, Meal } from "../types";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 
-// Simple image wrapper
-function ImageWithFallback({
-  src,
-  alt,
-  className,
-}: {
-  src: string;
-  alt: string;
-  className?: string;
-}) {
-  return <img src={src} alt={alt} className={className} />;
-}
+// --- CONSTANTS & CONFIG ---
 
-// --- MATCH ALGORITHM ---
+const QUICK_FILTERS = [
+  "High Protein",
+  "Low Calorie",
+  "Under 500 Cal",
+  "High Fiber",
+  "Low Carb",
+  "Fast Pickup",
+  "Nearby",
+];
+
+const MEAL_TIMES = ["Breakfast", "Lunch", "Dinner", "Snacks"];
+const SORT_OPTIONS = ["Best Match", "Highest Protein", "Lowest Calories", "Closest Distance", "Price"];
+
+// Ring Chart Config
+const RADIUS = 16;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+// --- UTILITY FUNCTIONS ---
+
 function calculateMatchScore(meal: Meal, user: UserProfile): number {
   let score = 90;
+  // Fallbacks in case mock data is missing fields
+  const mCalories = meal.calories || 0;
+  const mFats = meal.fats || 0;
+  const mProtein = meal.protein || 0;
+  const mCarbs = meal.carbs || 0;
 
-  if (meal.calories > user.calorieTarget * 0.4) score -= 15;
-  if (user.goal === "lose-fat" && meal.fats > 30) score -= 10;
-  if (user.goal === "build-muscle" && meal.protein > 35) score += 5;
-  if (user.dietaryType === "Keto" && meal.carbs < 15) score += 8;
-
+  if (mCalories > user.calorieTarget * 0.4) score -= 15;
+  if (user.goal === "lose-fat" && mFats > 30) score -= 10;
+  if (user.goal === "build-muscle" && mProtein > 35) score += 5;
+  if (user.dietaryType === "Keto" && mCarbs < 15) score += 8;
   return Math.max(65, Math.min(99, score));
 }
+
+function generateMicroDescription(meal: Meal): string {
+  const parts = [];
+  if (meal.protein && meal.protein > 30) parts.push("High Protein");
+  else if (meal.protein && meal.protein > 20) parts.push("Good Protein");
+
+  if (meal.carbs && meal.carbs < 20) parts.push("Low Carb");
+  if (meal.calories < 500) parts.push("Low Cal");
+
+  if (!parts.includes("Low Cal")) {
+    parts.push(`${meal.calories} Cal`);
+  }
+  if (parts.length === 0) return `${meal.calories} Cal · Balanced`;
+
+  return parts.join(" · ");
+}
+
+// --- SUB-COMPONENTS (For Cleaner Code) ---
+
+const ImageWithFallback = ({ src, alt, className }: { src: string; alt: string; className?: string }) => {
+  const [error, setError] = useState(false);
+  if (error) {
+    return (
+      <div className={`flex items-center justify-center bg-slate-800 ${className}`}>
+        <ImageIcon className="w-8 h-8 text-slate-600" />
+      </div>
+    );
+  }
+  return <img src={src} alt={alt} className={className} onError={() => setError(true)} />;
+};
+
+const MacroRing = ({ percentage }: { percentage: number }) => {
+  const strokeDashoffset = CIRCUMFERENCE * (1 - Math.min(percentage, 100) / 100);
+  
+  return (
+    <div className="relative">
+      <svg className="w-10 h-10 -rotate-90">
+        <circle cx="20" cy="20" r={RADIUS} stroke="rgba(75, 85, 99, 0.3)" strokeWidth="3" fill="none" />
+        <circle
+          cx="20" cy="20" r={RADIUS}
+          stroke="url(#gradient)" strokeWidth="3" fill="none"
+          strokeDasharray={CIRCUMFERENCE}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          className="transition-all duration-500"
+        />
+        <defs>
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#22d3ee" />
+            <stop offset="100%" stopColor="#3b82f6" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-[9px] font-bold text-white">{Math.round(percentage)}%</span>
+      </div>
+    </div>
+  );
+};
+
+// Top Pick Card (Large)
+const LargeMealCard = ({ meal, onSelect }: { meal: Meal & { microDescription: string }; onSelect: () => void }) => (
+  <div
+    onClick={onSelect}
+    className="w-full bg-[#0f172a] rounded-[24px] overflow-hidden border border-slate-800/80 shadow-xl cursor-pointer group hover:border-cyan-500/30 transition-all"
+  >
+    <div className="relative h-64 overflow-hidden">
+      <ImageWithFallback
+        src={meal.image}
+        alt={meal.name}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-80" />
+      <button
+        onClick={(e) => { e.stopPropagation(); /* Swap Logic */ }}
+        className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition-all"
+      >
+        <RefreshCw className="w-3 h-3 text-cyan-400" />
+        <span className="text-[10px] font-bold text-cyan-100">Smart Swap</span>
+      </button>
+    </div>
+
+    <div className="p-4 pt-2">
+      <div className="mb-2">
+        <h3 className="text-white text-lg font-bold leading-tight">{meal.name}</h3>
+        <div className="flex flex-col mt-1">
+          <p className="text-slate-300 text-xs font-medium">{meal.restaurant}</p>
+          <p className="text-slate-500 text-[11px] mt-0.5">{meal.microDescription}</p>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between border-t border-slate-800/50 pt-3 mt-2">
+        <span className="text-white font-bold text-sm">{meal.calories} Cal</span>
+        <div className="flex items-center gap-3 text-xs font-medium">
+          <span className="text-blue-400 flex items-center gap-1">{meal.protein}g P</span>
+          <span className="text-emerald-400 flex items-center gap-1">{meal.carbs || 35}g C</span>
+          <span className="text-amber-400 flex items-center gap-1">{meal.fats || 12}g F</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// More Options Card (Small)
+const CompactMealRow = ({ meal, onSelect }: { meal: Meal & { microDescription: string }; onSelect: () => void }) => (
+  <div
+    onClick={onSelect}
+    className="flex items-center gap-3 p-2.5 rounded-2xl bg-[#0f172a] border border-slate-800 hover:border-slate-700 transition-all cursor-pointer"
+  >
+    <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-slate-800">
+      <ImageWithFallback src={meal.image} alt={meal.name} className="w-full h-full object-cover" />
+    </div>
+    <div className="flex-1 min-w-0">
+      <h3 className="text-slate-200 text-sm font-medium truncate">{meal.name}</h3>
+      <div className="flex flex-col">
+        <p className="text-slate-500 text-xs truncate">{meal.restaurant}</p>
+        <p className="text-slate-600 text-[10px] truncate">{meal.microDescription}</p>
+      </div>
+    </div>
+  </div>
+);
+
+// --- MAIN COMPONENT ---
 
 type Props = {
   userProfile: UserProfile;
   onMealSelect: (meal: Meal) => void;
   favoriteMeals: string[];
-  onOpenAI?: () => void;
+  onSearch?: () => void;
 };
 
-const filterOptions = [
-  { id: "best", label: "Best Match", icon: Sparkles },
-  { id: "protein", label: "Highest Protein", icon: Flame },
-  { id: "nearby", label: "Closest to You", icon: MapPin },
-];
+export function HomeScreen({ userProfile, onMealSelect, onSearch }: Props) {
+  const [greeting, setGreeting] = useState("Good Morning");
+  const [selectedMealTime, setSelectedMealTime] = useState("Lunch");
+  const [selectedSort, setSelectedSort] = useState("Best Match");
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
-export function HomeScreen({
-  userProfile,
-  onMealSelect,
-  favoriteMeals = [],
-}: Props) {
-  const [selectedFilter, setSelectedFilter] = useState<string>("best");
+  const userName = userProfile.name || "Alex";
+  const caloriesRemaining = 420;
+  const progressPercentage = 65;
 
-  // mock streak for now
-  const streakDays = 3;
+  useEffect(() => {
+    // Set greeting and default meal time based on clock
+    const hour = new Date().getHours();
+    
+    if (hour < 12) setGreeting("Good Morning");
+    else if (hour < 18) setGreeting("Good Afternoon");
+    else setGreeting("Good Evening");
 
-  // score and sort meals
-  const scoredMeals = mockMeals
-    .map((meal) => ({
-      ...meal,
-      matchScore: calculateMatchScore(meal, userProfile),
-    }))
-    .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+    if (hour < 11) setSelectedMealTime("Breakfast");
+    else if (hour < 16) setSelectedMealTime("Lunch");
+    else setSelectedMealTime("Dinner");
+  }, []);
 
-  const trendingMeals = scoredMeals.slice(0, 4);
-  const reorderMeals = scoredMeals.slice(4, 10);
+  // Memoized Scoring & Sorting to prevent lag on re-renders
+  const { topPicks, moreOptions } = useMemo(() => {
+    const scored = mockMeals
+      .map((meal) => ({
+        ...meal,
+        matchScore: calculateMatchScore(meal, userProfile),
+        microDescription: generateMicroDescription(meal),
+      }))
+      .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+
+    return {
+      topPicks: scored.slice(0, 3),
+      moreOptions: scored.slice(3, 10),
+    };
+  }, [userProfile]);
 
   return (
-    <div className="flex-1 flex flex-col h-full w-full bg-[#020617] overflow-hidden">
-      <div className="flex-1 overflow-y-auto">
-        {/* TOP BAR: MacroMatch + streak pill */}
-        <div className="px-4 pt-4 pb-3 flex items-center justify-between bg-[#020617]">
-          <p className="text-xs text-sky-400 font-semibold tracking-wide">
-            MacroMatch
-          </p>
-
-          <button
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium
-                       bg-slate-900 border border-cyan-500/50 text-cyan-200 shadow-sm
-                       hover:border-cyan-400 hover:bg-slate-900/80 transition-all"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{streakDays} day streak</span>
-          </button>
+    <div className="flex-1 flex flex-col h-full w-full bg-[#020617] overflow-hidden font-sans">
+      
+      {/* --- TOP BAR --- */}
+      <div className="flex items-center justify-between px-4 py-4 bg-[#020617] z-10 shrink-0">
+        <div className="text-xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+          MacroMatch
         </div>
 
-        {/* MAIN CONTENT */}
-        <div className="px-4 pt-4 pb-6">
-          {/* TRENDING NEAR YOU */}
-          <div className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-white text-base font-semibold">
-                Trending Near You
-              </h2>
+        <div className="flex items-center gap-3">
+          {onSearch && (
+            <button
+              onClick={onSearch}
+              className="p-2 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-700 text-cyan-400 transition-colors"
+              title="Search meals"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+          )}
+          <div className="text-right">
+            <div className="text-[10px] text-gray-400 uppercase tracking-wider">Calories Remaining</div>
+            <div className="text-sm font-semibold text-white">{caloriesRemaining.toLocaleString()}</div>
+          </div>
+          <MacroRing percentage={progressPercentage} />
+        </div>
+      </div>
 
+      {/* --- SCROLLABLE CONTENT --- */}
+      <div className="flex-1 overflow-y-auto px-4 pb-20">
+        
+        {/* HEADER: GREETING & CONTROLS */}
+        <div className="mb-5 mt-2 flex flex-col gap-3">
+          <h1 className="text-white text-xl font-semibold">
+            {greeting}, <span className="text-cyan-400">{userName}</span>
+          </h1>
+
+          <div className="flex items-center justify-between">
+            <p className="text-slate-400 text-xs font-medium">Here are your recommended meals</p>
+
+            <div className="flex items-center gap-2">
+              {/* SORT BUTTON */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <button
-                    className="px-3 py-1.5 rounded-full flex items-center gap-2 transition-all backdrop-blur-md hover:bg-white/20"
-                    style={{
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      border: "1px solid rgba(255, 255, 255, 0.15)",
-                    }}
-                  >
-                    <SlidersHorizontal className="w-3.5 h-3.5 text-zinc-300" />
-                    <span className="text-xs text-zinc-400">Sort</span>
+                  <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-transparent border border-slate-800 text-[11px] text-slate-400 hover:text-white hover:border-slate-600 transition-colors">
+                    <ArrowUpDown className="w-3 h-3" />
+                    <span>Sort</span>
                   </button>
                 </PopoverTrigger>
-                <PopoverContent
-                  className="w-56 p-2 bg-gray-900 border-zinc-700 shadow-2xl"
-                  align="end"
-                  sideOffset={8}
-                >
-                  <div className="space-y-1">
-                    {filterOptions.map((option) => {
-                      const IconComponent = option.icon;
-                      const isSelected = selectedFilter === option.id;
+                <PopoverContent className="w-40 p-1 bg-slate-900 border-slate-700 shadow-xl" align="end">
+                  {SORT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt}
+                      onClick={() => setSelectedSort(opt)}
+                      className={`w-full text-left px-2 py-1.5 text-xs rounded-md flex items-center justify-between ${
+                        selectedSort === opt ? "bg-cyan-500/20 text-cyan-400" : "text-slate-300 hover:bg-white/5"
+                      }`}
+                    >
+                      {opt}
+                      {selectedSort === opt && <Check className="w-3 h-3" />}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
 
-                      return (
-                        <button
-                          key={option.id}
-                          onClick={() => setSelectedFilter(option.id)}
-                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
-                            isSelected
-                              ? "bg-cyan-500/20 text-cyan-400"
-                              : "hover:bg-white/5 text-zinc-300 hover:text-white"
-                          }`}
-                        >
-                          <IconComponent
-                            className={`w-4 h-4 ${
-                              isSelected ? "text-cyan-400" : "text-zinc-400"
-                            }`}
-                          />
-                          <span className="text-sm flex-1 text-left">
-                            {option.label}
-                          </span>
-                          {isSelected && (
-                            <Check className="w-4 h-4 text-cyan-400" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
+              {/* MEAL TIME SELECTOR */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/50 border border-slate-700 text-xs text-slate-300 hover:bg-slate-800 transition-colors">
+                    {selectedMealTime}
+                    <ChevronDown className="w-3.5 h-3.5 text-cyan-400" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-32 p-1 bg-slate-900 border-slate-700 shadow-xl" align="end">
+                  {MEAL_TIMES.map((time) => (
+                    <button
+                      key={time}
+                      onClick={() => setSelectedMealTime(time)}
+                      className={`w-full text-left px-2 py-1.5 text-xs rounded-md flex items-center justify-between ${
+                        selectedMealTime === time ? "bg-cyan-500/20 text-cyan-400" : "text-slate-300 hover:bg-white/5"
+                      }`}
+                    >
+                      {time}
+                      {selectedMealTime === time && <Check className="w-3 h-3" />}
+                    </button>
+                  ))}
                 </PopoverContent>
               </Popover>
             </div>
-
-            <div className="space-y-3">
-              {trendingMeals.map((meal) => (
-                <div
-                  key={meal.id}
-                  onClick={() => onMealSelect(meal)}
-                  className="rounded-2xl overflow-hidden cursor-pointer transition-all hover:scale-[1.02]"
-                  style={{ backgroundColor: "#020617", borderRadius: 18 }}
-                >
-                  <div className="flex items-stretch border border-slate-800/80">
-                    <div className="w-24 h-24 m-2 rounded-2xl relative overflow-hidden flex-shrink-0 bg-slate-800">
-                      <ImageWithFallback
-                        src={meal.image}
-                        alt={meal.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    <div className="flex-1 pr-4 py-3 flex flex-col justify-center">
-                      <h3 className="text-sm font-semibold text-white mb-1">
-                        {meal.name}
-                      </h3>
-                      <p className="text-xs text-zinc-400 mb-2">
-                        {meal.restaurant}
-                      </p>
-                      <div className="flex items-center gap-2 text-xs">
-                        <span className="text-sky-400 flex items-center gap-1">
-                          <Flame className="w-3 h-3" />
-                          {meal.protein}g Protein
-                        </span>
-                        <span className="text-gray-500">•</span>
-                        <span className="text-orange-400">
-                          {meal.calories} cal
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* QUICK RE-ORDER */}
-          <div className="mb-8">
-            <h2 className="text-white text-base font-semibold mb-4">
-              Quick Re-Order
-            </h2>
-
-            <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
-              {reorderMeals.map((meal) => (
-                <div
-                  key={meal.id}
-                  onClick={() => onMealSelect(meal)}
-                  className="flex-shrink-0 w-32 cursor-pointer"
-                >
-                  <div className="aspect-square rounded-xl overflow-hidden mb-2 bg-slate-800">
-                    <ImageWithFallback
-                      src={meal.image}
-                      alt={meal.name}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform"
-                    />
-                  </div>
-                  <p className="text-white text-sm text-center truncate">
-                    {meal.name}
-                  </p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
+
+        {/* QUICK FILTERS (Horizontal Scroll) */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+          {QUICK_FILTERS.map((filter) => {
+            const isActive = activeFilter === filter;
+            return (
+              <button
+                key={filter}
+                onClick={() => setActiveFilter(isActive ? null : filter)}
+                className={`
+                  flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium transition-all backdrop-blur-sm border
+                  ${isActive 
+                    ? "bg-cyan-600 border-cyan-400 text-white shadow-[0_0_15px_rgba(34,211,238,0.3)]" 
+                    : "bg-slate-800/60 border-slate-700/50 text-slate-300 hover:bg-slate-800 hover:text-white"
+                  }
+                `}
+              >
+                {filter}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* SECTION: MEALS PICKED FOR YOU */}
+        <h2 className="text-white text-sm font-semibold mb-4 pl-1 tracking-wide">
+          Meals Picked for You
+        </h2>
+
+        <div className="space-y-6 mb-10">
+          {topPicks.map((meal) => (
+            <LargeMealCard key={meal.id} meal={meal} onSelect={() => onMealSelect(meal)} />
+          ))}
+        </div>
+
+        {/* SECTION: MORE OPTIONS */}
+        <div className="mb-5 flex items-center gap-4">
+          <div className="h-[1px] bg-gradient-to-r from-slate-800 to-transparent w-full"></div>
+        </div>
+
+        <div className="space-y-3 pb-4">
+          {moreOptions.map((meal) => (
+            <CompactMealRow key={meal.id} meal={meal} onSelect={() => onMealSelect(meal)} />
+          ))}
+        </div>
+
+        {/* LOAD MORE ACTION */}
+        <button className="w-full py-3.5 mt-2 mb-8 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-xs font-medium hover:bg-slate-800 hover:text-white transition-all active:scale-[0.98]">
+          Load More Meals
+        </button>
+
       </div>
+
+      <style jsx global>{`
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }

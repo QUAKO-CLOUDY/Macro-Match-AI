@@ -120,15 +120,72 @@ export function SimplifiedOnboarding({ onComplete }: Props) {
     );
   }
 
-  // --- STEP 2: Placeholder ---
-  return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-6 text-center">
-      <div className="max-w-md w-full">
-        <h2 className="text-white text-xl mb-4">Step 2: Processing Goal...</h2>
-        <Button onClick={handleFinish} className="w-full h-14 rounded-full bg-primary text-white">
-          {isSubmitting ? 'Building Profile...' : 'Finish Setup'}
-        </Button>
+  // --- STEP 2: Basic Info (Optional) ---
+  if (step === 2) {
+    return (
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-teal-500 to-blue-600 rounded-3xl mb-4 shadow-lg shadow-teal-500/50">
+              <Target className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-white mb-2 text-2xl font-bold">Almost there!</h1>
+            <p className="text-gray-400">We're setting up your personalized meal recommendations.</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-6 mb-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
+                  <Check className="w-5 h-5 text-teal-400" />
+                </div>
+                <div>
+                  <div className="text-white font-medium">Goal Selected</div>
+                  <div className="text-gray-400 text-sm">
+                    {goals.find(g => g.id === goal)?.label || 'Your goal'}
+                  </div>
+                </div>
+              </div>
+              <div className="h-px bg-gray-700" />
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                  <Check className="w-5 h-5 text-blue-400" />
+                </div>
+                <div>
+                  <div className="text-white font-medium">Default Settings</div>
+                  <div className="text-gray-400 text-sm">Balanced diet • 2000 calories</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2 justify-center mb-6">
+            <div className="h-2 w-16 bg-gray-800 rounded-full" />
+            <div className="h-2 w-16 bg-gradient-to-r from-teal-500 to-blue-600 rounded-full" />
+          </div>
+
+          <Button
+            onClick={handleFinish}
+            disabled={isSubmitting}
+            className="h-14 rounded-full bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 shadow-lg shadow-teal-500/30 w-full disabled:opacity-50 text-white font-semibold text-lg"
+          >
+            {isSubmitting ? (
+              <>
+                <span className="inline-block animate-spin mr-2">⏳</span>
+                Building Your Profile...
+              </>
+            ) : (
+              <>
+                Finish Setup
+                <ChevronRight className="ml-2 w-5 h-5" />
+              </>
+            )}
+          </Button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Fallback (shouldn't reach here)
+  return null;
 }

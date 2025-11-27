@@ -5,7 +5,6 @@ import { Send, Sparkles, Mic, Plus, Minus, Flame, Zap } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
-import { mockMeals } from "../data/mockData";
 import type { UserProfile, Meal } from "../types";
 
 type Props = {
@@ -49,6 +48,7 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -59,38 +59,67 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
     scrollToBottom();
   }, [messages]);
 
-  const generateAIResponse = (
-    userMessage: string
-  ): { content: string; meals?: Meal[] } => {
-    const lowerMessage = userMessage.toLowerCase();
-    let filteredMeals = [...mockMeals];
-
-    if (lowerMessage.includes("under 600") || lowerMessage.includes("low calorie")) {
-      filteredMeals = filteredMeals.filter((m) => m.calories < 600);
-    }
-    if (lowerMessage.includes("high protein")) {
-      filteredMeals = filteredMeals.filter((m) => m.protein > 30);
-    }
-    if (lowerMessage.includes("low carb") || lowerMessage.includes("keto")) {
-      filteredMeals = filteredMeals.filter((m) => m.carbs < 20);
-    }
-    if (lowerMessage.includes("vegan")) {
-      filteredMeals = filteredMeals.filter((m) =>
-        m.name.toLowerCase().includes("vegan")
-      );
-    }
-
-    const content =
-      filteredMeals.length > 0
-        ? `I found ${filteredMeals.length} great option${
-            filteredMeals.length !== 1 ? "s" : ""
-          } for you! Tap any meal to see full details.`
-        : "I couldn't find exact matches, but here are some popular choices:";
-
-    return { content, meals: filteredMeals };
+  // Convert API result to Meal type
+  const convertToMeal = (item: any): Meal => {
+    return {
+      id: item.id || `meal-${Date.now()}-${Math.random()}`,
+      name: item.item_name || item.name || 'Unknown Item',
+      restaurant: item.restaurant_name || 'Unknown Restaurant',
+      calories: item.calories || 0,
+      protein: item.protein_g || 0,
+      carbs: item.carbs_g || 0,
+      fats: item.fat_g || 0,
+      image: item.image_url || '/placeholder-food.jpg',
+      price: item.price || 0,
+      description: item.description || '',
+      category: 'restaurant' as const,
+    };
   };
 
-  const handleSendMessage = (text?: string) => {
+  const searchMeals = async (query: string): Promise<Meal[]> => {
+    try {
+      const res = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+      
+      const data = await res.json();
+      
+      // Normalize API response to always be an array
+      let normalizedResults: any[] = [];
+      
+      if (Array.isArray(data)) {
+        normalizedResults = data;
+      } else if (data && typeof data === 'object' && Array.isArray(data.results)) {
+        normalizedResults = data.results;
+      }
+      
+      // Convert to Meal type
+      return normalizedResults.map(convertToMeal);
+    } catch (error) {
+      console.error('Search failed:', error);
+      return [];
+    }
+  };
+
+  const generateAIResponse = async (
+    userMessage: string
+  ): Promise<{ content: string; meals?: Meal[] }> => {
+    // Use the search API to find real meals
+    const meals = await searchMeals(userMessage);
+
+    const content =
+      meals.length > 0
+        ? `I found ${meals.length} great option${
+            meals.length !== 1 ? "s" : ""
+          } for you! Tap any meal to see full details.`
+        : "I couldn't find exact matches in the database. Try searching with different keywords or check back later as we add more meals.";
+
+    return { content, meals };
+  };
+
+  const handleSendMessage = async (text?: string) => {
     const messageText = text || inputValue.trim();
     if (!messageText) return;
 
@@ -103,18 +132,53 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
 
     setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
+    setIsLoading(true);
 
-    setTimeout(() => {
-      const { content, meals } = generateAIResponse(messageText);
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        type: "ai",
-        content,
-        meals,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, aiMessage]);
-    }, 800);
+    // Add a loading message
+    const loadingMessageId = (Date.now() + 1).toString();
+    const loadingMessage: Message = {
+      id: loadingMessageId,
+      type: "ai",
+      content: "Searching for meals...",
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, loadingMessage]);
+
+    try {
+      const { content, meals } = await generateAIResponse(messageText);
+      
+      // Remove loading message and add real response
+      setMessages((prev) => {
+        const filtered = prev.filter((msg) => msg.id !== loadingMessageId);
+        return [
+          ...filtered,
+          {
+            id: (Date.now() + 2).toString(),
+            type: "ai" as const,
+            content,
+            meals,
+            timestamp: new Date(),
+          },
+        ];
+      });
+    } catch (error) {
+      console.error('Error generating AI response:', error);
+      // Remove loading message and add error response
+      setMessages((prev) => {
+        const filtered = prev.filter((msg) => msg.id !== loadingMessageId);
+        return [
+          ...filtered,
+          {
+            id: (Date.now() + 2).toString(),
+            type: "ai" as const,
+            content: "Sorry, I encountered an error while searching. Please try again.",
+            timestamp: new Date(),
+          },
+        ];
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -181,11 +245,20 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
                     className="bg-slate-900/80 text-white rounded-2xl border border-slate-700 p-4 cursor-pointer hover:border-cyan-500/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 group"
                   >
                     <div className="flex gap-3">
-                      <img
-                        src={meal.image}
-                        alt={meal.name}
-                        className="size-20 rounded-xl object-cover"
-                      />
+                      {meal.image && meal.image !== '/placeholder-food.jpg' ? (
+                        <img
+                          src={meal.image}
+                          alt={meal.name}
+                          className="size-20 rounded-xl object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="size-20 rounded-xl bg-slate-800 flex items-center justify-center text-slate-600 text-xs">
+                          Food
+                        </div>
+                      )}
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-sm mb-1 group-hover:text-cyan-300 transition-colors">
                           {meal.name}
@@ -285,10 +358,14 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
           </div>
           <Button
             onClick={() => handleSendMessage()}
-            disabled={!inputValue.trim()}
+            disabled={!inputValue.trim() || isLoading}
             className="rounded-full size-10 bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-md shadow-cyan-500/40 shrink-0 disabled:opacity-50"
           >
-            <Send className="size-4 text-white" />
+            {isLoading ? (
+              <div className="size-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Send className="size-4 text-white" />
+            )}
           </Button>
         </div>
       </div>

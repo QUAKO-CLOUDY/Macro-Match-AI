@@ -870,7 +870,7 @@ export function OnboardingFlow({ onComplete }: Props) {
                 {[
                   { id: "male" as const, label: "Male" },
                   { id: "female" as const, label: "Female" },
-                  { id: "other" as const, label: "Other" },
+              
                 ].map((option) => {
                   const isSelected = sex === option.id;
                   return (

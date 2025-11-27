@@ -2,7 +2,7 @@
 
 import { Home, Activity, Sparkles, Heart, Settings as SettingsIcon } from "lucide-react";
 
-type Screen = "home" | "log" | "chat" | "favorites" | "settings";
+export type Screen = "home" | "log" | "chat" | "favorites" | "settings" | "search";
 
 type Props = {
   currentScreen: Screen;
