@@ -1,24 +1,50 @@
+"use client";
+
+import { useTheme } from '../contexts/ThemeContext';
+
 export function CircularProgress({ percentage, colorStart, colorEnd, size, strokeWidth }: any) {
+  const { resolvedTheme } = useTheme();
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
-  const offset = circumference - (percentage / 100) * circumference;
+  const safePercentage = Math.min(100, Math.max(0, percentage));
+  // Create unique gradient ID based on size and colors to avoid conflicts
+  const gradientId = `gradient-${size}-${colorStart?.replace('#', '')}-${colorEnd?.replace('#', '')}`;
+  
+  // Theme-aware background circle color
+  const bgStrokeColor = resolvedTheme === 'dark' ? '#4b5563' : '#d1d5db';
+  const bgOpacity = resolvedTheme === 'dark' ? '0.4' : '0.5';
 
   return (
     <div className="absolute inset-0 flex items-center justify-center">
       <svg width={size} height={size} className="transform -rotate-90">
-        {/* Background Circle */}
-        <circle cx={size/2} cy={size/2} r={radius} stroke="#1f2937" strokeWidth={strokeWidth} fill="transparent" />
-        {/* Progress Circle */}
+        <defs>
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={colorStart || "#06b6d4"} />
+            <stop offset="100%" stopColor={colorEnd || colorStart || "#0ea5e9"} />
+          </linearGradient>
+        </defs>
+        {/* Background Circle - Theme-aware */}
+        <circle 
+          cx={size/2} 
+          cy={size/2} 
+          r={radius} 
+          stroke={bgStrokeColor} 
+          strokeWidth={strokeWidth} 
+          fill="transparent"
+          strokeOpacity={bgOpacity}
+        />
+        {/* Progress Circle with Gradient */}
         <circle
           cx={size/2}
           cy={size/2}
           r={radius}
-          stroke={colorStart}
+          stroke={`url(#${gradientId})`}
           strokeWidth={strokeWidth}
           fill="transparent"
           strokeDasharray={circumference}
-          strokeDashoffset={offset}
+          strokeDashoffset={circumference - (safePercentage / 100) * circumference}
           strokeLinecap="round"
+          className="transition-all duration-700 ease-out"
         />
       </svg>
     </div>

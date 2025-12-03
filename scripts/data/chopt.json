@@ -1,0 +1,222 @@
+[
+    {
+      "item_name": "Mexican Caesar",
+      "description": "Roasted chicken, cotija cheese, jalapeños, tortilla chips, romaine, mexican caesar dressing.",
+      "category": "Entree",
+      "price": 12.50,
+      "calories": 540,
+      "protein_g": 32,
+      "carbs_g": 24,
+      "fats_g": 36,
+      "dietary_tags": ["High-Protein", "Spicy"]
+    },
+    {
+      "item_name": "Santa Fe Salad",
+      "description": "Avocado, grape tomatoes, corn, pepper jack, crispy shallots, romaine, sweet & smoky chipotle vinaigrette.",
+      "category": "Entree",
+      "price": 12.95,
+      "calories": 610,
+      "protein_g": 18,
+      "carbs_g": 38,
+      "fats_g": 44,
+      "dietary_tags": ["Vegetarian"]
+    },
+    {
+      "item_name": "Palm Beach",
+      "description": "Avocado, grape tomatoes, cucumbers, hearts of palm, romaine, white balsamic vinaigrette. (Added chicken recommended for protein).",
+      "category": "Entree",
+      "price": 11.50,
+      "calories": 290,
+      "protein_g": 8,
+      "carbs_g": 22,
+      "fats_g": 20,
+      "dietary_tags": ["Vegan", "Low-Calorie"]
+    },
+    {
+      "item_name": "Kebab Cobb",
+      "description": "Falafel or Chicken, feta, pickled red onions, spicy peppers, pita chips, romaine, greek yogurt tzatziki.",
+      "category": "Entree",
+      "price": 13.50,
+      "calories": 580,
+      "protein_g": 30,
+      "carbs_g": 35,
+      "fats_g": 36,
+      "dietary_tags": ["High-Protein"]
+    },
+    {
+      "item_name": "Kale Caesar",
+      "description": "Parmesan, croutons, kale, romaine, creamy caesar dressing. (Chicken optional but standard).",
+      "category": "Entree",
+      "price": 10.95,
+      "calories": 420,
+      "protein_g": 14,
+      "carbs_g": 26,
+      "fats_g": 30,
+      "dietary_tags": ["Vegetarian"]
+    },
+    {
+      "item_name": "Chicken Tinga Bowl",
+      "description": "Warm grains, chicken tinga, avocado, black beans, cotija, tortilla chips, mexican goddess dressing.",
+      "category": "Entree",
+      "price": 13.95,
+      "calories": 720,
+      "protein_g": 38,
+      "carbs_g": 68,
+      "fats_g": 34,
+      "dietary_tags": ["High-Protein", "Spicy"]
+    },
+    {
+      "item_name": "Sesame Ginger Crunch",
+      "description": "Roasted chicken, carrots, broccoli, pickled onions, wontons, romaine, cabbage, sesame ginger dressing.",
+      "category": "Entree",
+      "price": 12.95,
+      "calories": 510,
+      "protein_g": 28,
+      "carbs_g": 38,
+      "fats_g": 26,
+      "dietary_tags": ["Dairy-Free"]
+    },
+    {
+      "item_name": "Classic Cobb (Custom High Protein)",
+      "description": "Roasted chicken, egg, bacon, avocado, blue cheese, tomato, romaine, buttermilk ranch.",
+      "category": "Entree",
+      "price": 15.50,
+      "calories": 780,
+      "protein_g": 48,
+      "carbs_g": 14,
+      "fats_g": 58,
+      "dietary_tags": ["High-Protein", "Keto", "Low-Carb"]
+    },
+    {
+      "item_name": "Sweetgreen Copycat (Harvest)",
+      "description": "Roasted chicken, sweet potatoes, apples, goat cheese, almonds, kale, romaine, balsamic vinaigrette.",
+      "category": "Entree",
+      "price": 13.95,
+      "calories": 650,
+      "protein_g": 34,
+      "carbs_g": 48,
+      "fats_g": 36,
+      "dietary_tags": ["Balanced"]
+    },
+    {
+      "item_name": "Mexican Caesar Wrap",
+      "description": "Mexican caesar salad wrapped in a flour tortilla.",
+      "category": "Entree",
+      "price": 11.95,
+      "calories": 680,
+      "protein_g": 34,
+      "carbs_g": 58,
+      "fats_g": 38,
+      "dietary_tags": []
+    },
+    {
+      "item_name": "Warm Grain Bowl (Build Your Own)",
+      "description": "Warm grains, roasted chicken, roasted seasonal veggies, dressing.",
+      "category": "Entree",
+      "price": 13.00,
+      "calories": 620,
+      "protein_g": 32,
+      "carbs_g": 64,
+      "fats_g": 24,
+      "dietary_tags": ["Balanced"]
+    },
+    {
+      "item_name": "Asian Crunch Salad (Vegan)",
+      "description": "Tofu, broccoli, carrots, wontons, cabbage, romaine, sesame ginger dressing.",
+      "category": "Entree",
+      "price": 12.50,
+      "calories": 460,
+      "protein_g": 18,
+      "carbs_g": 44,
+      "fats_g": 24,
+      "dietary_tags": ["Vegan"]
+    },
+    {
+      "item_name": "Side of Roasted Chicken",
+      "description": "Portion of chopped roasted chicken.",
+      "category": "Side",
+      "price": 4.95,
+      "calories": 140,
+      "protein_g": 26,
+      "carbs_g": 0,
+      "fats_g": 4,
+      "dietary_tags": ["High-Protein", "Keto"]
+    },
+    {
+      "item_name": "Side of Avocado",
+      "description": "Half avocado.",
+      "category": "Side",
+      "price": 2.50,
+      "calories": 160,
+      "protein_g": 2,
+      "carbs_g": 8,
+      "fats_g": 15,
+      "dietary_tags": ["Vegan", "Keto"]
+    },
+    {
+      "item_name": "Chopt BLT",
+      "description": "Bacon, tomato, romaine, croutons, ranch dressing.",
+      "category": "Entree",
+      "price": 11.50,
+      "calories": 540,
+      "protein_g": 18,
+      "carbs_g": 24,
+      "fats_g": 42,
+      "dietary_tags": ["Keto-Friendly"]
+    },
+    {
+      "item_name": "Panko Fried Chicken Salad",
+      "description": "Panko fried chicken, Mama Lil's peppers, pickled onions, cheddar, romaine, tex-mex ranch.",
+      "category": "Entree",
+      "price": 14.50,
+      "calories": 820,
+      "protein_g": 36,
+      "carbs_g": 48,
+      "fats_g": 54,
+      "dietary_tags": ["Comfort-Food"]
+    },
+    {
+      "item_name": "Greek Salad",
+      "description": "Feta, cucumber, tomato, olives, chickpeas, romaine, vinaigrette.",
+      "category": "Entree",
+      "price": 12.00,
+      "calories": 480,
+      "protein_g": 14,
+      "carbs_g": 28,
+      "fats_g": 36,
+      "dietary_tags": ["Vegetarian", "Gluten-Free"]
+    },
+    {
+      "item_name": "Kids Salad",
+      "description": "Smaller portion of custom salad (3 choppings).",
+      "category": "Entree",
+      "price": 7.95,
+      "calories": 320,
+      "protein_g": 18,
+      "carbs_g": 22,
+      "fats_g": 18,
+      "dietary_tags": ["Kid-Friendly"]
+    },
+    {
+      "item_name": "Warm Bowl with Tofu",
+      "description": "Warm grains, roasted tofu, kale, roasted veggies, miso dressing.",
+      "category": "Entree",
+      "price": 12.95,
+      "calories": 580,
+      "protein_g": 22,
+      "carbs_g": 72,
+      "fats_g": 24,
+      "dietary_tags": ["Vegan"]
+    },
+    {
+      "item_name": "Side of Bread",
+      "description": "Piece of artisan bread.",
+      "category": "Side",
+      "price": 1.50,
+      "calories": 140,
+      "protein_g": 4,
+      "carbs_g": 28,
+      "fats_g": 1,
+      "dietary_tags": ["Vegetarian"]
+    }
+  ]

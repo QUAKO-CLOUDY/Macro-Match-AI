@@ -1,0 +1,222 @@
+[
+    {
+      "item_name": "Mother Earth Bowl",
+      "description": "Ancient grains, sweet potato, portobello mushroom, avocado, cucumber, broccoli pesto, charred onion, leafy greens, red pepper miso vinaigrette.",
+      "category": "Entree",
+      "price": 14.50,
+      "calories": 680,
+      "protein_g": 18,
+      "carbs_g": 78,
+      "fats_g": 34,
+      "dietary_tags": ["Vegetarian", "Vegan"]
+    },
+    {
+      "item_name": "Mother Earth Bowl with Chicken",
+      "description": "Mother Earth Bowl topped with grilled chicken.",
+      "category": "Entree",
+      "price": 19.00,
+      "calories": 840,
+      "protein_g": 44,
+      "carbs_g": 78,
+      "fats_g": 39,
+      "dietary_tags": ["High-Protein"]
+    },
+    {
+      "item_name": "Glow Bowl",
+      "description": "Spicy sweet potato noodles, bok choy, zucchini, onion, jalapeño, shiitake mushroom, coconut milk, sunflower butter.",
+      "category": "Entree",
+      "price": 14.50,
+      "calories": 620,
+      "protein_g": 12,
+      "carbs_g": 84,
+      "fats_g": 26,
+      "dietary_tags": ["Vegan", "Gluten-Free", "Spicy"]
+    },
+    {
+      "item_name": "Flying Avocado Wrap",
+      "description": "Smoked turkey, gouda, romaine, tomato, avocado, hummus in a whole wheat wrap.",
+      "category": "Entree",
+      "price": 14.25,
+      "calories": 710,
+      "protein_g": 34,
+      "carbs_g": 52,
+      "fats_g": 38,
+      "dietary_tags": []
+    },
+    {
+      "item_name": "Turkey & Avocado Cobb",
+      "description": "Romaine, arugula, red cabbage, avocado, tomato, cucumber, crunchy corn, pickled onion, smoked almonds, gorgonzola vinaigrette.",
+      "category": "Entree",
+      "price": 15.50,
+      "calories": 690,
+      "protein_g": 38,
+      "carbs_g": 24,
+      "fats_g": 48,
+      "dietary_tags": ["Gluten-Free", "High-Protein"]
+    },
+    {
+      "item_name": "Salmon Plate",
+      "description": "Sustainable salmon, served with two sides (e.g., roasted broccoli and sweet potato).",
+      "category": "Entree",
+      "price": 21.00,
+      "calories": 640,
+      "protein_g": 36,
+      "carbs_g": 42,
+      "fats_g": 34,
+      "dietary_tags": ["High-Protein", "Gluten-Free"]
+    },
+    {
+      "item_name": "Chicken Satay Bowl",
+      "description": "Grilled chicken, broccoli, carrots, cabbage, brown rice, spicy peanut sauce.",
+      "category": "Entree",
+      "price": 15.50,
+      "calories": 680,
+      "protein_g": 42,
+      "carbs_g": 62,
+      "fats_g": 30,
+      "dietary_tags": ["Gluten-Free"]
+    },
+    {
+      "item_name": "Keto Bowl (Custom - No Grains)",
+      "description": "Grilled steak, cauliflower rice (if available) or extra greens, avocado, roasted broccoli, snap peas.",
+      "category": "Entree",
+      "price": 18.50,
+      "calories": 580,
+      "protein_g": 45,
+      "carbs_g": 18,
+      "fats_g": 36,
+      "dietary_tags": ["Keto", "High-Protein", "Gluten-Free"]
+    },
+    {
+      "item_name": "Bird is the Word Wrap",
+      "description": "Grilled chicken, broccoli, charred onion, pepper jack, roasted red pepper sauce, whole wheat wrap.",
+      "category": "Entree",
+      "price": 14.00,
+      "calories": 740,
+      "protein_g": 44,
+      "carbs_g": 56,
+      "fats_g": 36,
+      "dietary_tags": ["High-Protein"]
+    },
+    {
+      "item_name": "Chopped Vegetable Salad",
+      "description": "Avocado, baby tomato, corn, seeds, romaine, arugula, green goddess dressing.",
+      "category": "Entree",
+      "price": 13.50,
+      "calories": 480,
+      "protein_g": 10,
+      "carbs_g": 26,
+      "fats_g": 38,
+      "dietary_tags": ["Vegetarian", "Gluten-Free"]
+    },
+    {
+      "item_name": "Thai Dye Wrap (Tofu)",
+      "description": "Spicy tofu, thai basil, avocado, carrot, daikon, cilantro, snap peas, whole wheat wrap.",
+      "category": "Entree",
+      "price": 12.95,
+      "calories": 590,
+      "protein_g": 22,
+      "carbs_g": 64,
+      "fats_g": 26,
+      "dietary_tags": ["Vegetarian", "Vegan"]
+    },
+    {
+      "item_name": "Steak Plate",
+      "description": "Grass-fed steak with two sides.",
+      "category": "Entree",
+      "price": 20.00,
+      "calories": 720,
+      "protein_g": 48,
+      "carbs_g": 30,
+      "fats_g": 42,
+      "dietary_tags": ["High-Protein", "Gluten-Free"]
+    },
+    {
+      "item_name": "Side of Roasted Broccoli",
+      "description": "Roasted broccoli with lemon and garlic.",
+      "category": "Side",
+      "price": 5.00,
+      "calories": 140,
+      "protein_g": 5,
+      "carbs_g": 12,
+      "fats_g": 9,
+      "dietary_tags": ["Vegan", "Gluten-Free", "Keto"]
+    },
+    {
+      "item_name": "Side of Sweet Potato",
+      "description": "Roasted sweet potato with bok choy and sesame.",
+      "category": "Side",
+      "price": 5.00,
+      "calories": 190,
+      "protein_g": 3,
+      "carbs_g": 32,
+      "fats_g": 6,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Side of Grilled Chicken",
+      "description": "Portion of grilled chicken breast.",
+      "category": "Side",
+      "price": 6.50,
+      "calories": 160,
+      "protein_g": 26,
+      "carbs_g": 0,
+      "fats_g": 5,
+      "dietary_tags": ["High-Protein", "Keto"]
+    },
+    {
+      "item_name": "Side of Salmon",
+      "description": "Portion of sustainable salmon.",
+      "category": "Side",
+      "price": 9.50,
+      "calories": 260,
+      "protein_g": 24,
+      "carbs_g": 0,
+      "fats_g": 18,
+      "dietary_tags": ["High-Protein", "Keto"]
+    },
+    {
+      "item_name": "Forbidden Rice",
+      "description": "Black pearl rice, snap peas, bok choy, broccoli, carrot, toasted sesame.",
+      "category": "Entree",
+      "price": 13.50,
+      "calories": 560,
+      "protein_g": 14,
+      "carbs_g": 88,
+      "fats_g": 16,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Avocado Hummus Side",
+      "description": "Hummus blended with avocado, served with pita.",
+      "category": "Side",
+      "price": 8.50,
+      "calories": 540,
+      "protein_g": 14,
+      "carbs_g": 56,
+      "fats_g": 30,
+      "dietary_tags": ["Vegan"]
+    },
+    {
+      "item_name": "Side of Mac & Cheese",
+      "description": "Gluten-free mac and cheese.",
+      "category": "Side",
+      "price": 6.50,
+      "calories": 380,
+      "protein_g": 12,
+      "carbs_g": 36,
+      "fats_g": 22,
+      "dietary_tags": ["Vegetarian", "Gluten-Free"]
+    },
+    {
+      "item_name": "Organic Tofu Side",
+      "description": "Portion of roasted tofu.",
+      "category": "Side",
+      "price": 5.00,
+      "calories": 180,
+      "protein_g": 16,
+      "carbs_g": 6,
+      "fats_g": 10,
+      "dietary_tags": ["Vegan", "Keto"]
+    }
+  ]

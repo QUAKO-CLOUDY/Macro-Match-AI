@@ -19,7 +19,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   // Initial load
   useEffect(() => {
-    const savedTheme = localStorage.getItem('macromatch-theme') as Theme;
+    const savedTheme = localStorage.getItem('seekeatz-theme') as Theme;
     if (savedTheme) {
       setTheme(savedTheme);
     }
@@ -47,7 +47,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   // Apply to DOM
   useEffect(() => {
-    localStorage.setItem('macromatch-theme', theme);
+    localStorage.setItem('seekeatz-theme', theme);
     
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');

@@ -27,7 +27,7 @@ export function MicroOnboarding({ onComplete }: Props) {
 
           <h1 className="text-3xl font-bold text-foreground mb-4">Eat Anywhere</h1>
           <p className="text-muted-foreground text-lg mb-12 leading-relaxed">
-            Whether you're at a restaurant, grocery store, or food court, MacroMatch finds meals that fit your goals.
+            Whether you're at a restaurant, grocery store, or food court, SeekEatz finds meals that fit your goals.
           </p>
 
           <div className="flex gap-2 justify-center mb-8">

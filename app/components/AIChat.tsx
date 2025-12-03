@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Sparkles, Mic, Plus, Minus, Flame, Zap } from "lucide-react";
+import { Send, Sparkles, Mic, Plus, Minus, Flame, Zap, AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
@@ -61,6 +61,11 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
 
   // Convert API result to Meal type
   const convertToMeal = (item: any): Meal => {
+    // Determine category from item data
+    const category = item.category === 'Grocery' || item.category === 'Hot Bar' 
+      ? 'grocery' as const 
+      : 'restaurant' as const;
+
     return {
       id: item.id || `meal-${Date.now()}-${Math.random()}`,
       name: item.item_name || item.name || 'Unknown Item',
@@ -70,9 +75,10 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
       carbs: item.carbs_g || 0,
       fats: item.fat_g || 0,
       image: item.image_url || '/placeholder-food.jpg',
-      price: item.price || 0,
+      price: item.price || null, // Keep null for proper handling
       description: item.description || '',
-      category: 'restaurant' as const,
+      category: category,
+      dietary_tags: item.dietary_tags || item.tags || [],
     };
   };
 
@@ -193,7 +199,7 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-slate-950 text-white">
+    <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-background text-foreground">
       {/* Header */}
       <div className="bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 text-white p-5 shadow-lg shadow-cyan-500/20">
         <div className="flex items-center gap-3">
@@ -222,11 +228,11 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
                 className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                   message.type === "user"
                     ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white ml-auto shadow-lg shadow-teal-500/30"
-                    : "bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 text-white"
+                    : "bg-gradient-to-br from-card to-muted border border-border text-foreground"
                 }`}
               >
                 <p className="text-sm leading-relaxed">{message.content}</p>
-                <p className="text-[10px] mt-1 text-white/60">
+                <p className="text-[10px] mt-1 text-foreground/60">
                   {message.timestamp.toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -238,54 +244,110 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
             {/* AI Meal Suggestions */}
             {message.meals && message.meals.length > 0 && (
               <div className="mt-3 space-y-3 pl-4">
-                {message.meals.map((meal) => (
-                  <div
-                    key={meal.id}
-                    onClick={() => onMealSelect(meal)}
-                    className="bg-slate-900/80 text-white rounded-2xl border border-slate-700 p-4 cursor-pointer hover:border-cyan-500/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 group"
-                  >
-                    <div className="flex gap-3">
-                      {meal.image && meal.image !== '/placeholder-food.jpg' ? (
-                        <img
-                          src={meal.image}
-                          alt={meal.name}
-                          className="size-20 rounded-xl object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <div className="size-20 rounded-xl bg-slate-800 flex items-center justify-center text-slate-600 text-xs">
-                          Food
+                {message.meals.map((meal) => {
+                  // Check for variable availability
+                  const hasVariableAvailability = meal.dietary_tags?.some(
+                    (tag: string) => tag === 'Location Varies' || tag === 'Seasonal'
+                  ) || false;
+
+                  // Check if it's a grocery/hot bar item
+                  const isGrocery = meal.category === 'grocery' || 
+                                  meal.category === 'Grocery' || 
+                                  meal.category === 'Hot Bar';
+
+                  // Format price with safety checks
+                  const formatPrice = () => {
+                    if (!meal.price || meal.price === 0) {
+                      return 'Market Price';
+                    }
+                    return `~$${meal.price.toFixed(2)}`;
+                  };
+
+                  return (
+                    <div
+                      key={meal.id}
+                      onClick={() => onMealSelect(meal)}
+                      className={`text-foreground rounded-2xl border p-4 cursor-pointer hover:border-cyan-500/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 group ${
+                        isGrocery
+                          ? 'bg-card/80 border-green-500/30'
+                          : 'bg-card/80 border-border'
+                      }`}
+                    >
+                      {/* Grocery Badge */}
+                      {isGrocery && (
+                        <div className="mb-2 -mt-1">
+                          <span className="text-xs font-medium text-green-400 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
+                            Buy & Assemble
+                          </span>
                         </div>
                       )}
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm mb-1 group-hover:text-cyan-300 transition-colors">
-                          {meal.name}
-                        </p>
-                        <p className="text-slate-400 text-xs mb-2">
-                          {meal.restaurant}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          <Badge
-                            variant="outline"
-                            className="rounded-full bg-pink-500/10 text-pink-300 border-pink-500/30 px-2 py-0 h-5 text-[10px]"
-                          >
-                            <Flame className="size-3 mr-1" />
-                            {meal.calories} cal
-                          </Badge>
-                          <Badge
-                            variant="outline"
-                            className="rounded-full bg-cyan-500/10 text-cyan-300 border-cyan-500/30 px-2 py-0 h-5 text-[10px]"
-                          >
-                            <Zap className="size-3 mr-1" />
-                            {meal.protein}g pro
-                          </Badge>
+                      <div className="flex gap-3">
+                        {meal.image && meal.image !== '/placeholder-food.jpg' ? (
+                          <img
+                            src={meal.image}
+                            alt={meal.name}
+                            className="size-20 rounded-xl object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="size-20 rounded-xl bg-muted flex items-center justify-center text-muted-foreground text-xs">
+                            Food
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-1">
+                            <p className="font-semibold text-sm group-hover:text-cyan-300 transition-colors">
+                              {meal.name}
+                            </p>
+                            <span 
+                              className="text-xs text-muted-foreground whitespace-nowrap"
+                              title="Price varies by location"
+                            >
+                              {formatPrice()}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 mb-2">
+                            <p className="text-muted-foreground text-xs">
+                              {meal.restaurant}
+                            </p>
+                            {hasVariableAvailability && (
+                              <div 
+                                className="group/alert relative"
+                                title="Availability depends on store location"
+                              >
+                                <AlertCircle className="w-3.5 h-3.5 text-yellow-400" />
+                                {/* Tooltip for desktop */}
+                                <div className="hidden group-hover/alert:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-card text-xs text-card-foreground rounded whitespace-nowrap z-10 border border-border">
+                                  Availability depends on store location
+                                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-card"></div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge
+                              variant="outline"
+                              className="rounded-full bg-pink-500/10 text-pink-300 border-pink-500/30 px-2 py-0 h-5 text-[10px]"
+                            >
+                              <Flame className="size-3 mr-1" />
+                              {meal.calories} cal
+                            </Badge>
+                            <Badge
+                              variant="outline"
+                              className="rounded-full bg-cyan-500/10 text-cyan-300 border-cyan-500/30 px-2 py-0 h-5 text-[10px]"
+                            >
+                              <Zap className="size-3 mr-1" />
+                              {meal.protein}g pro
+                            </Badge>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -294,14 +356,14 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
       </div>
 
       {/* Quick prompts */}
-      <div className="px-4 py-2 bg-slate-950 border-t border-slate-800">
+      <div className="px-4 py-2 bg-background border-t border-border">
         <div className="flex flex-wrap gap-2">
           {quickPrompts.map((prompt) => (
             <Button
               key={prompt}
               variant="outline"
               size="sm"
-              className="rounded-full h-7 text-xs whitespace-nowrap bg-slate-800 border-slate-600 text-slate-100 hover:border-cyan-500 hover:text-cyan-300 hover:bg-slate-900 transition-all"
+              className="rounded-full h-7 text-xs whitespace-nowrap bg-muted border-border text-foreground hover:border-cyan-500 hover:text-cyan-300 hover:bg-card transition-all"
               onClick={() => handleSendMessage(prompt)}
             >
               {prompt}
@@ -311,14 +373,14 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
       </div>
 
       {/* Macro adjustments */}
-      <div className="px-4 py-2 bg-slate-950 border-t border-slate-800">
+      <div className="px-4 py-2 bg-background border-t border-border">
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           {macroAdjustments.map((adjustment, index) => (
             <Button
               key={index}
               variant="outline"
               size="sm"
-              className="rounded-full h-7 text-xs whitespace-nowrap bg-slate-800 border-slate-600 text-slate-100 hover:border-cyan-500 hover:text-cyan-300 hover:bg-slate-900 transition-all"
+              className="rounded-full h-7 text-xs whitespace-nowrap bg-muted border-border text-foreground hover:border-cyan-500 hover:text-cyan-300 hover:bg-card transition-all"
               onClick={() =>
                 handleSendMessage(
                   `Show me meals with ${adjustment.label.toLowerCase()}`
@@ -333,7 +395,7 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
       </div>
 
       {/* Input */}
-      <div className="p-4 bg-gradient-to-r from-cyan-900 via-slate-950 to-blue-900 border-t border-slate-800">
+      <div className="p-4 bg-gradient-to-r from-cyan-900/20 via-background to-blue-900/20 border-t border-border">
         <div className="flex gap-2 items-end">
           <div className="flex-1 relative">
             <Input
@@ -341,7 +403,7 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder="Ask AI to find meals, macros, or cravings..."
-              className="rounded-full pr-10 py-5 bg-slate-900/90 border-slate-600 text-white placeholder:text-slate-500 focus-visible:ring-cyan-500/40 focus-visible:border-cyan-500"
+              className="rounded-full pr-10 py-5 bg-muted/90 border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-cyan-500/40 focus-visible:border-cyan-500"
             />
             <Button
               variant="ghost"
@@ -350,7 +412,7 @@ export function AIChat({ userProfile, onMealSelect }: Props) {
               className={`absolute right-1 top-1/2 -translate-y-1/2 rounded-full h-8 w-8 ${
                 isListening
                   ? "bg-pink-500/20 text-pink-400"
-                  : "text-slate-300 hover:text-white"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <Mic className="size-4" />

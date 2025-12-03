@@ -7,7 +7,7 @@ type Props = {
   className?: string;
 };
 
-export function MacroMatchLogo({ size = 200, className = '' }: Props) {
+export function SeekEatzLogo({ size = 200, className = '' }: Props) {
   const center = size / 2;
   const plateRadius = size * 0.45;
   const innerPlateRadius = size * 0.42;

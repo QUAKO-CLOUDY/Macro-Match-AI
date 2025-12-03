@@ -72,8 +72,8 @@ const ImageWithFallback = ({ src, alt, className }: { src: string; alt: string; 
   const [error, setError] = useState(false);
   if (error) {
     return (
-      <div className={`flex items-center justify-center bg-slate-800 ${className}`}>
-        <ImageIcon className="w-8 h-8 text-slate-600" />
+      <div className={`flex items-center justify-center bg-muted ${className}`}>
+        <ImageIcon className="w-8 h-8 text-muted-foreground" />
       </div>
     );
   }
@@ -103,7 +103,7 @@ const MacroRing = ({ percentage }: { percentage: number }) => {
         </defs>
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-[9px] font-bold text-white">{Math.round(percentage)}%</span>
+        <span className="text-[9px] font-bold text-foreground">{Math.round(percentage)}%</span>
       </div>
     </div>
   );
@@ -113,7 +113,7 @@ const MacroRing = ({ percentage }: { percentage: number }) => {
 const LargeMealCard = ({ meal, onSelect }: { meal: Meal & { microDescription: string }; onSelect: () => void }) => (
   <div
     onClick={onSelect}
-    className="w-full bg-[#0f172a] rounded-[24px] overflow-hidden border border-slate-800/80 shadow-xl cursor-pointer group hover:border-cyan-500/30 transition-all"
+    className="w-full bg-card rounded-[24px] overflow-hidden border border-border/80 shadow-xl cursor-pointer group hover:border-cyan-500/30 transition-all"
   >
     <div className="relative h-64 overflow-hidden">
       <ImageWithFallback
@@ -121,7 +121,7 @@ const LargeMealCard = ({ meal, onSelect }: { meal: Meal & { microDescription: st
         alt={meal.name}
         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-80" />
+      <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-80" />
       <button
         onClick={(e) => { e.stopPropagation(); /* Swap Logic */ }}
         className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition-all"
@@ -133,15 +133,15 @@ const LargeMealCard = ({ meal, onSelect }: { meal: Meal & { microDescription: st
 
     <div className="p-4 pt-2">
       <div className="mb-2">
-        <h3 className="text-white text-lg font-bold leading-tight">{meal.name}</h3>
+        <h3 className="text-card-foreground text-lg font-bold leading-tight">{meal.name}</h3>
         <div className="flex flex-col mt-1">
-          <p className="text-slate-300 text-xs font-medium">{meal.restaurant}</p>
-          <p className="text-slate-500 text-[11px] mt-0.5">{meal.microDescription}</p>
+          <p className="text-card-foreground/80 text-xs font-medium">{meal.restaurant}</p>
+          <p className="text-muted-foreground text-[11px] mt-0.5">{meal.microDescription}</p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between border-t border-slate-800/50 pt-3 mt-2">
-        <span className="text-white font-bold text-sm">{meal.calories} Cal</span>
+      <div className="flex items-center justify-between border-t border-border/50 pt-3 mt-2">
+        <span className="text-card-foreground font-bold text-sm">{meal.calories} Cal</span>
         <div className="flex items-center gap-3 text-xs font-medium">
           <span className="text-blue-400 flex items-center gap-1">{meal.protein}g P</span>
           <span className="text-emerald-400 flex items-center gap-1">{meal.carbs || 35}g C</span>
@@ -156,16 +156,16 @@ const LargeMealCard = ({ meal, onSelect }: { meal: Meal & { microDescription: st
 const CompactMealRow = ({ meal, onSelect }: { meal: Meal & { microDescription: string }; onSelect: () => void }) => (
   <div
     onClick={onSelect}
-    className="flex items-center gap-3 p-2.5 rounded-2xl bg-[#0f172a] border border-slate-800 hover:border-slate-700 transition-all cursor-pointer"
+    className="flex items-center gap-3 p-2.5 rounded-2xl bg-card border border-border hover:border-border transition-all cursor-pointer"
   >
-    <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-slate-800">
+    <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-muted">
       <ImageWithFallback src={meal.image} alt={meal.name} className="w-full h-full object-cover" />
     </div>
     <div className="flex-1 min-w-0">
-      <h3 className="text-slate-200 text-sm font-medium truncate">{meal.name}</h3>
+      <h3 className="text-card-foreground text-sm font-medium truncate">{meal.name}</h3>
       <div className="flex flex-col">
-        <p className="text-slate-500 text-xs truncate">{meal.restaurant}</p>
-        <p className="text-slate-600 text-[10px] truncate">{meal.microDescription}</p>
+        <p className="text-muted-foreground text-xs truncate">{meal.restaurant}</p>
+        <p className="text-muted-foreground/70 text-[10px] truncate">{meal.microDescription}</p>
       </div>
     </div>
   </div>
@@ -220,27 +220,27 @@ export function HomeScreen({ userProfile, onMealSelect, onSearch }: Props) {
   }, [userProfile]);
 
   return (
-    <div className="flex-1 flex flex-col h-full w-full bg-[#020617] overflow-hidden font-sans">
+    <div className="flex-1 flex flex-col h-full w-full bg-background overflow-hidden font-sans">
       
       {/* --- TOP BAR --- */}
-      <div className="flex items-center justify-between px-4 py-4 bg-[#020617] z-10 shrink-0">
+      <div className="flex items-center justify-between px-4 py-4 bg-background z-10 shrink-0">
         <div className="text-xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-          MacroMatch
+          SeekEatz
         </div>
 
         <div className="flex items-center gap-3">
           {onSearch && (
             <button
               onClick={onSearch}
-              className="p-2 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-700 text-cyan-400 transition-colors"
+              className="p-2 rounded-full bg-muted/50 hover:bg-muted border border-border text-cyan-400 transition-colors"
               title="Search meals"
             >
               <Search className="w-5 h-5" />
             </button>
           )}
           <div className="text-right">
-            <div className="text-[10px] text-gray-400 uppercase tracking-wider">Calories Remaining</div>
-            <div className="text-sm font-semibold text-white">{caloriesRemaining.toLocaleString()}</div>
+            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Calories Remaining</div>
+            <div className="text-sm font-semibold text-foreground">{caloriesRemaining.toLocaleString()}</div>
           </div>
           <MacroRing percentage={progressPercentage} />
         </div>
@@ -251,12 +251,12 @@ export function HomeScreen({ userProfile, onMealSelect, onSearch }: Props) {
         
         {/* HEADER: GREETING & CONTROLS */}
         <div className="mb-5 mt-2 flex flex-col gap-3">
-          <h1 className="text-white text-xl font-semibold">
+          <h1 className="text-foreground text-xl font-semibold">
             {greeting}, <span className="text-cyan-400">{userName}</span>
           </h1>
 
           <div className="flex items-center justify-between">
-            <p className="text-slate-400 text-xs font-medium">Here are your recommended meals</p>
+            <p className="text-muted-foreground text-xs font-medium">Here are your recommended meals</p>
 
             <div className="flex items-center gap-2">
               {/* SORT BUTTON */}
@@ -267,13 +267,13 @@ export function HomeScreen({ userProfile, onMealSelect, onSearch }: Props) {
                     <span>Sort</span>
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-40 p-1 bg-slate-900 border-slate-700 shadow-xl" align="end">
+                <PopoverContent className="w-40 p-1 bg-popover border-border shadow-xl" align="end">
                   {SORT_OPTIONS.map((opt) => (
                     <button
                       key={opt}
                       onClick={() => setSelectedSort(opt)}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded-md flex items-center justify-between ${
-                        selectedSort === opt ? "bg-cyan-500/20 text-cyan-400" : "text-slate-300 hover:bg-white/5"
+                        selectedSort === opt ? "bg-cyan-500/20 text-cyan-400" : "text-popover-foreground hover:bg-accent"
                       }`}
                     >
                       {opt}
@@ -286,18 +286,18 @@ export function HomeScreen({ userProfile, onMealSelect, onSearch }: Props) {
               {/* MEAL TIME SELECTOR */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/50 border border-slate-700 text-xs text-slate-300 hover:bg-slate-800 transition-colors">
+                  <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-xs text-foreground hover:bg-muted transition-colors">
                     {selectedMealTime}
                     <ChevronDown className="w-3.5 h-3.5 text-cyan-400" />
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-32 p-1 bg-slate-900 border-slate-700 shadow-xl" align="end">
+                <PopoverContent className="w-32 p-1 bg-popover border-border shadow-xl" align="end">
                   {MEAL_TIMES.map((time) => (
                     <button
                       key={time}
                       onClick={() => setSelectedMealTime(time)}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded-md flex items-center justify-between ${
-                        selectedMealTime === time ? "bg-cyan-500/20 text-cyan-400" : "text-slate-300 hover:bg-white/5"
+                        selectedMealTime === time ? "bg-cyan-500/20 text-cyan-400" : "text-popover-foreground hover:bg-accent"
                       }`}
                     >
                       {time}
@@ -322,7 +322,7 @@ export function HomeScreen({ userProfile, onMealSelect, onSearch }: Props) {
                   flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium transition-all backdrop-blur-sm border
                   ${isActive 
                     ? "bg-cyan-600 border-cyan-400 text-white shadow-[0_0_15px_rgba(34,211,238,0.3)]" 
-                    : "bg-slate-800/60 border-slate-700/50 text-slate-300 hover:bg-slate-800 hover:text-white"
+                    : "bg-muted/60 border-border/50 text-foreground hover:bg-muted hover:text-foreground"
                   }
                 `}
               >
@@ -333,7 +333,7 @@ export function HomeScreen({ userProfile, onMealSelect, onSearch }: Props) {
         </div>
 
         {/* SECTION: MEALS PICKED FOR YOU */}
-        <h2 className="text-white text-sm font-semibold mb-4 pl-1 tracking-wide">
+        <h2 className="text-foreground text-sm font-semibold mb-4 pl-1 tracking-wide">
           Meals Picked for You
         </h2>
 
@@ -345,7 +345,7 @@ export function HomeScreen({ userProfile, onMealSelect, onSearch }: Props) {
 
         {/* SECTION: MORE OPTIONS */}
         <div className="mb-5 flex items-center gap-4">
-          <div className="h-[1px] bg-gradient-to-r from-slate-800 to-transparent w-full"></div>
+          <div className="h-[1px] bg-gradient-to-r from-border to-transparent w-full"></div>
         </div>
 
         <div className="space-y-3 pb-4">
@@ -355,7 +355,7 @@ export function HomeScreen({ userProfile, onMealSelect, onSearch }: Props) {
         </div>
 
         {/* LOAD MORE ACTION */}
-        <button className="w-full py-3.5 mt-2 mb-8 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-xs font-medium hover:bg-slate-800 hover:text-white transition-all active:scale-[0.98]">
+        <button className="w-full py-3.5 mt-2 mb-8 rounded-xl bg-card border border-border text-muted-foreground text-xs font-medium hover:bg-muted hover:text-foreground transition-all active:scale-[0.98]">
           Load More Meals
         </button>
 

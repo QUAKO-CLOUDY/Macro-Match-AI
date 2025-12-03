@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       apiKey: process.env.OPENROUTER_API_KEY, 
       defaultHeaders: {
         "HTTP-Referer": "http://localhost:3000", // Optional: required by OpenRouter for rankings
-        "X-Title": "MacroMatch AI",
+        "X-Title": "SeekEatz AI",
       }
     });
     

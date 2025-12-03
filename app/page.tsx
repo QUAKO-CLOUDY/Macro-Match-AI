@@ -1,57 +1,72 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { MainApp } from './components/MainApp';
-import { SimplifiedOnboarding } from './components/SimplifiedOnboarding';
-import type { UserProfile } from './types';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';
+import { hasCompletedOnboarding, isWithin30Minutes, updateLastLogin } from '@/lib/auth-utils';
 
-export default function Home() {
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState<boolean | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+export default function RootPage() {
+  const router = useRouter();
 
   useEffect(() => {
-    // Check if user has completed onboarding
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('hasCompletedOnboarding');
-      const profile = localStorage.getItem('userProfile');
-      
-      if (saved === 'true' && profile) {
-        try {
-          setUserProfile(JSON.parse(profile));
-          setHasCompletedOnboarding(true);
-        } catch (e) {
-          console.error('Failed to parse userProfile:', e);
-          setHasCompletedOnboarding(false);
+    const checkAuthAndRedirect = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        // Not authenticated - check if they've completed onboarding questions
+        const questionsComplete = typeof window !== 'undefined' 
+          ? localStorage.getItem("macroMatch_onboardingQuestionsComplete") === "true"
+          : false;
+        
+        const onboardingComplete = typeof window !== 'undefined' 
+          ? localStorage.getItem("hasCompletedOnboarding") === "true" ||
+            localStorage.getItem("macroMatch_completedOnboarding") === "true"
+          : false;
+        
+        if (onboardingComplete) {
+          // Has completed onboarding but not authenticated - redirect to signin
+          router.push('/auth/signin');
+        } else if (questionsComplete) {
+          // Has completed onboarding questions but not created account - redirect to signup
+          router.push('/auth/signup');
+        } else {
+          // New user - redirect to onboarding
+          router.push('/onboarding');
         }
-      } else {
-        setHasCompletedOnboarding(false);
+        return;
       }
-    }
-  }, []);
 
-  const handleOnboardingComplete = (profile: UserProfile) => {
-    setUserProfile(profile);
-    setHasCompletedOnboarding(true);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('hasCompletedOnboarding', 'true');
-      localStorage.setItem('userProfile', JSON.stringify(profile));
-    }
-  };
+      // User is authenticated
+      const completed = await hasCompletedOnboarding(user.id);
+      
+      if (!completed) {
+        // Authenticated but hasn't completed onboarding - redirect to onboarding
+        // Don't redirect if they're already on onboarding or auth pages
+        router.push('/onboarding');
+        return;
+      }
 
-  // Show loading state while checking onboarding
-  if (hasCompletedOnboarding === null) {
-    return (
-      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
-        <div className="text-cyan-400 text-lg">Loading...</div>
-      </div>
-    );
-  }
+      // User is authenticated and has completed onboarding
+      // Check if within 30 minutes (auto-login)
+      const within30Minutes = await isWithin30Minutes(user.id);
+      if (within30Minutes) {
+        // Within 30 minutes - update lastLogin and go to home
+        await updateLastLogin(user.id);
+        router.push('/chat');
+      } else {
+        // More than 30 minutes - require re-authentication
+        router.push('/auth/signin');
+      }
+    };
 
-  // Show onboarding if not completed
-  if (!hasCompletedOnboarding) {
-    return <SimplifiedOnboarding onComplete={handleOnboardingComplete} />;
-  }
+    checkAuthAndRedirect();
+  }, [router]);
 
-  // Show main app
-  return <MainApp />;
+  // Show loading state while checking
+  return (
+    <div className="min-h-screen bg-[#020617] flex items-center justify-center">
+      <div className="text-cyan-400 text-lg">Loading...</div>
+    </div>
+  );
 }

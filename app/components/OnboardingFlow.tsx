@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ChevronRight,
   Check,
@@ -18,6 +19,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import type { UserProfile } from "../types";
+import { createClient } from "@/utils/supabase/client";
 
 type Props = {
   onComplete: (profile: UserProfile) => void;
@@ -115,6 +117,7 @@ const activityOptions = [
 ];
 
 export function OnboardingFlow({ onComplete }: Props) {
+  const router = useRouter();
   const [step, setStep] = useState(1);
 
   // State
@@ -138,6 +141,7 @@ export function OnboardingFlow({ onComplete }: Props) {
   const [heightInches, setHeightInches] = useState("");
   const [weight, setWeight] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   // Macros card expand/collapse
   const [macrosOpen, setMacrosOpen] = useState(false);
@@ -180,7 +184,6 @@ export function OnboardingFlow({ onComplete }: Props) {
 
   const handleFinish = async () => {
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     let primaryGoal: "lose-fat" | "maintain" | "build-muscle" = "maintain";
     if (selectedGoals.includes("lose-weight")) primaryGoal = "lose-fat";
@@ -215,14 +218,78 @@ export function OnboardingFlow({ onComplete }: Props) {
       // you can add height/age/sex into UserProfile later if you want
     };
 
-    onComplete(profile);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        // Try to update profiles table first
+        const now = Date.now();
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .upsert({
+            id: user.id,
+            has_completed_onboarding: true,
+            last_login: new Date(now).toISOString(),
+            user_profile: profile,
+            updated_at: new Date().toISOString(),
+          }, {
+            onConflict: "id",
+          });
+
+        // If profiles table doesn't exist or fails, use localStorage as fallback
+        if (profileError) {
+          console.warn("Could not update profiles table, using localStorage:", profileError);
+          localStorage.setItem(`macroMatch_hasCompletedOnboarding_${user.id}`, "true");
+        }
+
+        // Also save profile to localStorage for backward compatibility
+        localStorage.setItem("userProfile", JSON.stringify(profile));
+        localStorage.setItem("hasCompletedOnboarding", "true");
+        localStorage.setItem(`macroMatch_lastLogin_${user.id}`, now.toString());
+        localStorage.setItem("macroMatch_lastLogin", now.toString());
+      } else {
+        // No user authenticated - use localStorage only
+        const now = Date.now();
+        localStorage.setItem("userProfile", JSON.stringify(profile));
+        localStorage.setItem("hasCompletedOnboarding", "true");
+        localStorage.setItem("macroMatch_lastLogin", now.toString());
+      }
+
+      // Call the onComplete callback
+      onComplete(profile);
+
+      // Reset loading state
+      setIsSubmitting(false);
+
+      // Redirect to home - use replace to avoid back button issues
+      // Add small delay to ensure localStorage is fully written
+      setTimeout(() => {
+        window.location.href = "/chat";
+      }, 100);
+    } catch (error) {
+      console.error("Error completing onboarding:", error);
+      // Still save to localStorage as fallback
+      const now = Date.now();
+      localStorage.setItem("userProfile", JSON.stringify(profile));
+      localStorage.setItem("hasCompletedOnboarding", "true");
+      localStorage.setItem("macroMatch_lastLogin", now.toString());
+      onComplete(profile);
+      setIsSubmitting(false);
+      // Use window.location for reliable redirect
+      setTimeout(() => {
+        window.location.href = "/chat";
+      }, 100);
+    }
   };
+
+  // Account creation now happens at /auth/signup - removed handleAccountCreation function
 
   // Validation
   const canProceedStep1 = selectedGoals.length > 0;
   const canProceedStepStats = age && weight && heightFeet;
 
-  // Shared Progress Bar Component (6 steps)
+  // Shared Progress Bar Component (7 steps)
   const ProgressBar = ({
     currentStep,
     colorClass,
@@ -231,7 +298,7 @@ export function OnboardingFlow({ onComplete }: Props) {
     colorClass: string;
   }) => (
     <div className="flex gap-2 justify-center mb-6 mt-auto">
-      {[1, 2, 3, 4, 5, 6].map((i) => (
+      {[1, 2, 3, 4, 5, 6, 7].map((i) => (
         <div
           key={i}
           className={`h-1.5 rounded-full transition-all duration-300 ${
@@ -898,7 +965,9 @@ export function OnboardingFlow({ onComplete }: Props) {
             <div className="h-2 w-16 bg-gray-700 rounded-full" />
             <div className="h-2 w-16 bg-gray-700 rounded-full" />
             <div className="h-2 w-16 bg-gray-700 rounded-full" />
+            <div className="h-2 w-16 bg-gray-700 rounded-full" />
             <div className="h-2 w-16 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full" />
+            <div className="h-2 w-16 bg-gray-800 rounded-full" />
           </div>
 
           {/* Buttons */}
@@ -911,18 +980,69 @@ export function OnboardingFlow({ onComplete }: Props) {
               Back
             </Button>
             <Button
-              onClick={handleFinish}
-              disabled={!canProceedStepStats || isSubmitting}
+              onClick={async () => {
+                // Check if user is authenticated before proceeding
+                const supabase = createClient();
+                const { data: { user } } = await supabase.auth.getUser();
+                
+                if (user) {
+                  // User is authenticated - complete onboarding and go to app
+                  await handleFinish();
+                } else {
+                  // User is not authenticated - save onboarding data and redirect to signup page
+                  // Build profile using same logic as handleFinish
+                  let primaryGoal: "lose-fat" | "maintain" | "build-muscle" = "maintain";
+                  if (selectedGoals.includes("lose-weight")) primaryGoal = "lose-fat";
+                  else if (selectedGoals.includes("build-muscle")) primaryGoal = "build-muscle";
+
+                  const weightNum = parseInt(weight) || 150;
+                  const weightInKg = weightNum * 0.453592;
+
+                  let calories = Math.round(weightNum * 14);
+                  if (primaryGoal === "lose-fat") calories = Math.round(weightNum * 12);
+                  if (primaryGoal === "build-muscle") calories = Math.round(weightNum * 16);
+
+                  const protein = Math.round(weightInKg * 2.2);
+                  const carbs = Math.round((calories * 0.4) / 4);
+                  const fats = Math.round((calories * 0.3) / 9);
+
+                  const profile: UserProfile = {
+                    goal: primaryGoal,
+                    dietaryType: selectedPreferences.includes("keto") ? "Keto" : "Balanced",
+                    allergens,
+                    calorieTarget: calories,
+                    proteinTarget: protein,
+                    carbsTarget: carbs,
+                    fatsTarget: fats,
+                    nutritionGoals: selectedGoals,
+                    dietaryPreferences: selectedPreferences,
+                    activityLevel,
+                    preferredCuisines: [],
+                    preferredMealTypes: [],
+                    eatingStyles: [],
+                    trainingStyle: "hybrid",
+                  };
+
+                  // Save profile temporarily so signup page can use it
+                  localStorage.setItem("pendingOnboardingProfile", JSON.stringify(profile));
+                  // Mark that onboarding questions are completed (even if account isn't created yet)
+                  localStorage.setItem("macroMatch_onboardingQuestionsComplete", "true");
+                  router.push("/auth/signup");
+                }
+              }}
+              disabled={!canProceedStepStats}
               className="h-14 rounded-full bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 shadow-lg shadow-pink-500/30 flex-[2] text-lg font-semibold text-white disabled:opacity-50"
             >
-              {isSubmitting ? "Creating..." : "Complete Setup"}
-              {!isSubmitting && <ChevronRight className="ml-2 w-5 h-5" />}
+              Continue
+              <ChevronRight className="ml-2 w-5 h-5" />
             </Button>
           </div>
         </div>
       </div>
     );
   }
+
+  // Step 7 removed - account creation now happens at /auth/signup
 
   return null;
 }

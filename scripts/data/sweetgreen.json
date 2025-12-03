@@ -1,0 +1,222 @@
+[
+    {
+      "item_name": "Harvest Bowl",
+      "description": "Roasted chicken, roasted sweet potatoes, apples, goat cheese, roasted almonds, warm wild rice, shredded kale, balsamic vinaigrette.",
+      "category": "Entree",
+      "price": 14.75,
+      "calories": 685,
+      "protein_g": 33,
+      "carbs_g": 66,
+      "fats_g": 34,
+      "dietary_tags": ["Balanced", "Gluten-Free"]
+    },
+    {
+      "item_name": "Guacamole Greens",
+      "description": "Roasted chicken, avocado, tomatoes, red onion, shredded cabbage, tortilla chips, spring mix, chopped romaine, lime cilantro jalapeño vinaigrette.",
+      "category": "Entree",
+      "price": 13.95,
+      "calories": 525,
+      "protein_g": 25,
+      "carbs_g": 29,
+      "fats_g": 38,
+      "dietary_tags": ["Gluten-Free"]
+    },
+    {
+      "item_name": "Chicken Pesto Parm",
+      "description": "Roasted chicken, spicy broccoli, tomatoes, shaved parmesan, zagatar breadcrumbs, warm quinoa, baby spinach, sweetgreen hot sauce, pesto vinaigrette.",
+      "category": "Entree",
+      "price": 14.50,
+      "calories": 530,
+      "protein_g": 34,
+      "carbs_g": 30,
+      "fats_g": 33,
+      "dietary_tags": ["High-Protein"]
+    },
+    {
+      "item_name": "Crispy Rice Bowl",
+      "description": "Blackened chicken, raw carrots, shredded cabbage, cucumbers, cilantro, roasted almonds, crispy rice, wild rice, arugula, lime cilantro jalapeño vinaigrette.",
+      "category": "Entree",
+      "price": 14.95,
+      "calories": 625,
+      "protein_g": 31,
+      "carbs_g": 54,
+      "fats_g": 34,
+      "dietary_tags": ["Gluten-Free"]
+    },
+    {
+      "item_name": "Kale Caesar",
+      "description": "Roasted chicken, tomatoes, parmesan crisps, shaved parmesan, shredded kale, chopped romaine, lime caesar dressing.",
+      "category": "Entree",
+      "price": 13.50,
+      "calories": 630,
+      "protein_g": 39,
+      "carbs_g": 18,
+      "fats_g": 45,
+      "dietary_tags": ["High-Protein", "Keto-Friendly"]
+    },
+    {
+      "item_name": "Hot Honey Chicken",
+      "description": "Blackened chicken, hot roasted sweet potatoes, warm quinoa, kale, cabbage, raw carrots, roasted almonds, hot honey mustard sauce.",
+      "category": "Entree",
+      "price": 14.95,
+      "calories": 660,
+      "protein_g": 34,
+      "carbs_g": 62,
+      "fats_g": 30,
+      "dietary_tags": ["Gluten-Free", "Spicy"]
+    },
+    {
+      "item_name": "Shroomami",
+      "description": "Roasted sesame tofu, warm portobello mix, raw beets, cucumbers, basil, sunflower seeds, warm wild rice, shredded kale, miso sesame ginger dressing.",
+      "category": "Entree",
+      "price": 13.25,
+      "calories": 640,
+      "protein_g": 24,
+      "carbs_g": 62,
+      "fats_g": 36,
+      "dietary_tags": ["Vegetarian", "Vegan"]
+    },
+    {
+      "item_name": "Hummus Crunch",
+      "description": "Hummus, chickpeas, tomatoes, cucumbers, shredded cabbage, basil, za'atar breadcrumbs, shredded kale, chopped romaine, pesto vinaigrette.",
+      "category": "Entree",
+      "price": 13.50,
+      "calories": 550,
+      "protein_g": 16,
+      "carbs_g": 42,
+      "fats_g": 38,
+      "dietary_tags": ["Vegetarian"]
+    },
+    {
+      "item_name": "Custom High-Protein Build (Double Chicken, No Rice)",
+      "description": "Double roasted chicken, hard boiled egg, avocado, spinach, kale, tomatoes, cucumber, balsamic vinaigrette.",
+      "category": "Entree",
+      "price": 18.50,
+      "calories": 680,
+      "protein_g": 68,
+      "carbs_g": 22,
+      "fats_g": 38,
+      "dietary_tags": ["High-Protein", "Low-Carb", "Keto"]
+    },
+    {
+      "item_name": "Super Green Goddess",
+      "description": "Black lentils, chickpeas, roasted sweet potatoes, raw carrots, spicy broccoli, shredded cabbage, raw beets, roasted almonds, baby spinach, shredded kale, green goddess ranch.",
+      "category": "Entree",
+      "price": 13.75,
+      "calories": 610,
+      "protein_g": 24,
+      "carbs_g": 68,
+      "fats_g": 32,
+      "dietary_tags": ["Vegetarian"]
+    },
+    {
+      "item_name": "Garden Cobb",
+      "description": "Roasted chicken, hard boiled egg, avocado, tomatoes, blue cheese, mesclun, romaine, balsamic vinaigrette.",
+      "category": "Entree",
+      "price": 14.95,
+      "calories": 685,
+      "protein_g": 44,
+      "carbs_g": 14,
+      "fats_g": 52,
+      "dietary_tags": ["Keto", "High-Protein", "Gluten-Free"]
+    },
+    {
+      "item_name": "Fish Taco",
+      "description": "Roasted steelhead, avocado, shredded cabbage, cilantro, tortilla chips, warm quinoa, arugula, sweetgreen hot sauce, lime cilantro jalapeño vinaigrette.",
+      "category": "Entree",
+      "price": 16.50,
+      "calories": 690,
+      "protein_g": 36,
+      "carbs_g": 48,
+      "fats_g": 41,
+      "dietary_tags": ["Gluten-Free"]
+    },
+    {
+      "item_name": "Elote Bowl",
+      "description": "Roasted corn + peppers, goat cheese, spicy sunflower seeds, cilantro, tomatoes, cabbage, warm quinoa, arugula, lime cilantro jalapeño vinaigrette.",
+      "category": "Entree",
+      "price": 13.25,
+      "calories": 605,
+      "protein_g": 18,
+      "carbs_g": 52,
+      "fats_g": 38,
+      "dietary_tags": ["Vegetarian"]
+    },
+    {
+      "item_name": "Buffalo Chicken Bowl",
+      "description": "Roasted chicken, za'atar breadcrumbs, pickled celery, blue cheese, warm quinoa, kale, romaine, sweetgreen hot sauce, caesar dressing.",
+      "category": "Entree",
+      "price": 14.25,
+      "calories": 595,
+      "protein_g": 36,
+      "carbs_g": 38,
+      "fats_g": 34,
+      "dietary_tags": ["High-Protein", "Spicy"]
+    },
+    {
+      "item_name": "Miso Glazed Salmon",
+      "description": "Roasted salmon, spicy broccoli, avocado, cucumber, warm wild rice, cilantro, miso sesame ginger dressing.",
+      "category": "Entree",
+      "price": 17.50,
+      "calories": 760,
+      "protein_g": 39,
+      "carbs_g": 55,
+      "fats_g": 44,
+      "dietary_tags": ["High-Protein", "Gluten-Free"]
+    },
+    {
+      "item_name": "Side of Roasted Chicken",
+      "description": "4oz serving of herb roasted chicken breast.",
+      "category": "Side",
+      "price": 4.95,
+      "calories": 160,
+      "protein_g": 25,
+      "carbs_g": 0,
+      "fats_g": 5,
+      "dietary_tags": ["High-Protein", "Keto", "Paleo"]
+    },
+    {
+      "item_name": "Side of Steelhead/Salmon",
+      "description": "4oz serving of roasted sustainable fish.",
+      "category": "Side",
+      "price": 6.95,
+      "calories": 250,
+      "protein_g": 24,
+      "carbs_g": 0,
+      "fats_g": 16,
+      "dietary_tags": ["High-Protein", "Keto", "Paleo"]
+    },
+    {
+      "item_name": "Create Your Own (Tofu & Veggies)",
+      "description": "Roasted tofu, spinach, kale, broccoli, carrots, beets, chickpeas, spicy cashew dressing.",
+      "category": "Entree",
+      "price": 12.50,
+      "calories": 510,
+      "protein_g": 22,
+      "carbs_g": 48,
+      "fats_g": 29,
+      "dietary_tags": ["Vegan"]
+    },
+    {
+      "item_name": "Chicken & Avocado (Low Carb)",
+      "description": "Roasted chicken, avocado, walnuts, spinach, kale, olive oil, lemon squeeze.",
+      "category": "Entree",
+      "price": 14.50,
+      "calories": 610,
+      "protein_g": 32,
+      "carbs_g": 12,
+      "fats_g": 50,
+      "dietary_tags": ["Keto", "Paleo"]
+    },
+    {
+      "item_name": "Side of Roasted Sweet Potatoes",
+      "description": "Side portion of roasted sweet potatoes.",
+      "category": "Side",
+      "price": 3.50,
+      "calories": 140,
+      "protein_g": 2,
+      "carbs_g": 32,
+      "fats_g": 0,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    }
+  ]

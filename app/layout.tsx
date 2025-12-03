@@ -6,7 +6,7 @@ import { ThemeProvider } from "./contexts/ThemeContext"; // <--- Import this
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MacroMatch",
+  title: "SeekEatz",
   description: "AI-Powered Meal Recommendations",
 };
 

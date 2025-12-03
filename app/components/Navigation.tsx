@@ -13,7 +13,7 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
   const isAIChatActive = currentScreen === "chat";
 
   return (
-    <div className="flex items-end justify-around px-2 pb-3 pt-1 relative bg-gray-900 border-t border-gray-800">
+    <div className="flex items-end justify-around px-2 pb-3 pt-1 relative bg-card border-t border-border">
       {/* Home */}
       <button
         onClick={() => onNavigate("home")}
@@ -21,18 +21,18 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
       >
         <div
           className={`p-2 rounded-xl ${
-            currentScreen === "home" ? "bg-gray-800" : ""
+            currentScreen === "home" ? "bg-muted" : ""
           }`}
         >
           <Home
             className={`w-5 h-5 ${
-              currentScreen === "home" ? "text-cyan-400" : "text-gray-500"
+              currentScreen === "home" ? "text-cyan-400" : "text-muted-foreground"
             }`}
           />
         </div>
         <span
           className={`text-[11px] ${
-            currentScreen === "home" ? "text-cyan-400" : "text-gray-600"
+            currentScreen === "home" ? "text-cyan-400" : "text-muted-foreground"
           }`}
         >
           Home
@@ -46,18 +46,18 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
       >
         <div
           className={`p-2 rounded-xl ${
-            currentScreen === "log" ? "bg-gray-800" : ""
+            currentScreen === "log" ? "bg-muted" : ""
           }`}
         >
           <Activity
             className={`w-5 h-5 ${
-              currentScreen === "log" ? "text-green-400" : "text-gray-500"
+              currentScreen === "log" ? "text-green-400" : "text-muted-foreground"
             }`}
           />
         </div>
         <span
           className={`text-[11px] ${
-            currentScreen === "log" ? "text-green-400" : "text-gray-600"
+            currentScreen === "log" ? "text-green-400" : "text-muted-foreground"
           }`}
         >
           Log
@@ -110,7 +110,7 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
         </button>
         <span
           className={`text-[11px] font-medium ${
-            isAIChatActive ? "text-cyan-400" : "text-gray-500"
+            isAIChatActive ? "text-cyan-400" : "text-muted-foreground"
           }`}
         >
           AI Chat
@@ -124,20 +124,20 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
       >
         <div
           className={`p-2 rounded-xl ${
-            currentScreen === "favorites" ? "bg-gray-800" : ""
+            currentScreen === "favorites" ? "bg-muted" : ""
           }`}
         >
           <Heart
             className={`w-5 h-5 ${
               currentScreen === "favorites"
                 ? "text-pink-400"
-                : "text-gray-500"
+                : "text-muted-foreground"
             }`}
           />
         </div>
         <span
           className={`text-[11px] ${
-            currentScreen === "favorites" ? "text-pink-400" : "text-gray-600"
+            currentScreen === "favorites" ? "text-pink-400" : "text-muted-foreground"
           }`}
         >
           Favorites
@@ -151,20 +151,20 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
       >
         <div
           className={`p-2 rounded-xl ${
-            currentScreen === "settings" ? "bg-gray-800" : ""
+            currentScreen === "settings" ? "bg-muted" : ""
           }`}
         >
           <SettingsIcon
             className={`w-5 h-5 ${
               currentScreen === "settings"
-                ? "text-gray-300"
-                : "text-gray-500"
+                ? "text-foreground"
+                : "text-muted-foreground"
             }`}
           />
         </div>
         <span
           className={`text-[11px] ${
-            currentScreen === "settings" ? "text-gray-300" : "text-gray-600"
+            currentScreen === "settings" ? "text-foreground" : "text-muted-foreground"
           }`}
         >
           Settings

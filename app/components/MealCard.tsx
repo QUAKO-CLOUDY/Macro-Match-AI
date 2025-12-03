@@ -1,6 +1,6 @@
 "use client";
 
-import { Star, Heart, Flame, Zap, TrendingUp } from "lucide-react";
+import { Star, Heart, Flame, Zap, TrendingUp, AlertCircle } from "lucide-react";
 import type { Meal } from "../types"; // Use shared types
 
 type Props = {
@@ -11,10 +11,32 @@ type Props = {
 };
 
 export function MealCard({ meal, isFavorite, onClick }: Props) {
+  // Check for variable availability
+  const hasVariableAvailability = meal.dietary_tags?.some(
+    (tag: string) => tag === 'Location Varies' || tag === 'Seasonal'
+  ) || false;
+
+  // Check if it's a grocery/hot bar item
+  const isGrocery = meal.category === 'grocery' || 
+                  meal.category === 'Grocery' || 
+                  meal.category === 'Hot Bar';
+
+  // Format price with safety checks
+  const formatPrice = () => {
+    if (!meal.price || meal.price === 0) {
+      return 'Market Price';
+    }
+    return `~$${meal.price.toFixed(2)}`;
+  };
+
   return (
     <div
       onClick={onClick}
-      className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all cursor-pointer overflow-hidden border border-gray-700/50 hover:border-cyan-500/50 hover:scale-[1.02] group relative"
+      className={`bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all cursor-pointer overflow-hidden hover:border-cyan-500/50 hover:scale-[1.02] group relative ${
+        isGrocery
+          ? 'border-2 border-green-500/30'
+          : 'border border-gray-700/50'
+      }`}
     >
       <div className="relative h-40">
         <img
@@ -41,6 +63,16 @@ export function MealCard({ meal, isFavorite, onClick }: Props) {
           />
         </div>
 
+        {/* Grocery Badge */}
+        {isGrocery && (
+          <div className="absolute top-3 left-3 z-10">
+            <div className="bg-green-500/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
+              <span className="text-white text-[10px] font-medium">Buy & Assemble</span>
+            </div>
+          </div>
+        )}
+
         {(meal.rating || meal.price) && (
           <div className="absolute bottom-3 left-3 flex items-center gap-2 z-10">
             {meal.rating && (
@@ -49,9 +81,12 @@ export function MealCard({ meal, isFavorite, onClick }: Props) {
                 <span className="text-white text-xs font-bold">{meal.rating}</span>
               </div>
             )}
-            {meal.price && (
-              <div className="bg-gray-900/80 backdrop-blur-sm rounded-full px-3 py-1 border border-gray-700">
-                <span className="text-white text-xs">${meal.price}</span>
+            {(meal.price || meal.price === 0) && (
+              <div 
+                className="bg-gray-900/80 backdrop-blur-sm rounded-full px-3 py-1 border border-gray-700"
+                title="Price varies by location"
+              >
+                <span className="text-white text-xs">{formatPrice()}</span>
               </div>
             )}
           </div>
@@ -62,7 +97,22 @@ export function MealCard({ meal, isFavorite, onClick }: Props) {
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
             <h3 className="text-white mb-1 font-semibold truncate pr-2">{meal.name}</h3>
-            <p className="text-gray-400 text-sm truncate">{meal.restaurant}</p>
+            <div className="flex items-center gap-1.5">
+              <p className="text-gray-400 text-sm truncate">{meal.restaurant}</p>
+              {hasVariableAvailability && (
+                <div 
+                  className="group/alert relative flex-shrink-0"
+                  title="Availability depends on store location"
+                >
+                  <AlertCircle className="w-3.5 h-3.5 text-yellow-400" />
+                  {/* Tooltip for desktop */}
+                  <div className="hidden group-hover/alert:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-xs text-slate-200 rounded whitespace-nowrap z-10 border border-slate-700">
+                    Availability depends on store location
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-800"></div>
+                  </div>
+                </div>
+              )}
+            </div>
             {meal.distance && (
               <p className="text-gray-500 mt-1 text-xs">{meal.distance} miles away</p>
             )}

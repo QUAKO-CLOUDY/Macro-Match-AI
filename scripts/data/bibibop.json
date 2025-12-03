@@ -1,0 +1,222 @@
+[
+    {
+      "item_name": "Chicken Bibimbap Bowl",
+      "description": "Purple rice, chicken, bean sprouts, carrots, kale, egg, cucumber, yum yum sauce.",
+      "category": "Entree",
+      "price": 11.50,
+      "calories": 640,
+      "protein_g": 36,
+      "carbs_g": 78,
+      "fats_g": 22,
+      "dietary_tags": ["Gluten-Free", "Balanced"]
+    },
+    {
+      "item_name": "Steak Bibimbap Bowl",
+      "description": "White rice, steak, sautéed kale, corn, cheese, sesame ginger sauce.",
+      "category": "Entree",
+      "price": 12.95,
+      "calories": 680,
+      "protein_g": 32,
+      "carbs_g": 72,
+      "fats_g": 28,
+      "dietary_tags": ["Gluten-Free"]
+    },
+    {
+      "item_name": "Japchae Noodle Bowl (Vegetarian)",
+      "description": "Sweet potato glass noodles, organic tofu, bean sprouts, potatoes, carrots, teriyaki sauce.",
+      "category": "Entree",
+      "price": 11.00,
+      "calories": 540,
+      "protein_g": 18,
+      "carbs_g": 88,
+      "fats_g": 14,
+      "dietary_tags": ["Vegetarian", "Gluten-Free", "Vegan"]
+    },
+    {
+      "item_name": "Spicy Chicken Bowl",
+      "description": "Spicy chicken, purple rice, kimchi, corn, jalapeños, spicy sriracha sauce.",
+      "category": "Entree",
+      "price": 11.50,
+      "calories": 660,
+      "protein_g": 36,
+      "carbs_g": 76,
+      "fats_g": 24,
+      "dietary_tags": ["Spicy", "Gluten-Free"]
+    },
+    {
+      "item_name": "Low Carb Bowl (Salad Base)",
+      "description": "Supergreen salad base (no rice), steak, egg, avocado, cucumber, sesame oil.",
+      "category": "Entree",
+      "price": 13.95,
+      "calories": 480,
+      "protein_g": 34,
+      "carbs_g": 14,
+      "fats_g": 32,
+      "dietary_tags": ["Keto", "Low-Carb", "Gluten-Free", "High-Protein"]
+    },
+    {
+      "item_name": "Double Protein Chicken Bowl",
+      "description": "Double portion of chicken, purple rice, mixed veggies, yum yum sauce.",
+      "category": "Entree",
+      "price": 14.50,
+      "calories": 780,
+      "protein_g": 64,
+      "carbs_g": 78,
+      "fats_g": 26,
+      "dietary_tags": ["High-Protein", "Gluten-Free"]
+    },
+    {
+      "item_name": "Tofu Veggie Bowl",
+      "description": "Brown rice, tofu, black beans, potatoes, kale, carrots, teriyaki sauce.",
+      "category": "Entree",
+      "price": 10.50,
+      "calories": 580,
+      "protein_g": 22,
+      "carbs_g": 84,
+      "fats_g": 18,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Kimchi Side",
+      "description": "Spicy pickled cabbage.",
+      "category": "Side",
+      "price": 2.50,
+      "calories": 40,
+      "protein_g": 2,
+      "carbs_g": 8,
+      "fats_g": 0,
+      "dietary_tags": ["Vegan", "Gluten-Free", "Spicy"]
+    },
+    {
+      "item_name": "Miso Soup",
+      "description": "Warm miso broth.",
+      "category": "Side",
+      "price": 2.95,
+      "calories": 45,
+      "protein_g": 2,
+      "carbs_g": 6,
+      "fats_g": 1,
+      "dietary_tags": ["Vegan", "Gluten-Free", "Low-Calorie"]
+    },
+    {
+      "item_name": "Pineapple Cup",
+      "description": "Cup of fresh pineapple chunks.",
+      "category": "Side",
+      "price": 3.50,
+      "calories": 80,
+      "protein_g": 1,
+      "carbs_g": 20,
+      "fats_g": 0,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Build Your Own (Half Rice, Half Noodle)",
+      "description": "Half purple rice, half japchae noodles, chicken, veggies.",
+      "category": "Entree",
+      "price": 11.50,
+      "calories": 620,
+      "protein_g": 34,
+      "carbs_g": 85,
+      "fats_g": 18,
+      "dietary_tags": ["Gluten-Free"]
+    },
+    {
+      "item_name": "Kids Bowl (Chicken & Rice)",
+      "description": "Smaller portion of white rice, chicken, corn, and cheese.",
+      "category": "Entree",
+      "price": 6.95,
+      "calories": 410,
+      "protein_g": 24,
+      "carbs_g": 45,
+      "fats_g": 14,
+      "dietary_tags": ["Kid-Friendly", "Gluten-Free"]
+    },
+    {
+      "item_name": "Side of Chicken",
+      "description": "Side portion of grilled chicken.",
+      "category": "Side",
+      "price": 4.50,
+      "calories": 150,
+      "protein_g": 26,
+      "carbs_g": 0,
+      "fats_g": 5,
+      "dietary_tags": ["High-Protein", "Keto"]
+    },
+    {
+      "item_name": "Side of Steak",
+      "description": "Side portion of steak.",
+      "category": "Side",
+      "price": 5.95,
+      "calories": 180,
+      "protein_g": 22,
+      "carbs_g": 0,
+      "fats_g": 10,
+      "dietary_tags": ["High-Protein", "Keto"]
+    },
+    {
+      "item_name": "Side of Noodles (Japchae)",
+      "description": "Side portion of sweet potato glass noodles.",
+      "category": "Side",
+      "price": 4.00,
+      "calories": 220,
+      "protein_g": 2,
+      "carbs_g": 44,
+      "fats_g": 4,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Vegetable Lover's Bowl",
+      "description": "Salad base, all veggies (kale, carrots, bean sprouts, corn, cucumbers, broccoli, potatoes), sesame ginger.",
+      "category": "Entree",
+      "price": 10.00,
+      "calories": 380,
+      "protein_g": 12,
+      "carbs_g": 55,
+      "fats_g": 14,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Sweet Potato Fries (Wait... No, Bibibop usually does not have fries, but Roasted Potatoes yes)",
+      "description": "Side of Roasted Potatoes glazed.",
+      "category": "Side",
+      "price": 3.95,
+      "calories": 180,
+      "protein_g": 3,
+      "carbs_g": 32,
+      "fats_g": 5,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Egg (Fried/Boiled)",
+      "description": "Single egg add-on.",
+      "category": "Side",
+      "price": 1.50,
+      "calories": 80,
+      "protein_g": 6,
+      "carbs_g": 0,
+      "fats_g": 5,
+      "dietary_tags": ["Vegetarian", "Keto"]
+    },
+    {
+      "item_name": "Yum Yum Sauce (Side)",
+      "description": "Creamy sweet sauce.",
+      "category": "Side",
+      "price": 0.50,
+      "calories": 140,
+      "protein_g": 0,
+      "carbs_g": 4,
+      "fats_g": 14,
+      "dietary_tags": ["Vegetarian", "Gluten-Free"]
+    },
+    {
+      "item_name": "Paleo Bowl",
+      "description": "Salad base, chicken, steak, broccoli, carrots, cucumber, sesame oil.",
+      "category": "Entree",
+      "price": 14.50,
+      "calories": 540,
+      "protein_g": 52,
+      "carbs_g": 16,
+      "fats_g": 28,
+      "dietary_tags": ["Paleo", "Keto", "High-Protein", "Gluten-Free"]
+    }
+  ]

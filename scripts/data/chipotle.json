@@ -1,0 +1,222 @@
+[
+    {
+      "item_name": "Chicken Bowl (White Rice, Black Beans, Fresh Tomato Salsa)",
+      "description": "Standard balanced bowl: Adobo-marinated chicken, cilantro-lime white rice, black beans, fresh tomato salsa, and romaine lettuce.",
+      "category": "Entree",
+      "price": 10.50,
+      "calories": 710,
+      "protein_g": 40,
+      "carbs_g": 84,
+      "fats_g": 21,
+      "dietary_tags": ["High-Protein", "Dairy-Free"]
+    },
+    {
+      "item_name": "Steak Bowl (Brown Rice, Pinto Beans, Tomatillo-Red Chili Salsa)",
+      "description": "Hearty bowl: Grilled steak, brown rice, pinto beans, spicy red salsa, cheese, and lettuce.",
+      "category": "Entree",
+      "price": 11.75,
+      "calories": 745,
+      "protein_g": 38,
+      "carbs_g": 81,
+      "fats_g": 26,
+      "dietary_tags": ["High-Protein"]
+    },
+    {
+      "item_name": "Double Chicken Bowl (No Rice, Black Beans, Fajita Veggies)",
+      "description": "Gym-focused build: Double portion of chicken, no rice, black beans, fajita veggies, fresh tomato salsa, and cheese.",
+      "category": "Entree",
+      "price": 14.50,
+      "calories": 620,
+      "protein_g": 78,
+      "carbs_g": 28,
+      "fats_g": 24,
+      "dietary_tags": ["High-Protein", "Low-Carb"]
+    },
+    {
+      "item_name": "Barbacoa Salad Bowl (Keto Style)",
+      "description": "Salad base, barbacoa beef, fajita veggies, fresh tomato salsa, guacamole, and cheese. No rice or beans.",
+      "category": "Entree",
+      "price": 13.50,
+      "calories": 585,
+      "protein_g": 32,
+      "carbs_g": 18,
+      "fats_g": 41,
+      "dietary_tags": ["Keto", "Gluten-Free"]
+    },
+    {
+      "item_name": "Wholesome Bowl (Lifestyle Bowl)",
+      "description": "Supergreens lettuce blend, chicken, fajita veggies, fresh tomato salsa, and guacamole. Compliant with Paleo/Whole30.",
+      "category": "Entree",
+      "price": 13.25,
+      "calories": 460,
+      "protein_g": 35,
+      "carbs_g": 18,
+      "fats_g": 29,
+      "dietary_tags": ["Paleo", "Keto", "Dairy-Free", "High-Protein"]
+    },
+    {
+      "item_name": "High Protein Bowl (Lifestyle Bowl)",
+      "description": "White rice, black beans, double chicken, tomatillo-red chili salsa, cheese, and romaine lettuce.",
+      "category": "Entree",
+      "price": 14.50,
+      "calories": 845,
+      "protein_g": 82,
+      "carbs_g": 78,
+      "fats_g": 25,
+      "dietary_tags": ["High-Protein"]
+    },
+    {
+      "item_name": "Carnitas Bowl (White Rice, Corn Salsa)",
+      "description": "Shredded pork carnitas, white rice, roasted chili-corn salsa, sour cream, and cheese.",
+      "category": "Entree",
+      "price": 11.25,
+      "calories": 890,
+      "protein_g": 30,
+      "carbs_g": 83,
+      "fats_g": 45,
+      "dietary_tags": []
+    },
+    {
+      "item_name": "Sofritas Bowl (Vegetarian)",
+      "description": "Plant-based protein, brown rice, black beans, fresh tomato salsa, roasted chili-corn salsa, and guacamole.",
+      "category": "Entree",
+      "price": 10.50,
+      "calories": 835,
+      "protein_g": 23,
+      "carbs_g": 108,
+      "fats_g": 38,
+      "dietary_tags": ["Vegetarian", "Vegan"]
+    },
+    {
+      "item_name": "Double Steak Salad (No Rice, Extra Fajitas)",
+      "description": "Salad base topped with double steak, extra fajita veggies, tomatillo-green chili salsa, and cheese.",
+      "category": "Entree",
+      "price": 16.50,
+      "calories": 520,
+      "protein_g": 58,
+      "carbs_g": 14,
+      "fats_g": 25,
+      "dietary_tags": ["High-Protein", "Low-Carb", "Keto"]
+    },
+    {
+      "item_name": "Chicken Burrito (Standard)",
+      "description": "Flour tortilla, chicken, white rice, black beans, fresh tomato salsa, and cheese.",
+      "category": "Entree",
+      "price": 10.50,
+      "calories": 1030,
+      "protein_g": 48,
+      "carbs_g": 130,
+      "fats_g": 33,
+      "dietary_tags": ["High-Calorie"]
+    },
+    {
+      "item_name": "Kid's Build Your Own (Chicken, Rice, Beans)",
+      "description": "Two taco shells (soft corn), chicken, white rice, and black beans. Includes fruit or chips (macros for meal only).",
+      "category": "Entree",
+      "price": 5.95,
+      "calories": 420,
+      "protein_g": 26,
+      "carbs_g": 55,
+      "fats_g": 10,
+      "dietary_tags": ["Kid-Friendly", "Portion-Control"]
+    },
+    {
+      "item_name": "Side of Guacamole (4oz)",
+      "description": "Standard side of mashed avocados with lime, cilantro, jalapeno, and onion.",
+      "category": "Side",
+      "price": 2.95,
+      "calories": 230,
+      "protein_g": 2,
+      "carbs_g": 8,
+      "fats_g": 22,
+      "dietary_tags": ["Vegan", "Keto"]
+    },
+    {
+      "item_name": "Side of Queso Blanco (4oz)",
+      "description": "Monterey Jack and White Cheddar cheese sauce with serrano, poblano, and chipotle peppers.",
+      "category": "Side",
+      "price": 2.95,
+      "calories": 240,
+      "protein_g": 10,
+      "carbs_g": 7,
+      "fats_g": 18,
+      "dietary_tags": ["Vegetarian"]
+    },
+    {
+      "item_name": "Half-Chicken, Half-Steak Bowl (Rice, No Beans)",
+      "description": "Split protein portion, white rice, fajita veggies, fresh tomato salsa, sour cream, and cheese.",
+      "category": "Entree",
+      "price": 11.75,
+      "calories": 675,
+      "protein_g": 32,
+      "carbs_g": 45,
+      "fats_g": 38,
+      "dietary_tags": []
+    },
+    {
+      "item_name": "Chicken Al Pastor Bowl (Limited Time)",
+      "description": "Spicy chicken al pastor, cilantro-lime rice, black beans, fresh tomato salsa, and guacamole.",
+      "category": "Entree",
+      "price": 11.50,
+      "calories": 860,
+      "protein_g": 42,
+      "carbs_g": 88,
+      "fats_g": 39,
+      "dietary_tags": ["High-Protein", "Spicy"]
+    },
+    {
+      "item_name": "Paleo Salad Bowl (Double Chicken)",
+      "description": "Supergreens mix, double chicken, fajita veggies, tomatillo-green chili salsa, and guacamole.",
+      "category": "Entree",
+      "price": 15.75,
+      "calories": 590,
+      "protein_g": 66,
+      "carbs_g": 21,
+      "fats_g": 29,
+      "dietary_tags": ["Paleo", "High-Protein", "Low-Carb"]
+    },
+    {
+      "item_name": "Vegetarian Bowl (Guacamole Included)",
+      "description": "Cilantro-lime brown rice, black beans, fajita veggies, fresh tomato salsa, roasted chili-corn salsa, and guacamole.",
+      "category": "Entree",
+      "price": 10.50,
+      "calories": 780,
+      "protein_g": 18,
+      "carbs_g": 102,
+      "fats_g": 35,
+      "dietary_tags": ["Vegetarian"]
+    },
+    {
+      "item_name": "Chicken Salad (Light Vinaigrette)",
+      "description": "Romaine lettuce, chicken, black beans, fresh tomato salsa, and 1/2 portion of vinaigrette.",
+      "category": "Entree",
+      "price": 10.50,
+      "calories": 485,
+      "protein_g": 39,
+      "carbs_g": 33,
+      "fats_g": 24,
+      "dietary_tags": ["Balanced"]
+    },
+    {
+      "item_name": "Large Chips & Guacamole",
+      "description": "Large bag of lime-salted tortilla chips and a large side of guacamole.",
+      "category": "Side",
+      "price": 8.50,
+      "calories": 1270,
+      "protein_g": 16,
+      "carbs_g": 142,
+      "fats_g": 73,
+      "dietary_tags": ["Shareable", "High-Calorie"]
+    },
+    {
+      "item_name": "Post-Workout Bowl (Double Steak, White Rice)",
+      "description": "Double steak, double white rice, black beans, and fresh tomato salsa. Optimized for mass gain.",
+      "category": "Entree",
+      "price": 16.50,
+      "calories": 1130,
+      "protein_g": 68,
+      "carbs_g": 136,
+      "fats_g": 32,
+      "dietary_tags": ["High-Protein", "Bulking"]
+    }
+  ]

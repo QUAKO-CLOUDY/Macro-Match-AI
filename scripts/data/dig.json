@@ -1,0 +1,222 @@
+[
+    {
+      "item_name": "Charred Chicken Market Plate",
+      "description": "Charred chicken breast, brown rice, roasted broccoli with lemon.",
+      "category": "Entree",
+      "price": 13.50,
+      "calories": 640,
+      "protein_g": 42,
+      "carbs_g": 54,
+      "fats_g": 28,
+      "dietary_tags": ["Balanced", "High-Protein"]
+    },
+    {
+      "item_name": "Hot Honey Chicken Plate",
+      "description": "Glazed chicken thigh, roasted sweet potatoes, charred broccoli.",
+      "category": "Entree",
+      "price": 14.00,
+      "calories": 720,
+      "protein_g": 36,
+      "carbs_g": 68,
+      "fats_g": 34,
+      "dietary_tags": ["Spicy", "Gluten-Free"]
+    },
+    {
+      "item_name": "Meatball Market Plate",
+      "description": "Chicken meatballs with tomato sauce, brown rice, roasted carrots.",
+      "category": "Entree",
+      "price": 13.75,
+      "calories": 680,
+      "protein_g": 32,
+      "carbs_g": 62,
+      "fats_g": 32,
+      "dietary_tags": []
+    },
+    {
+      "item_name": "Herb Roasted Salmon Plate",
+      "description": "Roasted salmon, quinoa with parsley, roasted brussels sprouts (seasonal).",
+      "category": "Entree",
+      "price": 16.50,
+      "calories": 610,
+      "protein_g": 34,
+      "carbs_g": 42,
+      "fats_g": 34,
+      "dietary_tags": ["High-Protein", "Gluten-Free"]
+    },
+    {
+      "item_name": "Vegan Market Plate (Tofu)",
+      "description": "Roasted organic tofu, brown rice, roasted sweet potatoes, cashew kale caesar.",
+      "category": "Entree",
+      "price": 12.50,
+      "calories": 590,
+      "protein_g": 22,
+      "carbs_g": 66,
+      "fats_g": 26,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Classic Dig Bowl (Chicken)",
+      "description": "Charred chicken, brown rice, charred broccoli, garlic aioli.",
+      "category": "Entree",
+      "price": 13.00,
+      "calories": 690,
+      "protein_g": 40,
+      "carbs_g": 52,
+      "fats_g": 36,
+      "dietary_tags": ["High-Protein"]
+    },
+    {
+      "item_name": "Low Carb Chicken Plate",
+      "description": "Charred chicken breast, roasted broccoli, roasted cauliflower, kale caesar salad (no rice).",
+      "category": "Entree",
+      "price": 14.50,
+      "calories": 480,
+      "protein_g": 44,
+      "carbs_g": 22,
+      "fats_g": 24,
+      "dietary_tags": ["Low-Carb", "Keto", "High-Protein"]
+    },
+    {
+      "item_name": "Mac & Cheese (Side)",
+      "description": "Whole wheat pasta with cheddar cheese sauce and crispy panko.",
+      "category": "Side",
+      "price": 6.50,
+      "calories": 420,
+      "protein_g": 16,
+      "carbs_g": 48,
+      "fats_g": 18,
+      "dietary_tags": ["Vegetarian"]
+    },
+    {
+      "item_name": "Sheet Tray Carrots (Side)",
+      "description": "Roasted carrots with house spice blend.",
+      "category": "Side",
+      "price": 5.00,
+      "calories": 160,
+      "protein_g": 2,
+      "carbs_g": 22,
+      "fats_g": 8,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Charred Broccoli (Side)",
+      "description": "Broccoli charred with lemon and olive oil.",
+      "category": "Side",
+      "price": 5.00,
+      "calories": 140,
+      "protein_g": 4,
+      "carbs_g": 12,
+      "fats_g": 9,
+      "dietary_tags": ["Vegan", "Gluten-Free", "Keto"]
+    },
+    {
+      "item_name": "Jasper Hill Mac & Cheese (Side)",
+      "description": "Premium cheese blend macaroni.",
+      "category": "Side",
+      "price": 6.50,
+      "calories": 450,
+      "protein_g": 18,
+      "carbs_g": 44,
+      "fats_g": 22,
+      "dietary_tags": ["Vegetarian"]
+    },
+    {
+      "item_name": "Avocado Half",
+      "description": "Fresh avocado half with lemon and salt.",
+      "category": "Side",
+      "price": 3.00,
+      "calories": 160,
+      "protein_g": 2,
+      "carbs_g": 8,
+      "fats_g": 15,
+      "dietary_tags": ["Vegan", "Keto", "Paleo"]
+    },
+    {
+      "item_name": "Side of Charred Chicken",
+      "description": "Single serving of charred chicken breast.",
+      "category": "Side",
+      "price": 6.00,
+      "calories": 210,
+      "protein_g": 32,
+      "carbs_g": 0,
+      "fats_g": 9,
+      "dietary_tags": ["High-Protein", "Keto"]
+    },
+    {
+      "item_name": "Side of Meatballs",
+      "description": "Side of chicken meatballs in tomato sauce.",
+      "category": "Side",
+      "price": 6.00,
+      "calories": 280,
+      "protein_g": 22,
+      "carbs_g": 14,
+      "fats_g": 16,
+      "dietary_tags": []
+    },
+    {
+      "item_name": "Crispy Tofu Bowl",
+      "description": "Crispy tofu, brown rice, avocado, pickled onions, sriracha dressing.",
+      "category": "Entree",
+      "price": 12.50,
+      "calories": 620,
+      "protein_g": 20,
+      "carbs_g": 72,
+      "fats_g": 28,
+      "dietary_tags": ["Vegan"]
+    },
+    {
+      "item_name": "Roasted Sweet Potatoes",
+      "description": "Chunks of roasted sweet potato.",
+      "category": "Side",
+      "price": 5.00,
+      "calories": 180,
+      "protein_g": 3,
+      "carbs_g": 38,
+      "fats_g": 2,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Brown Rice with Parsley",
+      "description": "Steamed brown rice with fresh herbs.",
+      "category": "Side",
+      "price": 4.00,
+      "calories": 220,
+      "protein_g": 5,
+      "carbs_g": 44,
+      "fats_g": 2,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
+    },
+    {
+      "item_name": "Double Protein Plate (Chicken & Meatballs)",
+      "description": "Charred chicken, chicken meatballs, roasted broccoli, brown rice.",
+      "category": "Entree",
+      "price": 18.00,
+      "calories": 810,
+      "protein_g": 62,
+      "carbs_g": 58,
+      "fats_g": 36,
+      "dietary_tags": ["High-Protein"]
+    },
+    {
+      "item_name": "Kale Caesar Salad (Side)",
+      "description": "Kale, cashew caesar dressing, candied cashews.",
+      "category": "Side",
+      "price": 5.50,
+      "calories": 210,
+      "protein_g": 6,
+      "carbs_g": 14,
+      "fats_g": 15,
+      "dietary_tags": ["Vegetarian", "Gluten-Free"]
+    },
+    {
+      "item_name": "Family Dinner Chicken",
+      "description": "Large tray of charred chicken breast (serves 3-4).",
+      "category": "Grocery-ReadyToEat",
+      "price": 32.00,
+      "calories": 840,
+      "protein_g": 128,
+      "carbs_g": 0,
+      "fats_g": 36,
+      "dietary_tags": ["High-Protein", "Shareable"]
+    }
+  ]

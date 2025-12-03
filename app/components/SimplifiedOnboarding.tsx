@@ -26,7 +26,7 @@ export function SimplifiedOnboarding({ onComplete }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Logic to finish onboarding
-  const handleFinish = () => {
+  const handleFinish = async () => {
     setIsSubmitting(true);
     
     // Map the selected goal to a valid GoalType
@@ -36,25 +36,40 @@ export function SimplifiedOnboarding({ onComplete }: Props) {
     if (goal === 'build-muscle' || goal === 'performance') finalGoal = 'build-muscle';
     if (goal === 'maintain') finalGoal = 'maintain';
 
+    const profile: UserProfile = {
+      goal: finalGoal,
+      dietaryType: 'Balanced',
+      allergens: [],
+      calorieTarget: 2000,
+      proteinTarget: 150,
+      carbsTarget: 200,
+      fatsTarget: 65,
+      name: "Guest",
+      nutritionGoals: [goal], // We can keep the specific string here if needed
+      preferredCuisines: [],
+      preferredMealTypes: [],
+      eatingStyles: [],
+      dietaryPreferences: [],
+      activityLevel: 'moderately-active',
+      trainingStyle: 'hybrid'
+    };
+
+    // Save onboarding completion to localStorage
+    const now = Date.now();
+    localStorage.setItem("userProfile", JSON.stringify(profile));
+    localStorage.setItem("hasCompletedOnboarding", "true");
+    localStorage.setItem("macroMatch_lastLogin", now.toString());
+
+    // Call the onComplete callback
+    onComplete(profile);
+
+    // Reset loading state
+    setIsSubmitting(false);
+
+    // Redirect to home - use window.location for reliable redirect
     setTimeout(() => {
-      onComplete({
-        goal: finalGoal,
-        dietaryType: 'Balanced',
-        allergens: [],
-        calorieTarget: 2000,
-        proteinTarget: 150,
-        carbsTarget: 200,
-        fatsTarget: 65,
-        name: "Guest",
-        nutritionGoals: [goal], // We can keep the specific string here if needed
-        preferredCuisines: [],
-        preferredMealTypes: [],
-        eatingStyles: [],
-        dietaryPreferences: [],
-        activityLevel: 'moderately-active',
-        trainingStyle: 'hybrid'
-      });
-    }, 1000);
+      window.location.href = "/chat";
+    }, 100);
   };
 
   // --- STEP 1: GOAL SELECTION ---

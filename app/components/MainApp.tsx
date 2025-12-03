@@ -14,12 +14,20 @@ import type { LoggedMeal } from './LogScreen';
 
 type View = 'main' | 'meal-detail';
 
-export function MainApp() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('home');
+type MainAppProps = {
+  initialScreen?: Screen;
+};
+
+export function MainApp({ initialScreen = 'home' }: MainAppProps) {
+  const [currentScreen, setCurrentScreen] = useState<Screen>(initialScreen);
   const [currentView, setCurrentView] = useState<View>('main');
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [favoriteMeals, setFavoriteMeals] = useState<string[]>([]);
   const [loggedMeals, setLoggedMeals] = useState<LoggedMeal[]>([]);
+
+  useEffect(() => {
+    console.log('MainApp mounted, current screen:', currentScreen);
+  }, [currentScreen]);
 
   // Load user profile from localStorage or use defaults
   const [userProfile, setUserProfile] = useState<UserProfile>(() => {
@@ -105,7 +113,7 @@ export function MainApp() {
   // Show meal detail if a meal is selected
   if (currentView === 'meal-detail' && selectedMeal) {
     return (
-      <div className="flex flex-col h-screen bg-[#020617]">
+      <div className="flex flex-col h-screen bg-background">
         <MealDetail
           meal={selectedMeal}
           isFavorite={favoriteMeals.includes(selectedMeal.id)}
@@ -120,7 +128,7 @@ export function MainApp() {
   // Show search screen (full screen, no navigation)
   if (currentScreen === 'search') {
     return (
-      <div className="flex flex-col h-screen bg-slate-950">
+      <div className="flex flex-col h-screen bg-background">
         <SearchScreen
           onMealSelect={handleMealSelect}
           onBack={handleBack}
@@ -130,8 +138,10 @@ export function MainApp() {
   }
 
   // Main app with navigation
+  console.log('MainApp rendering, screen:', currentScreen, 'view:', currentView);
+  
   return (
-    <div className="flex flex-col h-screen bg-[#020617] overflow-hidden">
+    <div className="flex flex-col h-screen bg-background overflow-hidden">
       <div className="flex-1 overflow-hidden">
         {currentScreen === 'home' && (
           <HomeScreen

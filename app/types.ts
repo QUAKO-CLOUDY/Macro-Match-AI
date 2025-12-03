@@ -37,5 +37,6 @@ export type Meal = {
   aiSwaps?: string[];
   rating?: number;
   tags?: string[];
+  dietary_tags?: string[]; // For variable availability warnings
   matchScore?: number;
 };

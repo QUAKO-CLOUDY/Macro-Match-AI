@@ -80,7 +80,7 @@ export function WelcomeScreen({ onGetStarted }: Props) {
         
         {/* App Name */}
         <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent text-center">
-          MacroMatch AI
+          SeekEatz
         </h1>
         
         {/* Tagline */}

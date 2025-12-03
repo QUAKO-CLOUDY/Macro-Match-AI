@@ -15,6 +15,7 @@ import {
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { CircularProgress } from "./CircularProgress";
+import { useTheme } from "../contexts/ThemeContext";
 import type { UserProfile, Meal } from "../types";
 
 export type LoggedMeal = {
@@ -63,6 +64,7 @@ type Recommendation = {
 };
 
 export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
+  const { resolvedTheme } = useTheme();
   const todayStr = new Date().toISOString().slice(0, 10);
 
   const loggedDates = Array.from(
@@ -143,15 +145,15 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
   }, [dayMeals, remaining.calories, remaining.protein]);
 
   return (
-    <div className="flex flex-col h-full w-full bg-gray-950 text-white">
+    <div className="flex flex-col h-full w-full bg-background text-foreground">
       {/* TOP SECTION – RINGS + MACROS */}
-      <div className="bg-gradient-to-br from-gray-900 via-purple-900/30 to-gray-900 text-white p-6 pb-4 relative">
+      <div className="bg-gradient-to-br from-card via-purple-900/30 to-card text-foreground p-6 pb-4 relative">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-gray-400 mb-1">Daily Tracking</p>
-            <h1 className="text-white">Your Progress 📊</h1>
-            <p className="text-xs text-gray-400 mt-1">
-              Showing totals for <span className="text-cyan-400">{selectedLabel}</span>. Rings
+            <p className="text-muted-foreground mb-1">Daily Tracking</p>
+            <h1 className="text-foreground">Your Progress 📊</h1>
+            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
+              Showing totals for <span className="text-cyan-500 dark:text-cyan-400 font-medium">{selectedLabel}</span>. Rings
               update based on the day you pick.
             </p>
           </div>
@@ -162,14 +164,14 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
               variant="ghost"
               size="icon"
               onClick={() => setIsDatePickerOpen((v) => !v)}
-              className="text-white hover:bg-white/10 rounded-full"
+              className="text-foreground hover:bg-accent rounded-full"
             >
               <Calendar className="w-5 h-5" />
             </Button>
 
             {isDatePickerOpen && (
-              <div className="absolute right-0 mt-2 w-60 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl p-3 z-30">
-                <p className="text-xs text-gray-400 mb-2">
+              <div className="absolute right-0 mt-2 w-60 bg-card border border-border rounded-2xl shadow-2xl p-3 z-30">
+                <p className="text-xs text-muted-foreground mb-2">
                   View stats for:
                 </p>
 
@@ -178,14 +180,14 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
                     setSelectedDate(todayStr);
                     setIsDatePickerOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-1 transition-colors ${
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-1 transition-colors ${
                     isTodaySelected
-                      ? "bg-cyan-500/20 text-cyan-300"
-                      : "hover:bg-gray-800 text-gray-200"
+                      ? "bg-cyan-500/20 dark:bg-cyan-500/30 text-cyan-600 dark:text-cyan-300 font-medium"
+                      : "hover:bg-muted text-foreground dark:text-foreground"
                   }`}
                 >
                   Today
-                  <span className="ml-1 text-[11px] text-gray-400">
+                  <span className="ml-1 text-[11px] text-muted-foreground">
                     ({formatDate(todayStr)})
                   </span>
                 </button>
@@ -201,8 +203,8 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
                         }}
                         className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                           selectedDate === date
-                            ? "bg-cyan-500/20 text-cyan-300"
-                            : "hover:bg-gray-800 text-gray-200"
+                            ? "bg-cyan-500/20 dark:bg-cyan-500/30 text-cyan-600 dark:text-cyan-300 font-medium"
+                            : "hover:bg-muted text-foreground dark:text-foreground"
                         }`}
                       >
                         {formatDate(date)}
@@ -211,7 +213,7 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
                   </div>
                 )}
 
-                <p className="mt-2 text-[11px] text-gray-500">
+                <p className="mt-2 text-[11px] text-muted-foreground">
                   Rings, macros, and meals all reflect the day you choose.
                 </p>
               </div>
@@ -226,8 +228,8 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
               <Flame className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-white">{streak} Day Streak! 🔥</p>
-              <p className="text-orange-200">Keep it going!</p>
+              <p className="text-foreground dark:text-foreground font-semibold">{streak} Day Streak! 🔥</p>
+              <p className="text-orange-400 dark:text-orange-300 text-sm">Keep it going!</p>
             </div>
           </div>
         )}
@@ -275,43 +277,46 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
               size={114}
               strokeWidth={11}
             />
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <p className="text-gray-400">
+            {/* Center Text - Theme-aware styling */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <p className="text-xs font-medium text-muted-foreground dark:text-muted-foreground mb-0.5">
                 {remaining.calories >= 0 ? "Remaining" : "Over"}
               </p>
-              <p className="text-white">
-                {Math.abs(remaining.calories)}
+              <p className="text-3xl font-bold text-foreground dark:text-foreground leading-none my-1">
+                {Math.abs(remaining.calories).toLocaleString()}
               </p>
-              <p className="text-gray-500">calories</p>
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground dark:text-muted-foreground/70">
+                calories
+              </p>
             </div>
           </div>
         </div>
 
         {/* Macro Grid */}
         <div className="grid grid-cols-4 gap-2">
-          <div className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 backdrop-blur-sm rounded-2xl p-3 border border-pink-500/30 text-center">
+            <div className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 backdrop-blur-sm rounded-2xl p-3 border border-pink-500/30 text-center [&>p]:!text-black dark:[&>p]:!text-white">
             <Flame className="w-4 h-4 text-pink-400 mx-auto mb-1" />
-            <p className="text-white">{totals.calories}</p>
-            <p className="text-pink-300/70">/{userProfile.calorieTarget}</p>
+            <p className="font-semibold" style={{ color: resolvedTheme === 'dark' ? '#ffffff' : '#000000' }}>{totals.calories}</p>
+            <p className="text-pink-400/70 dark:text-pink-300/70 text-sm">/{userProfile.calorieTarget}</p>
           </div>
-          <div className="bg-gradient-to-br from-cyan-400/20 to-blue-500/20 backdrop-blur-sm rounded-2xl p-3 border border-cyan-400/30 text-center">
+          <div className="bg-gradient-to-br from-cyan-400/20 to-blue-500/20 backdrop-blur-sm rounded-2xl p-3 border border-cyan-400/30 text-center [&>p]:!text-black dark:[&>p]:!text-white">
             <Zap className="w-4 h-4 text-cyan-400 mx-auto mb-1" />
-            <p className="text-white">{totals.protein}g</p>
-            <p className="text-cyan-300/70">
+            <p className="font-semibold" style={{ color: resolvedTheme === 'dark' ? '#ffffff' : '#000000' }}>{totals.protein}g</p>
+            <p className="text-cyan-400/70 dark:text-cyan-300/70 text-sm">
               /{userProfile.proteinTarget}g
             </p>
           </div>
-          <div className="bg-gradient-to-br from-green-400/20 to-emerald-500/20 backdrop-blur-sm rounded-2xl p-3 border border-green-400/30 text-center">
+          <div className="bg-gradient-to-br from-green-400/20 to-emerald-500/20 backdrop-blur-sm rounded-2xl p-3 border border-green-400/30 text-center [&>p]:!text-black dark:[&>p]:!text-white">
             <TrendingUp className="w-4 h-4 text-green-400 mx-auto mb-1" />
-            <p className="text-white">{totals.carbs}g</p>
-            <p className="text-green-300/70">
+            <p className="font-semibold" style={{ color: resolvedTheme === 'dark' ? '#ffffff' : '#000000' }}>{totals.carbs}g</p>
+            <p className="text-green-400/70 dark:text-green-300/70 text-sm">
               /{userProfile.carbsTarget}g
             </p>
           </div>
-          <div className="bg-gradient-to-br from-amber-400/20 to-orange-500/20 backdrop-blur-sm rounded-2xl p-3 border border-amber-400/30 text-center">
+          <div className="bg-gradient-to-br from-amber-400/20 to-orange-500/20 backdrop-blur-sm rounded-2xl p-3 border border-amber-400/30 text-center [&>p]:!text-black dark:[&>p]:!text-white">
             <div className="w-4 h-4 rounded-full bg-amber-400 mx-auto mb-1" />
-            <p className="text-white">{totals.fats}g</p>
-            <p className="text-amber-300/70">
+            <p className="font-semibold" style={{ color: resolvedTheme === 'dark' ? '#ffffff' : '#000000' }}>{totals.fats}g</p>
+            <p className="text-amber-400/70 dark:text-amber-300/70 text-sm">
               /{userProfile.fatsTarget}g
             </p>
           </div>
@@ -319,11 +324,11 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
       </div>
 
       {/* BOTTOM SECTION – RECOMMENDATIONS, MEALS, HISTORY */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-950">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-background">
         {/* AI Recommendations */}
         {recommendations.length > 0 && (
           <div>
-            <p className="text-white mb-3">Recommendations</p>
+            <p className="text-foreground mb-3">Recommendations</p>
             <div className="space-y-2">
               {recommendations.map((rec, index) => {
                 const Icon = rec.icon;
@@ -337,7 +342,7 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
                     >
                       <Icon className="w-4 h-4 text-white" />
                     </div>
-                    <p className="text-gray-300 flex-1">{rec.message}</p>
+                    <p className="text-foreground/80 flex-1">{rec.message}</p>
                   </div>
                 );
               })}
@@ -348,19 +353,19 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
         {/* Meals for selected day */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <p className="text-white">
+            <p className="text-foreground">
               {isTodaySelected ? "Today's Meals" : `${selectedLabel} Meals`}
             </p>
-            <Badge className="bg-gray-800 border-gray-700 text-gray-300">
+            <Badge className="bg-muted border-border text-muted-foreground">
               {dayMeals.length} {dayMeals.length === 1 ? "meal" : "meals"}
             </Badge>
           </div>
 
           {dayMeals.length === 0 ? (
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-8 text-center">
-              <Apple className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-              <p className="text-gray-400 mb-1">No meals logged yet</p>
-              <p className="text-gray-600">
+            <div className="bg-gradient-to-br from-card to-muted border border-border rounded-2xl p-8 text-center">
+              <Apple className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+              <p className="text-muted-foreground mb-1">No meals logged yet</p>
+              <p className="text-muted-foreground/70">
                 Start tracking from the home screen!
               </p>
             </div>
@@ -369,7 +374,7 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
               {dayMeals.map((log) => (
                 <div
                   key={log.id}
-                  className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-4 group hover:border-cyan-500/50 transition-all"
+                  className="bg-gradient-to-br from-card to-muted border border-border rounded-2xl p-4 group hover:border-cyan-500/50 transition-all"
                 >
                   <div className="flex gap-3">
                     <img
@@ -380,11 +385,11 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-1">
                         <div className="flex-1">
-                          <p className="text-white">{log.meal.name}</p>
-                          <p className="text-gray-400">
+                          <p className="text-card-foreground">{log.meal.name}</p>
+                          <p className="text-muted-foreground">
                             {log.meal.restaurant}
                           </p>
-                          <p className="text-gray-600">
+                          <p className="text-muted-foreground/70">
                             {new Date(log.timestamp).toLocaleTimeString(
                               "en-US",
                               {
@@ -398,22 +403,22 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
                           variant="ghost"
                           size="icon"
                           onClick={() => onRemoveMeal(log.id)}
-                          className="text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="text-muted-foreground hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
                       <div className="flex flex-wrap gap-2 mt-2">
-                        <Badge className="rounded-full bg-pink-500/20 text-pink-300 border-pink-500/30">
+                        <Badge className="rounded-full bg-pink-500/20 dark:bg-pink-500/20 text-pink-600 dark:text-pink-300 border-pink-500/30">
                           {log.meal.calories} cal
                         </Badge>
-                        <Badge className="rounded-full bg-cyan-500/20 text-cyan-300 border-cyan-500/30">
+                        <Badge className="rounded-full bg-cyan-500/20 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border-cyan-500/30">
                           {log.meal.protein}g P
                         </Badge>
-                        <Badge className="rounded-full bg-green-500/20 text-green-300 border-green-500/30">
+                        <Badge className="rounded-full bg-green-500/20 dark:bg-green-500/20 text-green-600 dark:text-green-300 border-green-500/30">
                           {log.meal.carbs}g C
                         </Badge>
-                        <Badge className="rounded-full bg-amber-500/20 text-amber-300 border-amber-500/30">
+                        <Badge className="rounded-full bg-amber-500/20 dark:bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-500/30">
                           {log.meal.fats}g F
                         </Badge>
                       </div>
@@ -428,7 +433,7 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
         {/* History */}
         {loggedDates.length > 0 && (
           <div>
-            <p className="text-white mb-3">History</p>
+            <p className="text-foreground mb-3">History</p>
             <div className="space-y-2">
               {loggedDates.slice(0, 7).map((date) => {
                 const dateMeals = loggedMeals.filter(
@@ -446,48 +451,48 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
                 return (
                   <div
                     key={date}
-                    className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl overflow-hidden"
+                    className="bg-gradient-to-br from-card to-muted border border-border rounded-2xl overflow-hidden"
                   >
                     <button
                       onClick={() =>
                         setExpandedDay(isExpanded ? null : date)
                       }
-                      className="w-full p-4 flex items-center justify-between hover:bg-gray-700/20 transition-colors"
+                      className="w-full p-4 flex items-center justify-between hover:bg-muted/20 transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl flex items-center justify-center">
                           <Calendar className="w-5 h-5 text-purple-400" />
                         </div>
                         <div className="text-left">
-                          <p className="text-white">{formatDate(date)}</p>
-                          <p className="text-gray-400">
+                          <p className="text-card-foreground">{formatDate(date)}</p>
+                          <p className="text-muted-foreground">
                             {dateMeals.length} meals logged
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="text-right">
-                          <p className="text-gray-400">
+                          <p className="text-muted-foreground">
                             {dateTotals.calories} cal
                           </p>
-                          <p className="text-gray-500">
+                          <p className="text-muted-foreground/70">
                             {dateTotals.protein}g protein
                           </p>
                         </div>
                         {isExpanded ? (
-                          <ChevronDown className="w-5 h-5 text-gray-400" />
+                          <ChevronDown className="w-5 h-5 text-muted-foreground" />
                         ) : (
-                          <ChevronRight className="w-5 h-5 text-gray-400" />
+                          <ChevronRight className="w-5 h-5 text-muted-foreground" />
                         )}
                       </div>
                     </button>
 
                     {isExpanded && (
-                      <div className="border-t border-gray-700 p-4 space-y-2">
+                      <div className="border-t border-border p-4 space-y-2">
                         {dateMeals.map((log) => (
                           <div
                             key={log.id}
-                            className="flex gap-3 p-2 rounded-xl hover:bg-gray-800/50"
+                            className="flex gap-3 p-2 rounded-xl hover:bg-muted/50"
                           >
                             <img
                               src={log.meal.image}
@@ -495,10 +500,10 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
                               className="w-12 h-12 rounded-lg object-cover"
                             />
                             <div className="flex-1 min-w-0">
-                              <p className="text-white truncate">
+                              <p className="text-card-foreground truncate">
                                 {log.meal.name}
                               </p>
-                              <p className="text-gray-500">
+                              <p className="text-muted-foreground">
                                 {log.meal.calories} cal •{" "}
                                 {log.meal.protein}g protein
                               </p>

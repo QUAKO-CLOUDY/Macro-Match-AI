@@ -143,7 +143,7 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
   const isManualValid = manualName && manualCals;
 
   return (
-    <div className="h-full w-full bg-[#020617] text-white flex flex-col relative overflow-hidden font-sans">
+    <div className="h-full w-full bg-background text-foreground flex flex-col relative overflow-hidden font-sans">
       
       {/* --- SCROLLABLE CONTENT --- */}
       <div className="flex-1 overflow-y-auto scrollbar-hide pb-48"> 
@@ -155,7 +155,7 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
             alt={meal.name}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
           
           <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
             <button onClick={onBack} className="w-10 h-10 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-black/60">
@@ -178,23 +178,23 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
           {/* TITLE & INFO */}
           <div>
             <div className="flex items-start justify-between">
-              <h1 className="text-white text-2xl font-bold flex-1 leading-tight">{meal.name}</h1>
+              <h1 className="text-foreground text-2xl font-bold flex-1 leading-tight">{meal.name}</h1>
               <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/30 px-2 py-1 rounded-lg ml-2 shrink-0">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span className="text-emerald-300 text-[10px] font-semibold">93% Match</span>
               </div>
             </div>
-            <p className="text-slate-400 text-sm mt-1 italic">"{whyText}"</p>
-            <div className="flex items-center gap-3 mt-3 text-xs text-slate-300">
-               <span className="font-semibold text-white">{meal.restaurant}</span>
-               <span className="w-1 h-1 rounded-full bg-slate-600"></span>
+            <p className="text-muted-foreground text-sm mt-1 italic">"{whyText}"</p>
+            <div className="flex items-center gap-3 mt-3 text-xs text-foreground/80">
+               <span className="font-semibold text-foreground">{meal.restaurant}</span>
+               <span className="w-1 h-1 rounded-full bg-border"></span>
                <div className="flex items-center gap-1">
-                 <MapPin className="w-3 h-3 text-slate-500" />
+                 <MapPin className="w-3 h-3 text-muted-foreground" />
                  {distance} away
                </div>
-               <span className="w-1 h-1 rounded-full bg-slate-600"></span>
+               <span className="w-1 h-1 rounded-full bg-border"></span>
                <div className="flex items-center gap-1">
-                 <Clock className="w-3 h-3 text-slate-500" />
+                 <Clock className="w-3 h-3 text-muted-foreground" />
                  {prepTime} pickup
                </div>
             </div>
@@ -203,73 +203,73 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
           {/* TAGS */}
           <div className="flex flex-wrap gap-2">
             {tags.map((tag, i) => (
-              <span key={i} className="px-2.5 py-1 rounded-md bg-slate-800 border border-slate-700 text-slate-300 text-[10px] font-medium tracking-wide">
+              <span key={i} className="px-2.5 py-1 rounded-md bg-muted border border-border text-foreground/80 text-[10px] font-medium tracking-wide">
                 {tag}
               </span>
             ))}
           </div>
 
           {/* MACROS CARD */}
-          <div className="bg-[#0f172a] border border-slate-800 p-5 rounded-3xl shadow-lg relative overflow-hidden">
+          <div className="bg-card border border-border p-5 rounded-3xl shadow-lg relative overflow-hidden">
              <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full pointer-events-none"></div>
 
             <div className="flex items-center justify-between mb-4">
-              <p className="text-white text-sm font-semibold">Nutritional Information</p>
-              <Info className="w-4 h-4 text-slate-600" />
+              <p className="text-card-foreground text-sm font-semibold">Nutritional Information</p>
+              <Info className="w-4 h-4 text-muted-foreground" />
             </div>
 
             {/* Calories - Purple/Pink Gradient (Moved here) */}
             <div className="mb-5">
               <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-3 text-center w-full">
                 <Flame className="w-4 h-4 text-pink-400 mx-auto mb-1.5" />
-                <p className="text-white text-xl font-bold leading-none mb-0.5">{meal.calories}</p>
+                <p className="text-card-foreground text-xl font-bold leading-none mb-0.5">{meal.calories}</p>
                 <p className="text-pink-300/60 text-[10px] font-medium uppercase">Calories</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 pt-4 border-t border-slate-800/50">
+            <div className="grid grid-cols-3 gap-2 pt-4 border-t border-border/50">
                <div className="text-center">
-                 <div className="h-1 w-full bg-slate-800 rounded-full mb-2 overflow-hidden">
+                 <div className="h-1 w-full bg-muted rounded-full mb-2 overflow-hidden">
                    <div style={{ width: `${cPercent}%` }} className="h-full bg-emerald-500 rounded-full"></div>
                  </div>
                  <p className="text-emerald-400 font-bold text-sm">{meal.carbs || 35}g</p>
-                 <p className="text-slate-500 text-[10px]">Carbs ({cPercent}%)</p>
+                 <p className="text-muted-foreground text-[10px]">Carbs ({cPercent}%)</p>
                </div>
                <div className="text-center">
-                 <div className="h-1 w-full bg-slate-800 rounded-full mb-2 overflow-hidden">
+                 <div className="h-1 w-full bg-muted rounded-full mb-2 overflow-hidden">
                    <div style={{ width: `${fPercent}%` }} className="h-full bg-amber-500 rounded-full"></div>
                  </div>
                  <p className="text-amber-400 font-bold text-sm">{meal.fats || 12}g</p>
-                 <p className="text-slate-500 text-[10px]">Fats ({fPercent}%)</p>
+                 <p className="text-muted-foreground text-[10px]">Fats ({fPercent}%)</p>
                </div>
                <div className="text-center">
-                 <div className="h-1 w-full bg-slate-800 rounded-full mb-2 overflow-hidden">
+                 <div className="h-1 w-full bg-muted rounded-full mb-2 overflow-hidden">
                    <div style={{ width: `${pPercent}%` }} className="h-full bg-cyan-500 rounded-full"></div>
                  </div>
                  <p className="text-cyan-400 font-bold text-sm">{meal.protein}g</p>
-                 <p className="text-slate-500 text-[10px]">Protein ({pPercent}%)</p>
+                 <p className="text-muted-foreground text-[10px]">Protein ({pPercent}%)</p>
                </div>
             </div>
           </div>
 
           {/* IMPACT PREVIEW */}
-          <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800/80">
-            <h3 className="text-slate-300 text-xs font-semibold uppercase tracking-wider mb-3">Impact on Today</h3>
+          <div className="bg-card/50 rounded-2xl p-4 border border-border/80">
+            <h3 className="text-foreground/80 text-xs font-semibold uppercase tracking-wider mb-3">Impact on Today</h3>
             <div className="flex items-center justify-between text-sm">
                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
-                     <TrendingUp className="w-4 h-4 text-slate-400" />
+                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                     <TrendingUp className="w-4 h-4 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-white">Calories Remaining</p>
-                    <p className="text-slate-500 text-xs">If you eat this</p>
+                    <p className="text-foreground">Calories Remaining</p>
+                    <p className="text-muted-foreground text-xs">If you eat this</p>
                   </div>
                </div>
                <div className="text-right">
-                 <p className={`font-bold ${calsAfter < 0 ? 'text-red-400' : 'text-white'}`}>
+                 <p className={`font-bold ${calsAfter < 0 ? 'text-red-400' : 'text-foreground'}`}>
                     {calsAfter} cal
                  </p>
-                 <p className="text-slate-500 text-xs">
+                 <p className="text-muted-foreground text-xs">
                     {calsAfter < 0 ? 'Over budget' : 'Left for today'}
                  </p>
                </div>
@@ -282,7 +282,7 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
                 <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center">
                   <Sparkles className="w-4 h-4 text-white" />
                 </div>
-                <p className="text-white font-medium">AI-Suggested Swaps</p>
+                <p className="text-foreground font-medium">AI-Suggested Swaps</p>
               </div>
               <div className="space-y-2">
                 {aiSwaps.map((swap, index) => (
@@ -290,7 +290,7 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
                     key={index}
                     className="bg-gradient-to-br from-indigo-500/10 to-blue-500/10 border border-indigo-500/30 rounded-2xl p-4"
                   >
-                    <p className="text-gray-300 text-sm leading-snug">{swap}</p>
+                    <p className="text-foreground/80 text-sm leading-snug">{swap}</p>
                   </div>
                 ))}
               </div>
@@ -299,7 +299,7 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
           {/* INGREDIENTS */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <p className="text-white text-sm font-semibold">Ingredients</p>
+              <p className="text-foreground text-sm font-semibold">Ingredients</p>
               <button onClick={() => setExpandIngredients(!expandIngredients)} className="text-xs text-cyan-400 flex items-center gap-1 hover:text-cyan-300">
                 {expandIngredients ? "Show Less" : "See All"}
                 {expandIngredients ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -307,12 +307,12 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
             </div>
             <div className="flex flex-wrap gap-2 transition-all">
               {visibleIngredients.map((ingredient, index) => (
-                <span key={index} className="px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300 text-xs font-medium">
+                <span key={index} className="px-3 py-1.5 rounded-full bg-muted border border-border text-foreground/80 text-xs font-medium">
                   {ingredient}
                 </span>
               ))}
               {!expandIngredients && allIngredients.length > 3 && (
-                <span onClick={() => setExpandIngredients(true)} className="px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 text-xs font-medium cursor-pointer hover:bg-slate-700">
+                <span onClick={() => setExpandIngredients(true)} className="px-3 py-1.5 rounded-full bg-muted border border-border text-muted-foreground text-xs font-medium cursor-pointer hover:bg-muted/80">
                   + {allIngredients.length - 3} more
                 </span>
               )}
@@ -321,18 +321,18 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
 
           {/* SIMILAR OPTIONS */}
           <div className="mb-6">
-            <p className="text-white text-sm font-semibold mb-3">Similar Options</p>
+            <p className="text-foreground text-sm font-semibold mb-3">Similar Options</p>
             <div className="space-y-3">
               {similarMeals.map(similar => (
-                <div key={similar.id} className="flex gap-3 bg-[#0f172a] border border-slate-800 rounded-2xl p-2.5 cursor-pointer hover:border-cyan-500/30 transition-all">
-                  <img src={similar.image} alt={similar.name} className="w-16 h-16 rounded-xl object-cover bg-slate-800" />
+                <div key={similar.id} className="flex gap-3 bg-card border border-border rounded-2xl p-2.5 cursor-pointer hover:border-cyan-500/30 transition-all">
+                  <img src={similar.image} alt={similar.name} className="w-16 h-16 rounded-xl object-cover bg-muted" />
                   <div className="flex-1 min-w-0 flex flex-col justify-center">
-                    <p className="text-white text-sm font-medium truncate">{similar.name}</p>
-                    <p className="text-slate-500 text-xs truncate mb-1">{similar.restaurant}</p>
+                    <p className="text-card-foreground text-sm font-medium truncate">{similar.name}</p>
+                    <p className="text-muted-foreground text-xs truncate mb-1">{similar.restaurant}</p>
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-400 text-[10px]">{similar.calories} cal</span>
-                      <span className="text-slate-600 text-[10px]">•</span>
-                      <span className="text-slate-400 text-[10px]">{similar.protein}g protein</span>
+                      <span className="text-muted-foreground text-[10px]">{similar.calories} cal</span>
+                      <span className="text-muted-foreground/50 text-[10px]">•</span>
+                      <span className="text-muted-foreground text-[10px]">{similar.protein}g protein</span>
                     </div>
                   </div>
                 </div>
@@ -345,7 +345,7 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
       </div>
 
       {/* --- STICKY BOTTOM ACTIONS --- */}
-      <div className="absolute bottom-0 left-0 w-full p-5 pt-4 bg-gradient-to-t from-[#020617] via-[#020617] to-transparent z-20 backdrop-blur-[2px]">
+      <div className="absolute bottom-0 left-0 w-full p-5 pt-4 bg-gradient-to-t from-background via-background to-transparent z-20 backdrop-blur-[2px]">
         <div className="space-y-3 max-w-md mx-auto">
           <button 
             onClick={() => setShowLogModal(true)}
@@ -365,10 +365,10 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
 
           <button 
             onClick={handleOrderOnline}
-            className="w-full rounded-full bg-gray-800 border border-gray-700 text-white hover:bg-gray-700 font-medium text-sm py-3.5 flex items-center justify-center gap-2 transition-colors"
+            className="w-full rounded-full bg-muted border border-border text-foreground hover:bg-muted/80 font-medium text-sm py-3.5 flex items-center justify-center gap-2 transition-colors"
           >
             Order Online
-            <ExternalLink className="w-4 h-4 ml-1 text-gray-400" />
+            <ExternalLink className="w-4 h-4 ml-1 text-muted-foreground" />
           </button>
         </div>
       </div>
@@ -376,15 +376,15 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
       {/* --- LOG MODAL (CUSTOMIZE) --- */}
       {showLogModal && (
         <div className="absolute inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-gradient-to-br from-gray-900 to-gray-800 border-t border-gray-700 rounded-t-3xl p-6 animate-slide-up">
+          <div className="w-full max-w-md bg-gradient-to-br from-card to-muted border-t border-border rounded-t-3xl p-6 animate-slide-up">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-white font-semibold">Customize Your Meal</h2>
-              <button onClick={() => setShowLogModal(false)} className="text-gray-400 hover:text-white p-2">
+              <h2 className="text-card-foreground font-semibold">Customize Your Meal</h2>
+              <button onClick={() => setShowLogModal(false)} className="text-muted-foreground hover:text-foreground p-2">
                 <X className="w-5 h-5" />
               </button>
             </div>
             
-            <p className="text-gray-400 text-sm mb-4">Did you make any of these AI-suggested swaps?</p>
+            <p className="text-muted-foreground text-sm mb-4">Did you make any of these AI-suggested swaps?</p>
 
             <div className="space-y-2 mb-6">
               {SWAP_OPTIONS.map(swap => {
@@ -396,16 +396,16 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
                     className={`w-full flex items-center justify-between p-4 rounded-2xl border transition-all ${
                       isSelected
                         ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-cyan-500 shadow-lg shadow-cyan-500/20'
-                        : 'bg-gray-800 border-gray-700 hover:border-gray-600'
+                        : 'bg-muted border-border hover:border-border/80'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-cyan-400 bg-cyan-500' : 'border-gray-600'}`}>
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-cyan-400 bg-cyan-500' : 'border-border'}`}>
                         {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
                       </div>
                       <div className="text-left">
-                        <p className="text-white text-sm font-medium">{swap.label}</p>
-                        <p className="text-gray-400 text-xs">
+                        <p className="text-card-foreground text-sm font-medium">{swap.label}</p>
+                        <p className="text-muted-foreground text-xs">
                           {swap.protein ? `+${swap.protein}g protein • ` : ''}
                           {swap.calories > 0 ? '+' : ''}{swap.calories} cal
                         </p>
@@ -422,27 +422,27 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
                 <p className="text-purple-300 text-xs mb-2 uppercase font-bold">Updated Macros</p>
                 <div className="grid grid-cols-4 gap-2 text-center">
                   <div>
-                    <p className="text-white font-bold">{meal.calories + selectedSwaps.reduce((sum, id) => sum + (SWAP_OPTIONS.find(s => s.id === id)?.calories || 0), 0)}</p>
-                    <p className="text-gray-400 text-[10px]">cal</p>
+                    <p className="text-card-foreground font-bold">{meal.calories + selectedSwaps.reduce((sum, id) => sum + (SWAP_OPTIONS.find(s => s.id === id)?.calories || 0), 0)}</p>
+                    <p className="text-muted-foreground text-[10px]">cal</p>
                   </div>
                   <div>
-                    <p className="text-white font-bold">{meal.protein + selectedSwaps.reduce((sum, id) => sum + (SWAP_OPTIONS.find(s => s.id === id)?.protein || 0), 0)}g</p>
-                    <p className="text-gray-400 text-[10px]">pro</p>
+                    <p className="text-card-foreground font-bold">{meal.protein + selectedSwaps.reduce((sum, id) => sum + (SWAP_OPTIONS.find(s => s.id === id)?.protein || 0), 0)}g</p>
+                    <p className="text-muted-foreground text-[10px]">pro</p>
                   </div>
                   <div>
-                    <p className="text-white font-bold">{meal.carbs + selectedSwaps.reduce((sum, id) => sum + (SWAP_OPTIONS.find(s => s.id === id)?.carbs || 0), 0)}g</p>
-                    <p className="text-gray-400 text-[10px]">carbs</p>
+                    <p className="text-card-foreground font-bold">{meal.carbs + selectedSwaps.reduce((sum, id) => sum + (SWAP_OPTIONS.find(s => s.id === id)?.carbs || 0), 0)}g</p>
+                    <p className="text-muted-foreground text-[10px]">carbs</p>
                   </div>
                   <div>
-                    <p className="text-white font-bold">{meal.fats + selectedSwaps.reduce((sum, id) => sum + (SWAP_OPTIONS.find(s => s.id === id)?.fats || 0), 0)}g</p>
-                    <p className="text-gray-400 text-[10px]">fats</p>
+                    <p className="text-card-foreground font-bold">{meal.fats + selectedSwaps.reduce((sum, id) => sum + (SWAP_OPTIONS.find(s => s.id === id)?.fats || 0), 0)}g</p>
+                    <p className="text-muted-foreground text-[10px]">fats</p>
                   </div>
                 </div>
               </div>
             )}
 
             <div className="flex gap-3">
-              <button onClick={() => setShowLogModal(false)} className="flex-1 h-12 rounded-full bg-gray-800 border border-gray-700 text-white font-medium hover:bg-gray-700">
+              <button onClick={() => setShowLogModal(false)} className="flex-1 h-12 rounded-full bg-muted border border-border text-foreground font-medium hover:bg-muted/80">
                 Cancel
               </button>
               <button onClick={handleConfirmLog} className="flex-1 h-12 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium shadow-lg shadow-green-500/30 flex items-center justify-center">
@@ -457,58 +457,58 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
       {/* --- MANUAL ADD MODAL --- */}
       {showManualModal && (
         <div className="absolute inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-gradient-to-br from-gray-900 to-gray-800 border-t border-gray-700 rounded-t-3xl p-6 animate-slide-up">
+          <div className="w-full max-w-md bg-gradient-to-br from-card to-muted border-t border-border rounded-t-3xl p-6 animate-slide-up">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-white font-semibold">Add Meal Manually</h2>
-              <button onClick={() => setShowManualModal(false)} className="text-gray-400 hover:text-white p-2">
+              <h2 className="text-card-foreground font-semibold">Add Meal Manually</h2>
+              <button onClick={() => setShowManualModal(false)} className="text-muted-foreground hover:text-foreground p-2">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="text-gray-300 text-xs mb-1.5 block ml-1">Meal Name</label>
+                <label className="text-foreground/80 text-xs mb-1.5 block ml-1">Meal Name</label>
                 <input 
                   value={manualName} 
                   onChange={e => setManualName(e.target.value)} 
                   placeholder="e.g. Grilled Chicken Salad"
-                  className="w-full h-12 rounded-xl bg-gray-900/50 border border-gray-700 text-white px-4 placeholder:text-gray-600 focus:outline-none focus:border-cyan-500"
+                  className="w-full h-12 rounded-xl bg-muted/50 border border-border text-foreground px-4 placeholder:text-muted-foreground focus:outline-none focus:border-cyan-500"
                 />
               </div>
               <div>
-                <label className="text-gray-300 text-xs mb-1.5 block ml-1">Calories</label>
+                <label className="text-foreground/80 text-xs mb-1.5 block ml-1">Calories</label>
                 <input 
                   type="number" 
                   value={manualCals} 
                   onChange={e => setManualCals(e.target.value)} 
                   placeholder="500"
-                  className="w-full h-12 rounded-xl bg-gray-900/50 border border-gray-700 text-white px-4 placeholder:text-gray-600 focus:outline-none focus:border-cyan-500"
+                  className="w-full h-12 rounded-xl bg-muted/50 border border-border text-foreground px-4 placeholder:text-muted-foreground focus:outline-none focus:border-cyan-500"
                 />
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-gray-300 text-xs mb-1.5 block ml-1">Protein (g)</label>
-                  <input type="number" value={manualPro} onChange={e => setManualPro(e.target.value)} placeholder="30" className="w-full h-12 rounded-xl bg-gray-900/50 border border-gray-700 text-white px-3 placeholder:text-gray-600 focus:outline-none focus:border-cyan-500" />
+                  <label className="text-foreground/80 text-xs mb-1.5 block ml-1">Protein (g)</label>
+                  <input type="number" value={manualPro} onChange={e => setManualPro(e.target.value)} placeholder="30" className="w-full h-12 rounded-xl bg-muted/50 border border-border text-foreground px-3 placeholder:text-muted-foreground focus:outline-none focus:border-cyan-500" />
                 </div>
                 <div>
-                  <label className="text-gray-300 text-xs mb-1.5 block ml-1">Carbs (g)</label>
-                  <input type="number" value={manualCarbs} onChange={e => setManualCarbs(e.target.value)} placeholder="40" className="w-full h-12 rounded-xl bg-gray-900/50 border border-gray-700 text-white px-3 placeholder:text-gray-600 focus:outline-none focus:border-cyan-500" />
+                  <label className="text-foreground/80 text-xs mb-1.5 block ml-1">Carbs (g)</label>
+                  <input type="number" value={manualCarbs} onChange={e => setManualCarbs(e.target.value)} placeholder="40" className="w-full h-12 rounded-xl bg-muted/50 border border-border text-foreground px-3 placeholder:text-muted-foreground focus:outline-none focus:border-cyan-500" />
                 </div>
                 <div>
-                  <label className="text-gray-300 text-xs mb-1.5 block ml-1">Fats (g)</label>
-                  <input type="number" value={manualFats} onChange={e => setManualFats(e.target.value)} placeholder="15" className="w-full h-12 rounded-xl bg-gray-900/50 border border-gray-700 text-white px-3 placeholder:text-gray-600 focus:outline-none focus:border-cyan-500" />
+                  <label className="text-foreground/80 text-xs mb-1.5 block ml-1">Fats (g)</label>
+                  <input type="number" value={manualFats} onChange={e => setManualFats(e.target.value)} placeholder="15" className="w-full h-12 rounded-xl bg-muted/50 border border-border text-foreground px-3 placeholder:text-muted-foreground focus:outline-none focus:border-cyan-500" />
                 </div>
               </div>
             </div>
 
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowManualModal(false)} className="flex-1 h-12 rounded-full bg-gray-800 border border-gray-700 text-white font-medium hover:bg-gray-700">
+              <button onClick={() => setShowManualModal(false)} className="flex-1 h-12 rounded-full bg-muted border border-border text-foreground font-medium hover:bg-muted/80">
                 Cancel
               </button>
               <button 
                 onClick={handleManualSubmit} 
                 disabled={!isManualValid}
-                className={`flex-1 h-12 rounded-full font-medium shadow-lg flex items-center justify-center transition-all ${isManualValid ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-cyan-500/30 hover:shadow-cyan-500/50' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}
+                className={`flex-1 h-12 rounded-full font-medium shadow-lg flex items-center justify-center transition-all ${isManualValid ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-cyan-500/30 hover:shadow-cyan-500/50' : 'bg-muted text-muted-foreground cursor-not-allowed'}`}
               >
                 <Check className="mr-2 w-5 h-5" />
                 Add Meal
