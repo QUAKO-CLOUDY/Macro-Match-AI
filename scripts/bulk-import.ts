@@ -8,213 +8,159 @@ import path from 'path';
 dotenv.config({ path: '.env.local' });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// Use SERVICE ROLE KEY to bypass RLS (Admin Mode)
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const openaiKey = process.env.OPENAI_API_KEY!;
 
 if (!supabaseUrl || !supabaseKey || !openaiKey) {
-  console.error('Missing environment variables. Check .env.local');
-  console.error('Required: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, OPENAI_API_KEY');
+  console.error('❌ Missing environment variables.');
+  console.error('Required: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY');
   process.exit(1);
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 const openai = new OpenAI({ apiKey: openaiKey });
 
-// Helper function to capitalize restaurant name from filename
+// Helper: Format Restaurant Name (chipotle.json -> Chipotle)
 function getRestaurantName(filename: string): string {
   const nameWithoutExt = filename.replace(/\.json$/i, '');
-  // Capitalize first letter of each word
   return nameWithoutExt
     .split(/[-_\s]/)
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
 }
 
-// Helper function to delay execution
+// Helper: Delay to respect OpenAI rate limits
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Get or create restaurant
+// 1. Get or Create Restaurant
 async function getOrCreateRestaurant(restaurantName: string): Promise<string> {
-  // Check if restaurant exists
-  const { data: existing, error: searchError } = await supabase
+  const { data: existing } = await supabase
     .from('restaurants')
     .select('id')
     .ilike('name', restaurantName)
     .maybeSingle();
 
-  if (searchError && searchError.code !== 'PGRST116') { // PGRST116 is "not found" which is fine
-    console.error(`Error searching for restaurant ${restaurantName}:`, searchError);
-    throw searchError;
-  }
-
   if (existing) {
-    console.log(`  Found existing restaurant: ${restaurantName} (ID: ${existing.id})`);
+    console.log(`  Found existing restaurant: ${restaurantName}`);
     return existing.id;
   }
 
-  // Create new restaurant
-  const { data: newRestaurant, error: createError } = await supabase
+  const { data: newRestaurant, error } = await supabase
     .from('restaurants')
     .insert({ name: restaurantName })
     .select('id')
     .single();
 
-  if (createError || !newRestaurant) {
-    console.error(`Error creating restaurant ${restaurantName}:`, createError);
-    throw createError || new Error('Failed to create restaurant');
-  }
-
-  console.log(`  Created new restaurant: ${restaurantName} (ID: ${newRestaurant.id})`);
+  if (error) throw error;
+  console.log(`  Created new restaurant: ${restaurantName}`);
   return newRestaurant.id;
 }
 
-// Generate embedding for an item
-async function generateEmbedding(itemName: string, description: string): Promise<number[]> {
-  const textToEmbed = `${itemName}: ${description || ''}`;
+// 2. Generate "Rich Context" Embedding
+// This is the Upgrade: We embed the Macros and Restaurant Name too.
+async function generateRichEmbedding(
+  restaurantName: string,
+  item: any
+): Promise<number[]> {
+  const itemName = item.item_name || item.name || 'Unknown Item';
+  const description = item.description || '';
+  const protein = item.protein_g || 0;
+  const cals = item.calories || 0;
+  const tags = item.dietary_tags ? item.dietary_tags.join(', ') : '';
+
+  // The "Rich String" the AI will read
+  const textToEmbed = `Restaurant: ${restaurantName}. Item: ${itemName}. Description: ${description}. Macros: ${protein}g Protein, ${cals} Calories. Tags: ${tags}.`;
   
   try {
-    const embeddingResponse = await openai.embeddings.create({
+    const response = await openai.embeddings.create({
       model: 'text-embedding-3-small',
       input: textToEmbed,
     });
-
-    return embeddingResponse.data[0].embedding;
+    return response.data[0].embedding;
   } catch (error) {
-    console.error(`Error generating embedding for ${itemName}:`, error);
+    console.error(`  Error embedding ${itemName}:`, error);
     throw error;
   }
 }
 
-// Process a single JSON file
+// 3. Process File Logic
 async function processFile(filePath: string): Promise<void> {
   const filename = path.basename(filePath);
   const restaurantName = getRestaurantName(filename);
 
   console.log(`\n📄 Processing ${filename}...`);
-  console.log(`   Restaurant: ${restaurantName}`);
 
-  // Read and parse JSON file
   let items: any[];
   try {
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
-    items = JSON.parse(fileContent);
-    
-    if (!Array.isArray(items)) {
-      console.error(`  ❌ Error: ${filename} does not contain a JSON array`);
-      return;
-    }
-  } catch (error) {
-    console.error(`  ❌ Error reading/parsing ${filename}:`, error);
+    items = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    if (!Array.isArray(items)) throw new Error('Not an array');
+  } catch (e) {
+    console.error(`  ❌ Failed to parse ${filename}`);
     return;
   }
 
-  console.log(`   Found ${items.length} items to import`);
-
-  // Get or create restaurant
-  let restaurantId: string;
+  // Get Restaurant ID
+  let restaurantId;
   try {
     restaurantId = await getOrCreateRestaurant(restaurantName);
-  } catch (error) {
-    console.error(`  ❌ Failed to get/create restaurant:`, error);
+  } catch (e) {
+    console.error(`  ❌ Failed to sync restaurant ${restaurantName}`);
     return;
   }
 
-  // Process each item
-  let importedCount = 0;
-  let errorCount = 0;
-
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-    
+  // Loop items
+  let count = 0;
+  for (const item of items) {
     try {
-      // Generate embedding
-      const embedding = await generateEmbedding(
-        item.item_name || item.name || '',
-        item.description || ''
-      );
+      // Create the Rich Embedding
+      const embedding = await generateRichEmbedding(restaurantName, item);
 
-      // Add delay between OpenAI calls (except for the last item)
-      if (i < items.length - 1) {
-        await delay(200);
-      }
-
-      // Map JSON fields to database columns
-      const menuItemData: any = {
+      // Insert into DB
+      const { error } = await supabase.from('menu_items').insert({
         restaurant_id: restaurantId,
-        embedding: embedding,
-        item_name: item.item_name || item.name || null,
-        description: item.description || null,
-        category: item.category || null,
-        price: item.price !== undefined ? item.price : null,
-        calories: item.calories !== undefined ? item.calories : null,
-        protein_g: item.protein_g !== undefined ? item.protein_g : null,
-        carbs_g: item.carbs_g !== undefined ? item.carbs_g : null,
-        fats_g: item.fats_g !== undefined ? item.fats_g : null,
-        dietary_tags: item.dietary_tags || null,
-      };
+        item_name: item.item_name || item.name,
+        description: item.description,
+        category: item.category,
+        price: item.price,
+        calories: item.calories,
+        protein_g: item.protein_g,
+        carbs_g: item.carbs_g,
+        fats_g: item.fats_g,
+        dietary_tags: item.dietary_tags,
+        embedding: embedding 
+      });
 
-      // Insert into database
-      const { error: insertError } = await supabase
-        .from('menu_items')
-        .insert(menuItemData);
+      if (error) throw error;
+      
+      count++;
+      // Small delay to prevent API rate limits
+      await delay(100); 
 
-      if (insertError) {
-        console.error(`  ⚠️  Error inserting item "${item.item_name || item.name}":`, insertError.message);
-        errorCount++;
-      } else {
-        importedCount++;
-        if ((importedCount + errorCount) % 10 === 0) {
-          console.log(`  ✓ Imported ${importedCount} items...`);
-        }
-      }
-    } catch (error: any) {
-      console.error(`  ⚠️  Error processing item "${item.item_name || item.name}":`, error.message);
-      errorCount++;
+    } catch (e: any) {
+      console.error(`  ⚠️ Skipped item: ${item.item_name || 'Unknown'} - ${e.message}`);
     }
   }
-
-  console.log(`  ✅ Completed ${filename}: Imported ${importedCount} items, ${errorCount} errors`);
+  console.log(`  ✅ Imported ${count} items for ${restaurantName}`);
 }
 
-// Main function
-async function bulkImport() {
-  console.log('🚀 Starting bulk import...\n');
-
-  // Get the scripts directory (where this file is located)
-  const scriptsDir = path.resolve(process.cwd(), 'scripts');
-  const dataDir = path.join(scriptsDir, 'data');
-  
-  // Check if data directory exists
+// Main Execution
+async function run() {
+  const dataDir = path.join(process.cwd(), 'scripts', 'data');
   if (!fs.existsSync(dataDir)) {
-    console.error(`❌ Data directory not found: ${dataDir}`);
-    process.exit(1);
+    console.error(`❌ Missing folder: ${dataDir}`);
+    return;
   }
 
-  // Get all JSON files
-  const files = fs.readdirSync(dataDir)
-    .filter(file => file.toLowerCase().endsWith('.json'))
-    .map(file => path.join(dataDir, file));
+  const files = fs.readdirSync(dataDir).filter(f => f.endsWith('.json'));
+  console.log(`Found ${files.length} files. Starting Import...`);
 
-  if (files.length === 0) {
-    console.error(`❌ No JSON files found in ${dataDir}`);
-    process.exit(1);
-  }
-
-  console.log(`Found ${files.length} JSON file(s) to process\n`);
-
-  // Process each file
   for (const file of files) {
-    await processFile(file);
+    await processFile(path.join(dataDir, file));
   }
-
-  console.log('\n✨ Bulk import completed!');
+  console.log('\n✨ DONE.');
 }
 
-// Run the script
-bulkImport().catch(error => {
-  console.error('Fatal error:', error);
-  process.exit(1);
-});
-
+run();

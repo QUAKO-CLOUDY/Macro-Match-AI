@@ -1,222 +1,331 @@
 [
     {
-      "item_name": "Mexican Caesar",
-      "description": "Roasted chicken, cotija cheese, jalapeños, tortilla chips, romaine, mexican caesar dressing.",
-      "category": "Entree",
-      "price": 12.50,
+      "item_name": "Mexicali Vegan",
+      "description": "Roasted sweet potatoes, hearts of palm, grape tomatoes, black beans, tortilla chips, jalapeño peppers, romaine, spinach, Mexican Goddess dressing.",
+      "category": "Signature Bowl",
+      "price": 11.95,
       "calories": 540,
-      "protein_g": 32,
-      "carbs_g": 24,
-      "fats_g": 36,
-      "dietary_tags": ["High-Protein", "Spicy"]
+      "protein_g": 12,
+      "carbs_g": 52,
+      "fats_g": 34,
+      "dietary_tags": [
+        "Vegan",
+        "Gluten-Free",
+        "High-Fiber"
+      ]
     },
     {
       "item_name": "Santa Fe Salad",
-      "description": "Avocado, grape tomatoes, corn, pepper jack, crispy shallots, romaine, sweet & smoky chipotle vinaigrette.",
-      "category": "Entree",
+      "description": "Roasted chicken, avocado, corn, pepper jack cheese, crispy shallots, romaine, sweet smoky chipotle vinaigrette.",
+      "category": "Signature Bowl",
       "price": 12.95,
       "calories": 610,
-      "protein_g": 18,
-      "carbs_g": 38,
-      "fats_g": 44,
-      "dietary_tags": ["Vegetarian"]
-    },
-    {
-      "item_name": "Palm Beach",
-      "description": "Avocado, grape tomatoes, cucumbers, hearts of palm, romaine, white balsamic vinaigrette. (Added chicken recommended for protein).",
-      "category": "Entree",
-      "price": 11.50,
-      "calories": 290,
-      "protein_g": 8,
-      "carbs_g": 22,
-      "fats_g": 20,
-      "dietary_tags": ["Vegan", "Low-Calorie"]
+      "protein_g": 32,
+      "carbs_g": 34,
+      "fats_g": 40,
+      "dietary_tags": [
+        "High-Protein",
+        "Gluten-Free"
+      ]
     },
     {
       "item_name": "Kebab Cobb",
-      "description": "Falafel or Chicken, feta, pickled red onions, spicy peppers, pita chips, romaine, greek yogurt tzatziki.",
-      "category": "Entree",
+      "description": "Roasted chicken, feta cheese, pickled red onions, spicy peppers, pita chips, romaine, chimichurri ranch.",
+      "category": "Signature Bowl",
       "price": 13.50,
-      "calories": 580,
-      "protein_g": 30,
-      "carbs_g": 35,
-      "fats_g": 36,
-      "dietary_tags": ["High-Protein"]
-    },
-    {
-      "item_name": "Kale Caesar",
-      "description": "Parmesan, croutons, kale, romaine, creamy caesar dressing. (Chicken optional but standard).",
-      "category": "Entree",
-      "price": 10.95,
-      "calories": 420,
-      "protein_g": 14,
-      "carbs_g": 26,
-      "fats_g": 30,
-      "dietary_tags": ["Vegetarian"]
-    },
-    {
-      "item_name": "Chicken Tinga Bowl",
-      "description": "Warm grains, chicken tinga, avocado, black beans, cotija, tortilla chips, mexican goddess dressing.",
-      "category": "Entree",
-      "price": 13.95,
-      "calories": 720,
-      "protein_g": 38,
-      "carbs_g": 68,
-      "fats_g": 34,
-      "dietary_tags": ["High-Protein", "Spicy"]
-    },
-    {
-      "item_name": "Sesame Ginger Crunch",
-      "description": "Roasted chicken, carrots, broccoli, pickled onions, wontons, romaine, cabbage, sesame ginger dressing.",
-      "category": "Entree",
-      "price": 12.95,
-      "calories": 510,
-      "protein_g": 28,
-      "carbs_g": 38,
-      "fats_g": 26,
-      "dietary_tags": ["Dairy-Free"]
-    },
-    {
-      "item_name": "Classic Cobb (Custom High Protein)",
-      "description": "Roasted chicken, egg, bacon, avocado, blue cheese, tomato, romaine, buttermilk ranch.",
-      "category": "Entree",
-      "price": 15.50,
-      "calories": 780,
-      "protein_g": 48,
-      "carbs_g": 14,
-      "fats_g": 58,
-      "dietary_tags": ["High-Protein", "Keto", "Low-Carb"]
-    },
-    {
-      "item_name": "Sweetgreen Copycat (Harvest)",
-      "description": "Roasted chicken, sweet potatoes, apples, goat cheese, almonds, kale, romaine, balsamic vinaigrette.",
-      "category": "Entree",
-      "price": 13.95,
-      "calories": 650,
-      "protein_g": 34,
-      "carbs_g": 48,
-      "fats_g": 36,
-      "dietary_tags": ["Balanced"]
-    },
-    {
-      "item_name": "Mexican Caesar Wrap",
-      "description": "Mexican caesar salad wrapped in a flour tortilla.",
-      "category": "Entree",
-      "price": 11.95,
       "calories": 680,
-      "protein_g": 34,
-      "carbs_g": 58,
-      "fats_g": 38,
-      "dietary_tags": []
+      "protein_g": 38,
+      "carbs_g": 36,
+      "fats_g": 45,
+      "dietary_tags": [
+        "High-Protein"
+      ]
     },
     {
-      "item_name": "Warm Grain Bowl (Build Your Own)",
-      "description": "Warm grains, roasted chicken, roasted seasonal veggies, dressing.",
-      "category": "Entree",
-      "price": 13.00,
-      "calories": 620,
-      "protein_g": 32,
-      "carbs_g": 64,
-      "fats_g": 24,
-      "dietary_tags": ["Balanced"]
+      "item_name": "Crispy Chicken Ranch",
+      "description": "Panko fried chicken, mama lil's spicy peppers, pepper jack cheese, celery, biscuit croutons, romaine, chimichurri ranch.",
+      "category": "Signature Bowl",
+      "price": 13.25,
+      "calories": 790,
+      "protein_g": 35,
+      "carbs_g": 48,
+      "fats_g": 52,
+      "dietary_tags": [
+        "High-Protein",
+        "Fried"
+      ]
     },
     {
-      "item_name": "Asian Crunch Salad (Vegan)",
-      "description": "Tofu, broccoli, carrots, wontons, cabbage, romaine, sesame ginger dressing.",
-      "category": "Entree",
+      "item_name": "Warm Grain Bowl",
+      "description": "Your choice of warm grains, roasted chicken, roasted veggies, kale, and dressing.",
+      "category": "Signature Bowl",
       "price": 12.50,
-      "calories": 460,
-      "protein_g": 18,
-      "carbs_g": 44,
-      "fats_g": 24,
-      "dietary_tags": ["Vegan"]
+      "calories": 650,
+      "protein_g": 30,
+      "carbs_g": 68,
+      "fats_g": 28,
+      "dietary_tags": [
+        "High-Protein"
+      ]
     },
     {
-      "item_name": "Side of Roasted Chicken",
-      "description": "Portion of chopped roasted chicken.",
-      "category": "Side",
-      "price": 4.95,
+      "item_name": "Roasted Chicken",
+      "description": "Antibiotic-free roasted chicken breast.",
+      "category": "Protein",
+      "price": 4.00,
       "calories": 140,
       "protein_g": 26,
       "carbs_g": 0,
-      "fats_g": 4,
-      "dietary_tags": ["High-Protein", "Keto"]
+      "fats_g": 3,
+      "dietary_tags": [
+        "High-Protein",
+        "Keto",
+        "Paleo",
+        "Gluten-Free"
+      ]
     },
     {
-      "item_name": "Side of Avocado",
-      "description": "Half avocado.",
-      "category": "Side",
-      "price": 2.50,
-      "calories": 160,
-      "protein_g": 2,
-      "carbs_g": 8,
-      "fats_g": 15,
-      "dietary_tags": ["Vegan", "Keto"]
-    },
-    {
-      "item_name": "Chopt BLT",
-      "description": "Bacon, tomato, romaine, croutons, ranch dressing.",
-      "category": "Entree",
-      "price": 11.50,
-      "calories": 540,
-      "protein_g": 18,
-      "carbs_g": 24,
-      "fats_g": 42,
-      "dietary_tags": ["Keto-Friendly"]
-    },
-    {
-      "item_name": "Panko Fried Chicken Salad",
-      "description": "Panko fried chicken, Mama Lil's peppers, pickled onions, cheddar, romaine, tex-mex ranch.",
-      "category": "Entree",
-      "price": 14.50,
-      "calories": 820,
-      "protein_g": 36,
-      "carbs_g": 48,
-      "fats_g": 54,
-      "dietary_tags": ["Comfort-Food"]
-    },
-    {
-      "item_name": "Greek Salad",
-      "description": "Feta, cucumber, tomato, olives, chickpeas, romaine, vinaigrette.",
-      "category": "Entree",
-      "price": 12.00,
-      "calories": 480,
-      "protein_g": 14,
-      "carbs_g": 28,
-      "fats_g": 36,
-      "dietary_tags": ["Vegetarian", "Gluten-Free"]
-    },
-    {
-      "item_name": "Kids Salad",
-      "description": "Smaller portion of custom salad (3 choppings).",
-      "category": "Entree",
-      "price": 7.95,
-      "calories": 320,
-      "protein_g": 18,
-      "carbs_g": 22,
-      "fats_g": 18,
-      "dietary_tags": ["Kid-Friendly"]
-    },
-    {
-      "item_name": "Warm Bowl with Tofu",
-      "description": "Warm grains, roasted tofu, kale, roasted veggies, miso dressing.",
-      "category": "Entree",
-      "price": 12.95,
-      "calories": 580,
+      "item_name": "Panko Fried Chicken",
+      "description": "Chicken breast breaded in panko and fried.",
+      "category": "Protein",
+      "price": 4.50,
+      "calories": 260,
       "protein_g": 22,
-      "carbs_g": 72,
-      "fats_g": 24,
-      "dietary_tags": ["Vegan"]
+      "carbs_g": 14,
+      "fats_g": 12,
+      "dietary_tags": [
+        "High-Protein",
+        "Fried"
+      ]
     },
     {
-      "item_name": "Side of Bread",
-      "description": "Piece of artisan bread.",
-      "category": "Side",
-      "price": 1.50,
-      "calories": 140,
-      "protein_g": 4,
-      "carbs_g": 28,
+      "item_name": "Roasted Tofu",
+      "description": "Marinated and roasted tofu cubes.",
+      "category": "Protein",
+      "price": 3.50,
+      "calories": 110,
+      "protein_g": 12,
+      "carbs_g": 4,
+      "fats_g": 5,
+      "dietary_tags": [
+        "Vegan",
+        "Vegetarian",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Shrimp",
+      "description": "Sustainable marinated shrimp.",
+      "category": "Protein",
+      "price": 6.50,
+      "calories": 100,
+      "protein_g": 20,
+      "carbs_g": 1,
       "fats_g": 1,
-      "dietary_tags": ["Vegetarian"]
+      "dietary_tags": [
+        "High-Protein",
+        "Keto",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Chopped Romaine",
+      "description": "Fresh romaine lettuce, chopped.",
+      "category": "Base",
+      "price": 0.00,
+      "calories": 15,
+      "protein_g": 1,
+      "carbs_g": 3,
+      "fats_g": 0,
+      "dietary_tags": [
+        "Vegan",
+        "Keto",
+        "Paleo"
+      ]
+    },
+    {
+      "item_name": "Kale Blend",
+      "description": "Chopped kale and purple cabbage.",
+      "category": "Base",
+      "price": 0.00,
+      "calories": 30,
+      "protein_g": 2,
+      "carbs_g": 6,
+      "fats_g": 0,
+      "dietary_tags": [
+        "Vegan",
+        "Keto",
+        "Paleo"
+      ]
+    },
+    {
+      "item_name": "Warm Grains",
+      "description": "Blend of quinoa, lentils, and brown rice.",
+      "category": "Base",
+      "price": 0.00,
+      "calories": 160,
+      "protein_g": 6,
+      "carbs_g": 32,
+      "fats_g": 2,
+      "dietary_tags": [
+        "Vegan",
+        "High-Fiber"
+      ]
+    },
+    {
+      "item_name": "Cauliflower Rice",
+      "description": "Riced cauliflower sautéed with herbs.",
+      "category": "Base",
+      "price": 1.50,
+      "calories": 40,
+      "protein_g": 2,
+      "carbs_g": 6,
+      "fats_g": 1,
+      "dietary_tags": [
+        "Vegan",
+        "Keto",
+        "Paleo"
+      ]
+    },
+    {
+      "item_name": "Avocado",
+      "description": "Fresh avocado slices.",
+      "category": "Topping",
+      "price": 2.50,
+      "calories": 120,
+      "protein_g": 1,
+      "carbs_g": 6,
+      "fats_g": 11,
+      "dietary_tags": [
+        "Vegan",
+        "Keto",
+        "Paleo"
+      ]
+    },
+    {
+      "item_name": "Cotija Cheese",
+      "description": "Crumbled salty Mexican cheese.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 60,
+      "protein_g": 4,
+      "carbs_g": 1,
+      "fats_g": 4,
+      "dietary_tags": [
+        "Vegetarian",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Feta Cheese",
+      "description": "Crumbled feta.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 70,
+      "protein_g": 4,
+      "carbs_g": 1,
+      "fats_g": 6,
+      "dietary_tags": [
+        "Vegetarian",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Hearts of Palm",
+      "description": "Sliced hearts of palm.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 20,
+      "protein_g": 1,
+      "carbs_g": 4,
+      "fats_g": 0,
+      "dietary_tags": [
+        "Vegan",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Tortilla Chips",
+      "description": "Crushed corn tortilla chips.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 80,
+      "protein_g": 1,
+      "carbs_g": 12,
+      "fats_g": 4,
+      "dietary_tags": [
+        "Vegan"
+      ]
+    },
+    {
+      "item_name": "Black Beans",
+      "description": "Whole black beans.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 50,
+      "protein_g": 3,
+      "carbs_g": 9,
+      "fats_g": 0,
+      "dietary_tags": [
+        "Vegan",
+        "High-Fiber"
+      ]
+    },
+    {
+      "item_name": "Mexican Goddess",
+      "description": "Creamy avocado, cilantro, and lemon dressing.",
+      "category": "Dressing",
+      "price": 0.00,
+      "calories": 120,
+      "protein_g": 1,
+      "carbs_g": 3,
+      "fats_g": 11,
+      "dietary_tags": [
+        "Vegan",
+        "Keto",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Chimichurri Ranch",
+      "description": "Creamy ranch blended with fresh herbs.",
+      "category": "Dressing",
+      "price": 0.00,
+      "calories": 140,
+      "protein_g": 1,
+      "carbs_g": 2,
+      "fats_g": 14,
+      "dietary_tags": [
+        "Vegetarian",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Smoky Chipotle Vinaigrette",
+      "description": "Sweet and smoky vinaigrette.",
+      "category": "Dressing",
+      "price": 0.00,
+      "calories": 110,
+      "protein_g": 0,
+      "carbs_g": 7,
+      "fats_g": 9,
+      "dietary_tags": [
+        "Vegan",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Balsamic Vinaigrette",
+      "description": "Classic balsamic dressing.",
+      "category": "Dressing",
+      "price": 0.00,
+      "calories": 100,
+      "protein_g": 0,
+      "carbs_g": 4,
+      "fats_g": 9,
+      "dietary_tags": [
+        "Vegan",
+        "Keto"
+      ]
     }
   ]

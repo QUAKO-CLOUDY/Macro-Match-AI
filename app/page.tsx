@@ -14,31 +14,30 @@ export default function RootPage() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        // Not authenticated - check if they've completed onboarding questions
-        const questionsComplete = typeof window !== 'undefined' 
-          ? localStorage.getItem("macroMatch_onboardingQuestionsComplete") === "true"
-          : false;
+        // In development, always treat onboarding as not completed
+        const isDev = process.env.NODE_ENV === "development";
         
-        const onboardingComplete = typeof window !== 'undefined' 
-          ? localStorage.getItem("hasCompletedOnboarding") === "true" ||
+        // Not authenticated - check if they've completed onboarding
+        const onboardingCompleted = !isDev && typeof window !== 'undefined' 
+          ? localStorage.getItem("onboardingCompleted") === "true" ||
+            localStorage.getItem("hasCompletedOnboarding") === "true" ||
             localStorage.getItem("macroMatch_completedOnboarding") === "true"
           : false;
         
-        if (onboardingComplete) {
+        if (!isDev && onboardingCompleted) {
           // Has completed onboarding but not authenticated - redirect to signin
           router.push('/auth/signin');
-        } else if (questionsComplete) {
-          // Has completed onboarding questions but not created account - redirect to signup
-          router.push('/auth/signup');
         } else {
-          // New user - redirect to onboarding
+          // New user - redirect to onboarding (or in dev, always show onboarding)
           router.push('/onboarding');
         }
         return;
       }
 
       // User is authenticated
-      const completed = await hasCompletedOnboarding(user.id);
+      // In development, always treat onboarding as not completed
+      const isDev = process.env.NODE_ENV === "development";
+      const completed = isDev ? false : await hasCompletedOnboarding(user.id);
       
       if (!completed) {
         // Authenticated but hasn't completed onboarding - redirect to onboarding

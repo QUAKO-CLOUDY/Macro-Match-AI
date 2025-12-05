@@ -1,222 +1,338 @@
 [
     {
       "item_name": "Harissa Avocado Bowl",
-      "description": "Harissa honey chicken, hot harissa vinaigrette, crazy feta, hummus, corn, avocado, rice, and supergreens.",
-      "category": "Entree",
-      "price": 13.75,
-      "calories": 840,
-      "protein_g": 38,
-      "carbs_g": 62,
-      "fats_g": 50,
-      "dietary_tags": ["High-Protein", "Spicy"]
-    },
-    {
-      "item_name": "Lemon Chicken Bowl",
-      "description": "Grilled chicken, preserved lemon vinaigrette, feta, hummus, pickled onions, cucumber, tomato, rice, and spinach.",
-      "category": "Entree",
-      "price": 13.25,
-      "calories": 680,
+      "description": "Harissa Honey Chicken, hot harissa vinaigrette, crazy feta, hummus, corn, avocado, rice, supergreens.",
+      "category": "Signature Bowl",
+      "price": 14.85,
+      "calories": 860,
       "protein_g": 42,
-      "carbs_g": 55,
-      "fats_g": 34,
-      "dietary_tags": ["High-Protein"]
-    },
-    {
-      "item_name": "Greek Salad Bowl",
-      "description": "Grilled chicken, tzatziki, feta, cucumber, tomato, kalamata olives, romaine, arugula, vinaigrette.",
-      "category": "Entree",
-      "price": 13.25,
-      "calories": 590,
-      "protein_g": 40,
-      "carbs_g": 18,
-      "fats_g": 42,
-      "dietary_tags": ["Low-Carb", "Keto-Friendly", "High-Protein"]
-    },
-    {
-      "item_name": "Braised Lamb Bowl",
-      "description": "Spicy braised lamb, tzatziki, roasted eggplant, tomato, cucumber, brown rice, spinach.",
-      "category": "Entree",
-      "price": 14.50,
-      "calories": 720,
-      "protein_g": 36,
-      "carbs_g": 58,
-      "fats_g": 39,
-      "dietary_tags": []
-    },
-    {
-      "item_name": "RightRice Chicken Bowl",
-      "description": "Grilled chicken over RightRice (high protein veggie rice), tzatziki, tomato, cucumber, feta.",
-      "category": "Entree",
-      "price": 14.00,
-      "calories": 620,
-      "protein_g": 52,
-      "carbs_g": 45,
-      "fats_g": 26,
-      "dietary_tags": ["High-Protein", "Gluten-Free"]
-    },
-    {
-      "item_name": "Balsamic Date Chicken Bowl",
-      "description": "Grilled chicken, balsamic date vinaigrette, roasted eggplant, roasted red pepper hummus, rice, greens.",
-      "category": "Entree",
-      "price": 13.75,
-      "calories": 710,
-      "protein_g": 38,
-      "carbs_g": 72,
-      "fats_g": 32,
-      "dietary_tags": []
+      "carbs_g": 68,
+      "fats_g": 48,
+      "dietary_tags": [
+        "High-Protein"
+      ]
     },
     {
       "item_name": "Tahini Caesar Bowl",
-      "description": "Grilled chicken, tahini caesar dressing, feta, pita crisps, pickles, romaine, arugula.",
-      "category": "Entree",
-      "price": 13.25,
-      "calories": 660,
-      "protein_g": 40,
-      "carbs_g": 28,
-      "fats_g": 44,
-      "dietary_tags": ["High-Protein"]
-    },
-    {
-      "item_name": "Lentil Avocado Bowl (Vegetarian)",
-      "description": "Black lentils, roasted eggplant dip, crazy feta, avocado, cucumber, tomato, supergreens, skhug dressing.",
-      "category": "Entree",
-      "price": 12.95,
+      "description": "Grilled Chicken, hummus, pita crisps, pickled onions, feta, romaine, arugula, tahini caesar dressing.",
+      "category": "Signature Bowl",
+      "price": 12.75,
       "calories": 640,
-      "protein_g": 22,
-      "carbs_g": 54,
-      "fats_g": 40,
-      "dietary_tags": ["Vegetarian"]
-    },
-    {
-      "item_name": "Falafel Bowl",
-      "description": "Falafel, hummus, roasted red pepper hummus, cucumber, tomato, pickled onions, brown rice, spinach, lemon herb tahini.",
-      "category": "Entree",
-      "price": 12.50,
-      "calories": 780,
-      "protein_g": 24,
-      "carbs_g": 96,
-      "fats_g": 36,
-      "dietary_tags": ["Vegan"]
-    },
-    {
-      "item_name": "Double Chicken Greens Bowl (Gym Special)",
-      "description": "Double portion grilled chicken, supergreens mix (no rice), tzatziki, red pepper hummus.",
-      "category": "Entree",
-      "price": 16.50,
-      "calories": 580,
-      "protein_g": 74,
-      "carbs_g": 16,
-      "fats_g": 24,
-      "dietary_tags": ["High-Protein", "Low-Carb", "Keto"]
-    },
-    {
-      "item_name": "Spicy Lamb Meatball Bowl",
-      "description": "Spicy lamb meatballs, tzatziki, tomato, cucumber, pickled onions, saffron basmati rice, romaine.",
-      "category": "Entree",
-      "price": 14.50,
-      "calories": 810,
-      "protein_g": 34,
-      "carbs_g": 68,
-      "fats_g": 45,
-      "dietary_tags": ["Spicy"]
-    },
-    {
-      "item_name": "Crazy Feta & Hummus Side",
-      "description": "Side of Crazy Feta (whipped feta with jalapeño) and traditional hummus.",
-      "category": "Side",
-      "price": 4.50,
-      "calories": 320,
-      "protein_g": 10,
-      "carbs_g": 12,
-      "fats_g": 26,
-      "dietary_tags": ["Vegetarian"]
-    },
-    {
-      "item_name": "Kids Chicken & Rice",
-      "description": "Small portion of grilled chicken and saffron basmati rice.",
-      "category": "Entree",
-      "price": 6.95,
-      "calories": 360,
-      "protein_g": 22,
-      "carbs_g": 40,
-      "fats_g": 12,
-      "dietary_tags": ["Kid-Friendly"]
-    },
-    {
-      "item_name": "Market Spice Bowl",
-      "description": "Spicy falafel, roasted sweet potatoes, tzatziki, hummus, broccoli, turmeric rice.",
-      "category": "Entree",
-      "price": 13.50,
-      "calories": 740,
-      "protein_g": 20,
-      "carbs_g": 90,
+      "protein_g": 41,
+      "carbs_g": 38,
       "fats_g": 35,
-      "dietary_tags": ["Vegetarian", "Spicy"]
+      "dietary_tags": [
+        "High-Protein"
+      ]
     },
     {
-      "item_name": "Crispy Falafel Side (3)",
-      "description": "Three pieces of crispy falafel.",
-      "category": "Side",
-      "price": 4.25,
-      "calories": 180,
-      "protein_g": 6,
-      "carbs_g": 21,
-      "fats_g": 9,
-      "dietary_tags": ["Vegan"]
+      "item_name": "Greek Salad",
+      "description": "Grilled Chicken, hummus, tzatziki, feta, cucumber, tomato, kalamata olives, romaine, arugula, vinaigrette.",
+      "category": "Signature Bowl",
+      "price": 12.75,
+      "calories": 590,
+      "protein_g": 43,
+      "carbs_g": 18,
+      "fats_g": 39,
+      "dietary_tags": [
+        "High-Protein",
+        "Keto",
+        "Gluten-Free"
+      ]
     },
     {
-      "item_name": "Steak & RightRice Bowl",
-      "description": "Grilled steak, RightRice, roasted red pepper hummus, crazy feta, tomato, cucumber, arugula.",
-      "category": "Entree",
-      "price": 15.25,
-      "calories": 690,
-      "protein_g": 48,
-      "carbs_g": 42,
-      "fats_g": 38,
-      "dietary_tags": ["High-Protein"]
+      "item_name": "Crispy Falafel Bowl",
+      "description": "Falafel, hummus, roasted eggplant, pickles, cabbage, rice, spinach, lemon herb tahini.",
+      "category": "Signature Bowl",
+      "price": 11.25,
+      "calories": 760,
+      "protein_g": 22,
+      "carbs_g": 98,
+      "fats_g": 32,
+      "dietary_tags": [
+        "Vegan",
+        "Fried"
+      ]
     },
     {
-      "item_name": "Greens & Grains (Chicken)",
-      "description": "Half saffron rice, half supergreens, grilled chicken, hummus, tzatziki, cucumber, tomato.",
-      "category": "Entree",
-      "price": 13.25,
-      "calories": 610,
-      "protein_g": 38,
-      "carbs_g": 48,
-      "fats_g": 30,
-      "dietary_tags": ["Balanced"]
+      "item_name": "Grilled Chicken",
+      "description": "Brushed with olive oil, oregano, and lemon.",
+      "category": "Protein",
+      "price": 11.50,
+      "calories": 240,
+      "protein_g": 41,
+      "carbs_g": 1,
+      "fats_g": 8,
+      "dietary_tags": [
+        "High-Protein",
+        "Keto",
+        "Paleo"
+      ]
     },
     {
-      "item_name": "Roasted Sweet Potato Side",
-      "description": "Side of roasted sweet potatoes.",
-      "category": "Side",
-      "price": 3.75,
-      "calories": 160,
-      "protein_g": 2,
-      "carbs_g": 35,
+      "item_name": "Harissa Honey Chicken",
+      "description": "Honey glazed chicken with spicy harissa.",
+      "category": "Protein",
+      "price": 11.50,
+      "calories": 200,
+      "protein_g": 34,
+      "carbs_g": 8,
+      "fats_g": 4,
+      "dietary_tags": [
+        "High-Protein"
+      ]
+    },
+    {
+      "item_name": "Spicy Lamb Meatballs",
+      "description": "Ground lamb and beef with spicy cilantro and cumin.",
+      "category": "Protein",
+      "price": 12.50,
+      "calories": 300,
+      "protein_g": 24,
+      "carbs_g": 8,
+      "fats_g": 19,
+      "dietary_tags": [
+        "High-Protein",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Braised Lamb",
+      "description": "Slow-braised lamb shoulder.",
+      "category": "Protein",
+      "price": 14.25,
+      "calories": 260,
+      "protein_g": 33,
+      "carbs_g": 1,
+      "fats_g": 13,
+      "dietary_tags": [
+        "High-Protein",
+        "Keto",
+        "Paleo"
+      ]
+    },
+    {
+      "item_name": "Falafel",
+      "description": "Ground chickpeas, herbs, and spices, golden fried.",
+      "category": "Protein",
+      "price": 10.50,
+      "calories": 370,
+      "protein_g": 12,
+      "carbs_g": 32,
+      "fats_g": 22,
+      "dietary_tags": [
+        "Vegan",
+        "Fried"
+      ]
+    },
+    {
+      "item_name": "Saffron Basmati Rice",
+      "description": "Basmati rice cooked with saffron.",
+      "category": "Base",
+      "price": 0.00,
+      "calories": 170,
+      "protein_g": 3,
+      "carbs_g": 36,
       "fats_g": 1,
-      "dietary_tags": ["Vegan"]
+      "dietary_tags": [
+        "Vegan",
+        "Gluten-Free"
+      ]
     },
     {
-      "item_name": "Pita Bread Side",
-      "description": "Warm pita bread.",
-      "category": "Side",
-      "price": 1.95,
-      "calories": 210,
-      "protein_g": 7,
-      "carbs_g": 42,
-      "fats_g": 1,
-      "dietary_tags": ["Vegan"]
+      "item_name": "Black Lentils",
+      "description": "Black lentils stewed with spices.",
+      "category": "Base",
+      "price": 0.00,
+      "calories": 130,
+      "protein_g": 9,
+      "carbs_g": 22,
+      "fats_g": 0,
+      "dietary_tags": [
+        "Vegan",
+        "High-Fiber"
+      ]
     },
     {
-      "item_name": "Garlic Dressing (Side)",
-      "description": "Side of Garlic dressing.",
-      "category": "Side",
+      "item_name": "RightRice",
+      "description": "High-protein veggie rice made from lentils and chickpeas.",
+      "category": "Base",
       "price": 1.50,
-      "calories": 180,
+      "calories": 170,
+      "protein_g": 10,
+      "carbs_g": 27,
+      "fats_g": 2,
+      "dietary_tags": [
+        "Vegan",
+        "High-Protein"
+      ]
+    },
+    {
+      "item_name": "SuperGreens",
+      "description": "Blend of brussels sprouts, kale, cabbage, broccoli, and chicory.",
+      "category": "Base",
+      "price": 0.00,
+      "calories": 40,
+      "protein_g": 2,
+      "carbs_g": 8,
+      "fats_g": 0,
+      "dietary_tags": [
+        "Vegan",
+        "Keto",
+        "Paleo"
+      ]
+    },
+    {
+      "item_name": "Crazy Feta",
+      "description": "Whipped feta with jalapeño, onion, and olive oil.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 130,
+      "protein_g": 5,
+      "carbs_g": 3,
+      "fats_g": 11,
+      "dietary_tags": [
+        "Vegetarian",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Tzatziki",
+      "description": "Yogurt, cucumber, garlic, lemon, and dill.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 45,
+      "protein_g": 3,
+      "carbs_g": 3,
+      "fats_g": 2,
+      "dietary_tags": [
+        "Vegetarian",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Traditional Hummus",
+      "description": "Chickpeas, tahini, lemon, and garlic.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 90,
+      "protein_g": 3,
+      "carbs_g": 7,
+      "fats_g": 6,
+      "dietary_tags": [
+        "Vegan"
+      ]
+    },
+    {
+      "item_name": "Roasted Eggplant Dip",
+      "description": "Roasted eggplant, red pepper, onion, and parsley.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 50,
+      "protein_g": 1,
+      "carbs_g": 4,
+      "fats_g": 3,
+      "dietary_tags": [
+        "Vegan",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Avocado",
+      "description": "Fresh avocado quarters.",
+      "category": "Topping",
+      "price": 2.75,
+      "calories": 140,
+      "protein_g": 2,
+      "carbs_g": 9,
+      "fats_g": 12,
+      "dietary_tags": [
+        "Vegan",
+        "Keto",
+        "Paleo"
+      ]
+    },
+    {
+      "item_name": "Fire Roasted Corn",
+      "description": "Corn roasted with spices.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 60,
+      "protein_g": 2,
+      "carbs_g": 12,
+      "fats_g": 1,
+      "dietary_tags": [
+        "Vegan"
+      ]
+    },
+    {
+      "item_name": "Pickled Onions",
+      "description": "Red onions pickled in vinegar.",
+      "category": "Topping",
+      "price": 0.00,
+      "calories": 20,
       "protein_g": 0,
+      "carbs_g": 5,
+      "fats_g": 0,
+      "dietary_tags": [
+        "Vegan",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Lemon Herb Tahini",
+      "description": "Creamy tahini with lemon and herbs.",
+      "category": "Dressing",
+      "price": 0.00,
+      "calories": 110,
+      "protein_g": 3,
+      "carbs_g": 5,
+      "fats_g": 9,
+      "dietary_tags": [
+        "Vegan",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Skhug",
+      "description": "Spicy green hot sauce with cilantro, jalapeño, and chili peppers.",
+      "category": "Dressing",
+      "price": 0.00,
+      "calories": 80,
+      "protein_g": 0,
+      "carbs_g": 1,
+      "fats_g": 9,
+      "dietary_tags": [
+        "Vegan",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Yogurt Dill",
+      "description": "Creamy yogurt dressing with fresh dill.",
+      "category": "Dressing",
+      "price": 0.00,
+      "calories": 45,
+      "protein_g": 1,
       "carbs_g": 2,
-      "fats_g": 20,
-      "dietary_tags": ["Vegan"]
+      "fats_g": 3,
+      "dietary_tags": [
+        "Vegetarian",
+        "Keto"
+      ]
+    },
+    {
+      "item_name": "Hot Harissa Vinaigrette",
+      "description": "Spicy vinaigrette made with harissa paste.",
+      "category": "Dressing",
+      "price": 0.00,
+      "calories": 90,
+      "protein_g": 0,
+      "carbs_g": 3,
+      "fats_g": 8,
+      "dietary_tags": [
+        "Vegan",
+        "Keto"
+      ]
     }
   ]

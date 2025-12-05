@@ -1,222 +1,278 @@
 [
     {
-      "item_name": "Salt & Pepper Chicken Plate",
-      "description": "Roasted chicken breast with salt & pepper, served with mashed potatoes and simple salad.",
-      "category": "Entree",
-      "price": 15.50,
-      "calories": 580,
-      "protein_g": 48,
-      "carbs_g": 32,
-      "fats_g": 28,
-      "dietary_tags": ["High-Protein", "Balanced"]
+        "item_name": "California Bowl (Chipotle Chicken)",
+        "description": "Chipotle BBQ chicken, roasted corn salsa, avocado, queso fresco, lime, and cilantro lime rice.",
+        "category": "Entree",
+        "price": 15.95,
+        "calories": 645,
+        "protein_g": 35,
+        "carbs_g": 52,
+        "fats_g": 34,
+        "dietary_tags": [
+            "High-Protein",
+            "Spicy"
+        ]
     },
     {
-      "item_name": "Grilled Steak Plate",
-      "description": "Grilled steak (med-rare), served with mashed potatoes and simple salad.",
-      "category": "Entree",
-      "price": 17.50,
-      "calories": 640,
-      "protein_g": 42,
-      "carbs_g": 32,
-      "fats_g": 38,
-      "dietary_tags": ["High-Protein"]
+        "item_name": "Happy Vegan Bowl",
+        "description": "Farro salad, cranberry, almonds, hummus, pasta pearls, baby greens, and lemon vinaigrette.",
+        "category": "Entree",
+        "price": 14.50,
+        "calories": 700,
+        "protein_g": 18,
+        "carbs_g": 85,
+        "fats_g": 32,
+        "dietary_tags": [
+            "Vegan",
+            "Vegetarian"
+        ]
     },
     {
-      "item_name": "Herb Brushed Salmon Plate",
-      "description": "Pacific salmon brushed with herbs, served with brown rice and grilled veggies.",
-      "category": "Entree",
-      "price": 18.50,
-      "calories": 590,
-      "protein_g": 38,
-      "carbs_g": 44,
-      "fats_g": 29,
-      "dietary_tags": ["High-Protein", "Gluten-Free"]
+        "item_name": "Pacific Bowl (Katsu Chicken)",
+        "description": "Fried chicken katsu, sushi rice, cabbage slaw, and katsu sauce.",
+        "category": "Entree",
+        "price": 15.50,
+        "calories": 1025,
+        "protein_g": 35,
+        "carbs_g": 110,
+        "fats_g": 48,
+        "dietary_tags": [
+            "Fried"
+        ]
     },
     {
-      "item_name": "Chipotle Barbecue Chicken Plate",
-      "description": "Chicken thigh with chipotle bbq sauce, served with roasted potatoes and kale.",
-      "category": "Entree",
-      "price": 15.50,
-      "calories": 720,
-      "protein_g": 44,
-      "carbs_g": 55,
-      "fats_g": 36,
-      "dietary_tags": ["Spicy"]
+        "item_name": "Thai Bowl (Steak)",
+        "description": "Grilled steak, coconut sushi rice, green papaya slaw, crispy shallots, herbs, and thai lime vinaigrette.",
+        "category": "Entree",
+        "price": 16.50,
+        "calories": 785,
+        "protein_g": 32,
+        "carbs_g": 76,
+        "fats_g": 39,
+        "dietary_tags": [
+            "Dairy-Free"
+        ]
     },
     {
-      "item_name": "Happy Vegan Salad",
-      "description": "Farro, cranberries, hazelnuts, hummus, quinoa, cucumber, beets, green hummus, tender greens mix.",
-      "category": "Entree",
-      "price": 14.50,
-      "calories": 610,
-      "protein_g": 16,
-      "carbs_g": 78,
-      "fats_g": 26,
-      "dietary_tags": ["Vegan"]
+        "item_name": "Salt & Pepper Chicken (Plate Portion)",
+        "description": "Roasted skin-on chicken breast seasoned with salt, pepper, garlic, and oregano.",
+        "category": "Entree",
+        "price": 8.00,
+        "calories": 190,
+        "protein_g": 26,
+        "carbs_g": 0,
+        "fats_g": 9,
+        "dietary_tags": [
+            "Gluten-Free",
+            "High-Protein",
+            "Keto"
+        ]
     },
     {
-      "item_name": "Tuna Nicoise Salad",
-      "description": "Seared rare tuna, green beans, fingerling potatoes, olives, hard boiled egg, tomato, sherry vinaigrette.",
-      "category": "Entree",
-      "price": 17.00,
-      "calories": 540,
-      "protein_g": 42,
-      "carbs_g": 24,
-      "fats_g": 30,
-      "dietary_tags": ["High-Protein", "Gluten-Free"]
+        "item_name": "Chipotle BBQ Chicken (Plate Portion)",
+        "description": "Grilled chicken thigh brushed with chipotle bbq sauce.",
+        "category": "Entree",
+        "price": 8.50,
+        "calories": 310,
+        "protein_g": 32,
+        "carbs_g": 8,
+        "fats_g": 16,
+        "dietary_tags": [
+            "High-Protein",
+            "Spicy"
+        ]
     },
     {
-      "item_name": "Chinese Chicken Salad",
-      "description": "Chicken, wontons, peanuts, cilantro, green onion, carrots, sesame dressing.",
-      "category": "Entree",
-      "price": 14.95,
-      "calories": 620,
-      "protein_g": 35,
-      "carbs_g": 42,
-      "fats_g": 34,
-      "dietary_tags": []
+        "item_name": "Grilled Steak (Plate Portion)",
+        "description": "Seared steak medallions served medium rare.",
+        "category": "Entree",
+        "price": 10.00,
+        "calories": 280,
+        "protein_g": 29,
+        "carbs_g": 0,
+        "fats_g": 17,
+        "dietary_tags": [
+            "Gluten-Free",
+            "High-Protein",
+            "Keto"
+        ]
     },
     {
-      "item_name": "Thai Shrimp Bowl",
-      "description": "Grilled shrimp, coconut rice, green papaya, cabbage, herbs, thai lime vinaigrette.",
-      "category": "Entree",
-      "price": 16.50,
-      "calories": 560,
-      "protein_g": 28,
-      "carbs_g": 58,
-      "fats_g": 22,
-      "dietary_tags": ["Gluten-Free"]
+        "item_name": "Grilled Salmon (Plate Portion)",
+        "description": "Sustainable salmon fillet, pan seared.",
+        "category": "Entree",
+        "price": 10.50,
+        "calories": 195,
+        "protein_g": 22,
+        "carbs_g": 0,
+        "fats_g": 11,
+        "dietary_tags": [
+            "Gluten-Free",
+            "High-Protein",
+            "Pescatarian"
+        ]
     },
     {
-      "item_name": "Steak Plate (Low Carb Sub)",
-      "description": "Grilled steak, served with double roasted vegetables (no potatoes/rice).",
-      "category": "Entree",
-      "price": 17.50,
-      "calories": 520,
-      "protein_g": 44,
-      "carbs_g": 18,
-      "fats_g": 32,
-      "dietary_tags": ["Keto", "Low-Carb", "High-Protein"]
+        "item_name": "Fried Chicken (Plate Portion)",
+        "description": "Buttermilk fried chicken breast.",
+        "category": "Entree",
+        "price": 9.00,
+        "calories": 560,
+        "protein_g": 35,
+        "carbs_g": 24,
+        "fats_g": 36,
+        "dietary_tags": [
+            "Fried"
+        ]
     },
     {
-      "item_name": "Fried Chicken Sandwich",
-      "description": "Fried chicken breast, pickles, cabbage slaw, brioche bun. (Not 'Smart Meal' unless treat day, but listed for menu completeness).",
-      "category": "Entree",
-      "price": 14.50,
-      "calories": 890,
-      "protein_g": 38,
-      "carbs_g": 65,
-      "fats_g": 52,
-      "dietary_tags": ["Comfort-Food"]
+        "item_name": "Tuna Nicoise Salad",
+        "description": "Seared tuna, baby greens, tomato, potato, capers, green beans, olives, hard boiled egg, and sherry vinaigrette.",
+        "category": "Entree",
+        "price": 16.00,
+        "calories": 650,
+        "protein_g": 38,
+        "carbs_g": 22,
+        "fats_g": 45,
+        "dietary_tags": [
+            "Gluten-Free",
+            "High-Protein"
+        ]
     },
     {
-      "item_name": "Chicken Cobb Salad",
-      "description": "Chicken, bacon, avocado, blue cheese, egg, tomato, romaine, ranch.",
-      "category": "Entree",
-      "price": 15.95,
-      "calories": 780,
-      "protein_g": 52,
-      "carbs_g": 12,
-      "fats_g": 58,
-      "dietary_tags": ["Keto", "High-Protein"]
+        "item_name": "Mashed Potatoes",
+        "description": "Creamy mashed potatoes with butter and cream.",
+        "category": "Side",
+        "price": 4.50,
+        "calories": 180,
+        "protein_g": 3,
+        "carbs_g": 22,
+        "fats_g": 9,
+        "dietary_tags": [
+            "Vegetarian",
+            "Gluten-Free"
+        ]
     },
     {
-      "item_name": "Mashed Potatoes (Side)",
-      "description": "Creamy mashed potatoes.",
-      "category": "Side",
-      "price": 5.00,
-      "calories": 240,
-      "protein_g": 4,
-      "carbs_g": 32,
-      "fats_g": 10,
-      "dietary_tags": ["Vegetarian", "Gluten-Free"]
+        "item_name": "Roasted Potatoes",
+        "description": "Herb roasted fingerling potatoes.",
+        "category": "Side",
+        "price": 4.50,
+        "calories": 180,
+        "protein_g": 3,
+        "carbs_g": 28,
+        "fats_g": 7,
+        "dietary_tags": [
+            "Vegan",
+            "Gluten-Free"
+        ]
     },
     {
-      "item_name": "Roasted Vegetables (Side)",
-      "description": "Seasonal roasted vegetables.",
-      "category": "Side",
-      "price": 5.00,
-      "calories": 140,
-      "protein_g": 3,
-      "carbs_g": 18,
-      "fats_g": 7,
+        "item_name": "Baby Greens Salad",
+        "description": "Mixed baby greens with sherry vinaigrette.",
+        "category": "Side",
+        "price": 4.50,
+        "calories": 160,
+        "protein_g": 1,
+        "carbs_g": 4,
+        "fats_g": 15,
+        "dietary_tags": [
+            "Vegan",
+            "Gluten-Free"
+        ]
+    },
+    {
+        "item_name": "Kale Salad",
+        "description": "Kale, parmesan, garlic, and lemon vinaigrette.",
+        "category": "Side",
+        "price": 5.00,
+        "calories": 250,
+        "protein_g": 8,
+        "carbs_g": 12,
+        "fats_g": 20,
+        "dietary_tags": [
+            "Vegetarian",
+            "Gluten-Free"
+        ]
+    },
+    {
+        "item_name": "Seasonal Vegetables",
+        "description": "Roasted seasonal veggies (typically carrots, squash, or cauliflower).",
+        "category": "Side",
+        "price": 5.00,
+        "calories": 115,
+        "protein_g": 2,
+        "carbs_g": 14,
+        "fats_g": 6,
+        "dietary_tags": [
+            "Vegan",
+            "Gluten-Free"
+        ]
+    },
+    {
+        "item_name": "Roasted Garlic Vinaigrette",
+      "description": "Olive oil, roasted garlic, vinegar blend.",
+      "category": "Sauce",
+      "price": 0,
+      "calories": 160,
+      "protein_g": 0,
+      "carbs_g": 2,
+      "fats_g": 17,
       "dietary_tags": ["Vegan", "Gluten-Free"]
     },
     {
-      "item_name": "Baby Spinach Salad (Side)",
-      "description": "Spinach, goat cheese, hazelnuts, cabernet vinaigrette.",
-      "category": "Side",
-      "price": 6.00,
-      "calories": 210,
-      "protein_g": 6,
-      "carbs_g": 8,
-      "fats_g": 18,
-      "dietary_tags": ["Vegetarian", "Gluten-Free"]
-    },
-    {
-      "item_name": "Salt & Pepper Chicken (Protein Side)",
-      "description": "6oz serving of roasted chicken breast.",
-      "category": "Side",
-      "price": 7.50,
-      "calories": 240,
-      "protein_g": 46,
-      "carbs_g": 0,
-      "fats_g": 6,
-      "dietary_tags": ["High-Protein", "Keto", "Paleo"]
-    },
-    {
-      "item_name": "Grilled Steak (Protein Side)",
-      "description": "5oz serving of grilled steak.",
-      "category": "Side",
-      "price": 9.50,
-      "calories": 280,
-      "protein_g": 36,
-      "carbs_g": 0,
+      "item_name": "Sherry Vinaigrette",
+      "description": "Sherry vinegar, oil, shallots, and herbs.",
+      "category": "Sauce",
+      "price": 0,
+      "calories": 145,
+      "protein_g": 0,
+      "carbs_g": 3,
       "fats_g": 15,
-      "dietary_tags": ["High-Protein", "Keto", "Paleo"]
+      "dietary_tags": ["Vegan", "Gluten-Free"]
     },
     {
-      "item_name": "Salmon (Protein Side)",
-      "description": "5oz serving of grilled salmon.",
-      "category": "Side",
-      "price": 10.50,
-      "calories": 260,
-      "protein_g": 32,
-      "carbs_g": 0,
-      "fats_g": 14,
-      "dietary_tags": ["High-Protein", "Keto", "Paleo"]
+      "item_name": "Lemon Vinaigrette",
+      "description": "Fresh lemon juice, oil, and simple seasoning.",
+      "category": "Sauce",
+      "price": 0,
+      "calories": 140,
+      "protein_g": 0,
+      "carbs_g": 1,
+      "fats_g": 15,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
     },
     {
-      "item_name": "California Bowl",
-      "description": "Brown rice, chicken, cabbage slaw, feta, salsa, lime.",
-      "category": "Entree",
-      "price": 14.50,
-      "calories": 610,
-      "protein_g": 38,
-      "carbs_g": 52,
-      "fats_g": 26,
-      "dietary_tags": ["Gluten-Free"]
+      "item_name": "Chipotle Barbecue Sauce",
+      "description": "Smoky and spicy BBQ sauce.",
+      "category": "Sauce",
+      "price": 0,
+      "calories": 45,
+      "protein_g": 0,
+      "carbs_g": 10,
+      "fats_g": 0,
+      "dietary_tags": ["Vegan", "Gluten-Free"]
     },
     {
-      "item_name": "Tomato Soup",
-      "description": "Roasted tomato soup with basil oil.",
-      "category": "Side",
-      "price": 5.50,
-      "calories": 180,
-      "protein_g": 2,
-      "carbs_g": 22,
-      "fats_g": 9,
+      "item_name": "Katsu Sauce",
+      "description": "Sweet and tangy Japanese-style BBQ sauce.",
+      "category": "Sauce",
+      "price": 0,
+      "calories": 50,
+      "protein_g": 0,
+      "carbs_g": 12,
+      "fats_g": 0,
+      "dietary_tags": ["Vegan"]
+    },
+    {
+      "item_name": "Cilantro Lime Dressing",
+      "description": "Creamy cilantro and lime based dressing.",
+      "category": "Sauce",
+      "price": 0,
+      "calories": 110,
+      "protein_g": 1,
+      "carbs_g": 2,
+      "fats_g": 11,
       "dietary_tags": ["Vegetarian", "Gluten-Free"]
-    },
-    {
-      "item_name": "Family Meal Chicken",
-      "description": "Whole roasted chicken (cut), mashed potatoes, salad. Serves 4.",
-      "category": "Grocery-ReadyToEat",
-      "price": 55.00,
-      "calories": 2400,
-      "protein_g": 190,
-      "carbs_g": 140,
-      "fats_g": 110,
-      "dietary_tags": ["Shareable"]
     }
   ]

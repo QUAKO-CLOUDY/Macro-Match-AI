@@ -23,9 +23,16 @@ export async function getCurrentUser() {
 /**
  * Check if user has completed onboarding
  * Checks both Supabase profiles table and localStorage fallback
+ * In development mode, always returns false to allow testing onboarding
  */
 export async function hasCompletedOnboarding(userId?: string): Promise<boolean> {
   if (typeof window === "undefined") return false;
+
+  // In development, always treat onboarding as not completed
+  const isDev = process.env.NODE_ENV === "development";
+  if (isDev) {
+    return false;
+  }
 
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

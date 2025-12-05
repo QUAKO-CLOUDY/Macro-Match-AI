@@ -1,7 +1,14 @@
-import { createServerClient } from '@supabase/ssr'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  
+  // 1. BYPASS: If the request is for the API, let it pass.
+  // We want the search to be public for the MVP.
+  if (request.nextUrl.pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -13,124 +20,58 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll()
+        get(name: string) {
+          return request.cookies.get(name)?.value
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+        set(name: string, value: string, options: CookieOptions) {
+          request.cookies.set({
+            name,
+            value,
+            ...options,
+          })
           response = NextResponse.next({
             request: {
               headers: request.headers,
             },
           })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          )
+          response.cookies.set({
+            name,
+            value,
+            ...options,
+          })
+        },
+        remove(name: string, options: CookieOptions) {
+          request.cookies.set({
+            name,
+            value: '',
+            ...options,
+          })
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          })
+          response.cookies.set({
+            name,
+            value: '',
+            ...options,
+          })
         },
       },
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  const pathname = request.nextUrl.pathname
-
-  // Public routes
-  const publicRoutes = ['/auth/signin', '/auth/signup']
-  const onboardingRoutes = ['/onboarding', '/onboarding/start']
-  const isPublicRoute = publicRoutes.includes(pathname)
-  const isOnboardingRoute = onboardingRoutes.includes(pathname) || pathname.startsWith('/onboarding')
-
-  // If user is not authenticated
-  if (!user) {
-    // Allow access to public routes and onboarding
-    if (isPublicRoute || isOnboardingRoute) {
-      return response
-    }
-    
-    // Check localStorage for onboarding completion (client-side check will handle this)
-    // For middleware, redirect to onboarding for unauthenticated users
-    if (pathname !== '/onboarding' && !pathname.startsWith('/onboarding')) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/onboarding'
-      return NextResponse.redirect(url)
-    }
-    
-    return response
-  }
-
-  // User is authenticated - check onboarding status
-  let hasCompletedOnboarding = false
+  // 2. PROTECTED ROUTES: Only block these specific pages
+  // If they try to go to /dashboard or /profile without login, redirect them.
+  // BUT do not block the Home Page (/) or the API.
+  const protectedRoutes = ['/dashboard', '/profile', '/settings']
   
-  try {
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('has_completed_onboarding, last_login')
-      .eq('id', user.id)
-      .single()
-
-    // Only set to false if there's an actual error (not just missing profile)
-    if (error && error.code !== 'PGRST116') {
-      console.warn('Error fetching profile:', error)
-    }
-    
-    hasCompletedOnboarding = profile?.has_completed_onboarding ?? false
-    
-    // Check if lastLogin is within 30 minutes (1800000 ms)
-    if (profile?.last_login) {
-      const lastLogin = new Date(profile.last_login).getTime()
-      const now = Date.now()
-      const thirtyMinutesAgo = now - (30 * 60 * 1000)
-      
-      if (lastLogin < thirtyMinutesAgo && !isOnboardingRoute && !isPublicRoute) {
-        // Last login was more than 30 minutes ago - require re-authentication
-        const url = request.nextUrl.clone()
-        url.pathname = '/auth/signin'
-        return NextResponse.redirect(url)
-      }
-    }
-  } catch (error) {
-    // Profiles table might not exist yet - allow through and let client-side handle it
-    // This prevents redirect loops when profile is being created
-    console.warn('Error checking profile, allowing access:', error)
-    hasCompletedOnboarding = false
+  if (protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route)) && !user) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Main app routes that authenticated users should be able to access
-  const mainAppRoutes = ['/home', '/chat']
-  const isMainAppRoute = mainAppRoutes.includes(pathname)
-
-  // If user has completed onboarding and tries to access onboarding, redirect to chat
-  if (hasCompletedOnboarding && isOnboardingRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/chat'
-    return NextResponse.redirect(url)
-  }
-
-  // Allow authenticated users to access main app routes even if onboarding check fails
-  // This prevents redirect loops when onboarding is being completed
-  if (isMainAppRoute) {
-    return response
-  }
-
-  // If user hasn't completed onboarding and accessing other protected routes, redirect to onboarding
-  if (!hasCompletedOnboarding && !isOnboardingRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/onboarding'
-    return NextResponse.redirect(url)
-  }
-
-  // User is authenticated and has completed onboarding
-  // Redirect root to chat (AI chatbot)
-  if (pathname === '/') {
-    const url = request.nextUrl.clone()
-    url.pathname = '/chat'
-    return NextResponse.redirect(url)
-  }
-
-  // Allow access to main app routes
   return response
 }
 
@@ -141,8 +82,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - public folder
+     * Feel free to modify this pattern to include more paths.
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 }
