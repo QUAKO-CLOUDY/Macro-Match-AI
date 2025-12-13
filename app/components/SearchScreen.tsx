@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { Search, Flame, ChevronRight, Sparkles, X, AlertCircle } from 'lucide-react';
 import type { Meal } from '../types';
+import { getMealImageUrl } from '@/lib/image-utils';
+import FoodCard from './FoodCard';
 
 type Props = {
   onMealSelect: (meal: Meal) => void;
@@ -16,15 +18,32 @@ function convertToMeal(item: any): Meal {
     ? 'grocery' as const 
     : 'restaurant' as const;
 
+  const mealName = item.item_name || item.name || 'Unknown Item';
+  const restaurantName = item.restaurant_name || 'Unknown Restaurant';
+  
+  // Use getMealImageUrl to ensure we always have a real food image
+  const imageUrl = getMealImageUrl(
+    mealName,
+    restaurantName,
+    item.image_url || item.image
+  );
+
+  // Handle fats - check fats_g (database column) first, then other variations
+  const fats = item.fats_g ?? item.fat_g ?? item.fats ?? item.fat ?? 
+               (item.nutrition_info?.fats_g) ?? 
+               (item.nutrition_info?.fat_g) ?? 
+               (item.nutrition_info?.fats) ?? 
+               (item.nutrition_info?.fat) ?? 0;
+
   return {
     id: item.id || `meal-${Date.now()}-${Math.random()}`,
-    name: item.item_name || item.name || 'Unknown Item',
-    restaurant: item.restaurant_name || 'Unknown Restaurant',
+    name: mealName,
+    restaurant: restaurantName,
     calories: item.calories || 0,
     protein: item.protein_g || 0,
     carbs: item.carbs_g || 0,
-    fats: item.fat_g || 0,
-    image: item.image_url || '/placeholder-food.jpg',
+    fats: typeof fats === 'number' ? fats : 0,
+    image: imageUrl,
     price: item.price || null, // Keep null for proper handling
     description: item.description || '',
     category: category,
@@ -35,6 +54,7 @@ function convertToMeal(item: any): Meal {
 export function SearchScreen({ onMealSelect, onBack }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Meal[]>([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -65,12 +85,16 @@ export function SearchScreen({ onMealSelect, onBack }: Props) {
         normalizedResults = data.results;
       }
       
-      // Convert to Meal type
+      // Store raw results for FoodCard display
+      setSearchResults(normalizedResults);
+      
+      // Convert to Meal type for onMealSelect
       const meals = normalizedResults.map(convertToMeal);
       setResults(meals);
     } catch (error) {
       console.error('Search failed:', error);
       setResults([]);
+      setSearchResults([]);
     } finally {
       setLoading(false);
       setIsSearchOpen(false);
@@ -126,102 +150,20 @@ export function SearchScreen({ onMealSelect, onBack }: Props) {
 
         {/* Results List */}
         <div className="space-y-4">
-          {results.map((meal) => {
-            // Check for variable availability
-            const hasVariableAvailability = meal.dietary_tags?.some(
-              (tag: string) => tag === 'Location Varies' || tag === 'Seasonal'
-            ) || false;
-
-            // Check if it's a grocery/hot bar item
-            const isGrocery = meal.category === 'grocery' || 
-                            meal.category === 'Grocery' || 
-                            meal.category === 'Hot Bar';
-
-            // Format price with safety checks
-            const formatPrice = () => {
-              if (!meal.price || meal.price === 0) {
-                return 'Market Price';
-              }
-              return `~$${meal.price.toFixed(2)}`;
-            };
-
+          {searchResults.map((item) => {
+            // Convert item to meal for onMealSelect when clicked
+            const meal = convertToMeal(item);
+            
             return (
               <div
-                key={meal.id}
+                key={item.id || meal.id}
                 onClick={() => onMealSelect(meal)}
-                className={`bg-card rounded-xl overflow-hidden shadow-sm hover:border-cyan-500/50 transition-colors cursor-pointer ${
-                  isGrocery 
-                    ? 'border-2 border-green-500/30' 
-                    : 'border border-border'
-                }`}
+                className="cursor-pointer"
               >
-                {/* Grocery Badge */}
-                {isGrocery && (
-                  <div className="bg-green-500/20 border-b border-green-500/30 px-3 py-1.5">
-                    <span className="text-xs font-medium text-green-400 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
-                      Buy & Assemble
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex">
-                  {/* Image Placeholder */}
-                  <div className="w-24 h-24 bg-muted flex-shrink-0 relative">
-                    {meal.image && meal.image !== '/placeholder-food.jpg' ? (
-                      <img 
-                        src={meal.image} 
-                        alt={meal.name} 
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-xs">
-                        Food
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="p-3 flex-1 min-w-0">
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-semibold text-card-foreground truncate pr-2">{meal.name}</h3>
-                      <span 
-                        className="text-xs font-medium text-muted-foreground whitespace-nowrap"
-                        title="Price varies by location"
-                      >
-                        {formatPrice()}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <p className="text-xs text-muted-foreground">{meal.restaurant}</p>
-                      {hasVariableAvailability && (
-                        <div 
-                          className="group relative"
-                          title="Availability depends on store location"
-                        >
-                          <AlertCircle className="w-3.5 h-3.5 text-yellow-400" />
-                          {/* Tooltip for desktop */}
-                          <div className="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-card text-xs text-card-foreground rounded whitespace-nowrap z-10 border border-border">
-                            Availability depends on store location
-                            <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-card"></div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Macros Badge */}
-                    <div className="mt-3 flex items-center gap-3 text-xs">
-                      <div className="flex items-center text-orange-400 font-medium bg-orange-400/10 px-2 py-0.5 rounded">
-                        <Flame className="w-3 h-3 mr-1" />
-                        {meal.protein}g Pro
-                      </div>
-                      <span className="text-muted-foreground">{meal.calories} cal</span>
-                    </div>
-                  </div>
-                </div>
+                <FoodCard 
+                  item={item} 
+                  restaurantName={item.restaurant_name || 'Unknown Restaurant'} 
+                />
               </div>
             );
           })}

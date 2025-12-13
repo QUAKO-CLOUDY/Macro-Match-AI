@@ -8,12 +8,11 @@ import { Badge } from './ui/badge';
 
 // --- Types ---
 export type UserProfile = {
-  name: string;
-  goal: string;
-  calorieTarget: number;
-  proteinTarget: number;
-  carbsTarget: number;
-  fatsTarget: number;
+  full_name?: string;
+  target_calories: number;
+  target_protein_g: number;
+  target_carbs_g: number;
+  target_fats_g: number;
 };
 
 type Props = {
@@ -38,14 +37,14 @@ const quickPrompts = [
 ];
 
 export function MacroPreferencesChat({ 
-  userProfile = { name: "Guest", goal: "lose-weight", calorieTarget: 1800, proteinTarget: 140, carbsTarget: 100, fatsTarget: 60 }, 
+  userProfile = { full_name: "Guest", target_calories: 1800, target_protein_g: 140, target_carbs_g: 100, target_fats_g: 60 }, 
   onComplete 
 }: Props) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       type: 'ai',
-      content: `Great! I've calculated your macros based on your ${userProfile.goal.replace('-', ' ')} goal. You'll be targeting ${userProfile.calorieTarget} calories daily with ${userProfile.proteinTarget}g protein, ${userProfile.carbsTarget}g carbs, and ${userProfile.fatsTarget}g fats.`,
+      content: `Great! I've calculated your macros. You'll be targeting ${userProfile.target_calories} calories daily with ${userProfile.target_protein_g}g protein, ${userProfile.target_carbs_g}g carbs, and ${userProfile.target_fats_g}g fats.`,
       timestamp: new Date(),
     },
     {
@@ -76,13 +75,13 @@ export function MacroPreferencesChat({
     // First response after user input
     if (conversationDepth === 0) {
       if (lowerMessage.includes('high protein') || lowerMessage.includes('protein')) {
-        response = `Perfect! I'll prioritize high-protein meals for you. With your ${userProfile.proteinTarget}g daily protein target, I'll show you meals with 30g+ protein per serving. Any specific protein sources you prefer - chicken, fish, plant-based?`;
+        response = `Perfect! I'll prioritize high-protein meals for you. With your ${userProfile.target_protein_g}g daily protein target, I'll show you meals with 30g+ protein per serving. Any specific protein sources you prefer - chicken, fish, plant-based?`;
         suggestions = ['Chicken and fish', 'Plant-based proteins', 'Mix of everything'];
       } else if (lowerMessage.includes('low carb') || lowerMessage.includes('keto')) {
-        response = `Got it! I'll focus on low-carb options. Your carb target is ${userProfile.carbsTarget}g daily, so I'll show meals under 30g carbs. Do you want strict keto-style meals, or moderate low-carb?`;
+        response = `Got it! I'll focus on low-carb options. Your carb target is ${userProfile.target_carbs_g}g daily, so I'll show meals under 30g carbs. Do you want strict keto-style meals, or moderate low-carb?`;
         suggestions = ['Strict keto (<20g)', 'Moderate low-carb', 'Flexible'];
       } else if (lowerMessage.includes('500') || lowerMessage.includes('calorie')) {
-        response = `I'll find you satisfying meals under 500 calories! Since your daily target is ${userProfile.calorieTarget} calories, you'll have flexibility for snacks. Want these for lunch, dinner, or both?`;
+        response = `I'll find you satisfying meals under 500 calories! Since your daily target is ${userProfile.target_calories} calories, you'll have flexibility for snacks. Want these for lunch, dinner, or both?`;
         suggestions = ['Lunch options', 'Dinner options', 'Both meals'];
       } else if (lowerMessage.includes('mediterranean') || lowerMessage.includes('italian')) {
         response = `Mediterranean cuisine is amazing for balanced nutrition! Lots of lean proteins, healthy fats, and fresh veggies. I'll prioritize Mediterranean restaurants and meals. Any foods you especially love?`;
@@ -159,15 +158,15 @@ export function MacroPreferencesChat({
           <div className="flex gap-2 overflow-x-auto no-scrollbar mt-4 pb-1">
             <Badge variant="secondary" className="bg-white/20 backdrop-blur-sm text-white border-white/30 whitespace-nowrap px-3 h-7">
               <Check className="size-3 mr-1" />
-              {userProfile.calorieTarget} cal
+              {userProfile.target_calories} cal
             </Badge>
             <Badge variant="secondary" className="bg-white/20 backdrop-blur-sm text-white border-white/30 whitespace-nowrap px-3 h-7">
               <Check className="size-3 mr-1" />
-              {userProfile.proteinTarget}g pro
+              {userProfile.target_protein_g}g pro
             </Badge>
             <Badge variant="secondary" className="bg-white/20 backdrop-blur-sm text-white border-white/30 whitespace-nowrap px-3 h-7">
               <Check className="size-3 mr-1" />
-              {userProfile.carbsTarget}g carb
+              {userProfile.target_carbs_g}g carb
             </Badge>
           </div>
         </div>

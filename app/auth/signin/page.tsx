@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
@@ -15,6 +15,36 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Check if user is already authenticated - if so, redirect to chat
+  // Also listen for auth state changes to redirect immediately on sign-in
+  useEffect(() => {
+    const supabase = createClient();
+    
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        // User is already signed in, redirect to chat
+        router.replace("/chat");
+      }
+    };
+    
+    // Check immediately
+    checkAuth();
+    
+    // Listen for auth state changes (e.g., when sign-in succeeds)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        // Sign-in successful - redirect to chat
+        router.replace("/chat");
+      }
+    });
+    
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [router]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -35,10 +65,21 @@ export default function SignInPage() {
       }
 
       if (data.user) {
-        // Returning user - update lastLogin and go directly to app
+        // Sign-in successful - update profile and navigate to chat
         const now = Date.now();
+        const userId = data.user.id;
         
-        // Check if there's a pending onboarding profile (from completing onboarding before signing in)
+        // Clear session-based UI state on login
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('seekeatz_chat_messages');
+          localStorage.removeItem('seekeatz_recommended_meals');
+          localStorage.removeItem('seekeatz_has_searched');
+          localStorage.removeItem('seekeatz_last_search_params');
+          localStorage.removeItem('seekeatz_pending_chat_message');
+          localStorage.setItem('seekEatz_lastActivity', now.toString());
+        }
+        
+        // Check for pending onboarding profile
         const pendingProfile = typeof window !== 'undefined' 
           ? localStorage.getItem("pendingOnboardingProfile")
           : null;
@@ -53,36 +94,61 @@ export default function SignInPage() {
           }
         }
         
-        // Update lastLogin and save profile if exists
+        // Check existing profile in database
+        let hasCompletedOnboarding = false;
+        try {
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("has_completed_onboarding, user_profile")
+            .eq("id", userId)
+            .single();
+          
+          if (profileData) {
+            hasCompletedOnboarding = profileData.has_completed_onboarding === true;
+            if (!profile && profileData.user_profile) {
+              profile = profileData.user_profile;
+            }
+          }
+        } catch (error) {
+          console.warn("Could not fetch existing profile:", error);
+        }
+        
+        // Update profile in database
         try {
           await supabase
             .from("profiles")
             .upsert({
-              id: data.user.id,
+              id: userId,
               last_login: new Date(now).toISOString(),
-              has_completed_onboarding: profile ? true : undefined,
+              has_completed_onboarding: profile ? true : (hasCompletedOnboarding ? true : undefined),
               user_profile: profile || undefined,
               updated_at: new Date().toISOString(),
             }, {
               onConflict: "id",
             });
         } catch (error) {
-          console.warn("Could not update profile in profiles table:", error);
+          console.warn("Could not update profile:", error);
         }
 
         // Update localStorage
-        localStorage.setItem(`macroMatch_lastLogin_${data.user.id}`, now.toString());
+        localStorage.setItem(`macroMatch_lastLogin_${userId}`, now.toString());
         localStorage.setItem("macroMatch_lastLogin", now.toString());
         
-        if (profile) {
-          localStorage.setItem(`macroMatch_hasCompletedOnboarding_${data.user.id}`, "true");
+        // Set onboarding flags if user has completed onboarding
+        if (profile || hasCompletedOnboarding) {
+          localStorage.setItem(`macroMatch_hasCompletedOnboarding_${userId}`, "true");
           localStorage.setItem("hasCompletedOnboarding", "true");
-          localStorage.setItem("userProfile", JSON.stringify(profile));
-          // Clear the questions-complete flag since onboarding is now fully complete
+          if (profile) {
+            localStorage.setItem("userProfile", JSON.stringify(profile));
+          }
           localStorage.removeItem("macroMatch_onboardingQuestionsComplete");
         }
-
-        // Go directly to AI chatbot (skip onboarding for returning users)
+        
+        // Clear any saved last screen so user always goes to chat first after sign-in
+        localStorage.removeItem("seekeatz_current_screen");
+        localStorage.removeItem("seekeatz_nav_history");
+        
+        // Navigate to chat - the auth state change listener in MainApp will handle the rest
         router.push("/chat");
       }
     } catch (err) {

@@ -11,11 +11,16 @@ export const mockMeals: Meal[] = [
     fats: 20,
     price: 18,
     prepTime: 15,
-    distance: 2.5, // Number, no quotes!
     category: 'restaurant',
-    image: "https://images.unsplash.com/photo-1467003909585-2f8a7270028d?w=500&auto=format&fit=crop&q=60",
+    image: null as any, // Set to null to use restaurant logo fallback
     description: "Fresh Atlantic salmon with quinoa.",
-    ingredients: ["Salmon", "Quinoa", "Kale"]
+    ingredients: ["Salmon", "Quinoa", "Kale"],
+    // Add restaurant_name for compatibility with Supabase data structure
+    restaurant_name: "Fresh Kitchen",
+    // Coordinates will be calculated dynamically from user location
+    // Placeholder coordinates - replace with actual restaurant coordinates
+    latitude: 28.5383,
+    longitude: -81.3792,
   },
   {
     id: "2",
@@ -27,10 +32,16 @@ export const mockMeals: Meal[] = [
     fats: 45,
     price: 14,
     prepTime: 10,
-    distance: 1.2, // Number
     category: 'restaurant',
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60",
-    description: "Double patty burger wrapped in lettuce."
+    image: null as any, // Set to null to use restaurant logo fallback
+    description: "Double patty burger wrapped in lettuce.",
+    // Add restaurant_name for compatibility with Supabase data structure
+    restaurant_name: "Burger Joint",
+    // Coordinates will be calculated dynamically from user location
+    // Placeholder coordinates - replace with actual restaurant coordinates
+    // Distance should be ~3.3 miles when calculated from user location
+    latitude: 28.5443,
+    longitude: -81.3792,
   },
   {
     id: "3",
@@ -42,9 +53,14 @@ export const mockMeals: Meal[] = [
     fats: 15,
     price: 12,
     prepTime: 5,
-    distance: 0.8, // Number
     category: 'restaurant',
-    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&auto=format&fit=crop&q=60",
-    description: "Kale, chickpeas, and tahini dressing."
+    image: null as any, // Set to null to use restaurant logo fallback
+    description: "Kale, chickpeas, and tahini dressing.",
+    // Add restaurant_name for compatibility with Supabase data structure
+    restaurant_name: "Green Eats",
+    // Coordinates will be calculated dynamically from user location
+    // Placeholder coordinates - replace with actual restaurant coordinates
+    latitude: 28.5323,
+    longitude: -81.3892,
   }
 ];

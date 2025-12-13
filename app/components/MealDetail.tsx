@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
   Flame, 
@@ -12,16 +12,13 @@ import {
   ShieldCheck,
   Clock,
   MapPin,
-  ChevronDown,
-  ChevronUp,
   Info,
   ExternalLink,
   Sparkles,
   X,
   Check
 } from 'lucide-react';
-import type { Meal } from '../types'; 
-import { mockMeals } from '../data/mockData';
+import type { Meal } from '../types';
 
 // --- TYPES ---
 type Props = {
@@ -57,30 +54,114 @@ function generateWhyText(meal: Meal): string {
   return "Balanced macro profile with clean ingredients.";
 }
 
+// Helper to check if a swap suggestion is realistic for the restaurant
+function isSwapAvailable(swapText: string, restaurant: string, mealDescription?: string): boolean {
+  const restaurantLower = restaurant.toLowerCase();
+  const swapLower = swapText.toLowerCase();
+  
+  // Check for known unavailable swaps by restaurant
+  const unavailableSwaps: Record<string, string[]> = {
+    'chipotle': ['cauliflower rice', 'cauliflower'],
+    // Add more as needed
+  };
+  
+  // Check restaurant-specific restrictions
+  for (const [restName, restricted] of Object.entries(unavailableSwaps)) {
+    if (restaurantLower.includes(restName)) {
+      if (restricted.some(item => swapLower.includes(item))) {
+        return false;
+      }
+    }
+  }
+  
+  // Check if swap mentions an ingredient that might not be in the description
+  // For now, allow all swaps that pass restaurant-specific checks
+  // More sophisticated checking could parse meal description/ingredients
+  
+  return true;
+}
+
 function generateSwaps(meal: Meal): string[] {
-  if ((meal as any).aiSwaps && (meal as any).aiSwaps.length > 0) return (meal as any).aiSwaps;
+  if ((meal as any).aiSwaps && (meal as any).aiSwaps.length > 0) {
+    // Filter pre-existing swaps to ensure they're available for this restaurant
+    return (meal as any).aiSwaps.filter((swap: string) => 
+      isSwapAvailable(swap, meal.restaurant, meal.description)
+    );
+  }
+  
   const swaps = [];
-  if (meal.carbs > 40) swaps.push("Swap rice for cauliflower rice to save 150 cal");
-  if (meal.fats > 20) swaps.push("Ask for sauce on the side to reduce fat by 10g");
-  if (meal.protein < 30) swaps.push("Double protein for +35g protein & 150 cal");
-  if (swaps.length === 0) swaps.push("Remove cheese to save 80 calories");
+  
+  // Generate swaps that are realistic for the restaurant
+  if (meal.carbs > 40) {
+    // Only suggest rice swap if restaurant likely offers alternatives
+    const riceSwap = "Swap rice for cauliflower rice to save 150 cal";
+    if (isSwapAvailable(riceSwap, meal.restaurant, meal.description)) {
+      swaps.push(riceSwap);
+    } else {
+      // Alternative: suggest asking for less rice
+      swaps.push("Ask for less rice to save ~100 cal");
+    }
+  }
+  
+  if (meal.fats > 20) {
+    swaps.push("Ask for sauce on the side to reduce fat by 10g");
+  }
+  
+  if (meal.protein < 30) {
+    swaps.push("Double protein for +35g protein & 150 cal");
+  }
+  
+  if (swaps.length === 0) {
+    swaps.push("Remove cheese to save 80 calories");
+  }
+  
   return swaps;
 }
 
-function generateTags(meal: Meal): string[] {
-  const tags = [];
-  if (meal.protein > 30) tags.push("High Protein");
-  if (meal.carbs < 25) tags.push("Low Carb");
-  if (meal.calories < 550) tags.push("Low Calorie");
-  if (meal.fats > 20 && meal.carbs < 20) tags.push("Keto-Friendly");
-  if (tags.length === 0) tags.push("Balanced");
-  tags.push("Clean Ingredients");
+// Helper to calculate protein density
+function getProteinDensity(meal: Meal): { ratio: number; badge: { text: string; bg: string; emoji: string } | null } {
+  if (meal.calories === 0) return { ratio: 0, badge: null };
+  const ratio = meal.protein / meal.calories;
+  
+  if (ratio >= 0.15) {
+    return {
+      ratio,
+      badge: { text: "Elite Protein", bg: "bg-yellow-500/20 border-yellow-500/40 text-yellow-600", emoji: "🏆" }
+    };
+  }
+  if (ratio >= 0.08) {
+    return {
+      ratio,
+      badge: { text: "Good Source", bg: "bg-blue-500/20 border-blue-500/40 text-blue-600", emoji: "💪" }
+    };
+  }
+  return { ratio, badge: null };
+}
+
+function generateSmartTags(meal: Meal): Array<{ text: string; bg: string }> {
+  const tags: Array<{ text: string; bg: string }> = [];
+  
+  // Based on macros
+  if (meal.carbs < 15) {
+    tags.push({ text: "Keto-Friendly", bg: "bg-purple-100 border-purple-300 text-purple-700" });
+  }
+  if (meal.calories < 500) {
+    tags.push({ text: "Low Calorie", bg: "bg-green-100 border-green-300 text-green-700" });
+  }
+  if (meal.protein > 30) {
+    tags.push({ text: "High Protein", bg: "bg-cyan-100 border-cyan-300 text-cyan-700" });
+  }
+  
+  // Always include category if available
+  if (meal.category) {
+    const categoryText = meal.category === 'grocery' ? 'Grocery' : 'Restaurant';
+    tags.push({ text: categoryText, bg: "bg-gray-100 border-gray-300 text-gray-700" });
+  }
+  
   return tags;
 }
 
 export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMeal }: Props) {
-  const [expandIngredients, setExpandIngredients] = useState(false);
-  
   // Modal States
   const [showLogModal, setShowLogModal] = useState(false);
   const [showManualModal, setShowManualModal] = useState(false);
@@ -97,17 +178,90 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
 
   if (!meal) return null;
 
+  // State for similar meals
+  const [similarMeals, setSimilarMeals] = useState<Meal[]>([]);
+  const [isLoadingSimilar, setIsLoadingSimilar] = useState(false);
+
   // Mock Data / Logic
   const rating = (meal as any).rating || 4.8;
-  const distance = (meal as any).distance || "0.8 mi";
-  const prepTime = "12 min";
-  const similarMeals = mockMeals.filter(m => m.id !== meal.id).slice(0, 3);
+  // Use calculated distance from meal if available, otherwise don't show
+  const distance = meal.distance !== undefined && meal.distance !== null
+    ? `${meal.distance.toFixed(1)} mi`
+    : null;
+  // Only show prepTime if we have real data, otherwise show nothing or "Nearby"
+  const prepTime = meal.prepTime ? `${meal.prepTime} min` : null;
+  const locationLabel = distance ? null : (meal.latitude && meal.longitude ? "Nearby" : null);
   const whyText = generateWhyText(meal);
   const aiSwaps = generateSwaps(meal);
-  const tags = generateTags(meal);
-  
-  const allIngredients = meal.ingredients || ["Grilled Chicken", "Quinoa", "Kale", "Lemon Vinaigrette", "Cherry Tomatoes"];
-  const visibleIngredients = expandIngredients ? allIngredients : allIngredients.slice(0, 3);
+  const smartTags = generateSmartTags(meal);
+  const proteinDensity = getProteinDensity(meal);
+
+  // Fetch similar meals from the same restaurant
+  useEffect(() => {
+    const fetchSimilarMeals = async () => {
+      if (!meal.restaurant) return;
+      
+      setIsLoadingSimilar(true);
+      try {
+        // Search for meals from the same restaurant
+        const res = await fetch('/api/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: meal.restaurant }),
+        });
+        
+        const data = await res.json();
+        let normalizedResults: any[] = [];
+        
+        if (Array.isArray(data)) {
+          normalizedResults = data;
+        } else if (data && typeof data === 'object' && Array.isArray(data.results)) {
+          normalizedResults = data.results;
+        }
+        
+        // Convert to Meal type and filter
+        const allMeals = normalizedResults.map((item: any) => {
+          // Handle fats - check fats_g (database column) first, then other variations
+          const fats = item.fats_g ?? item.fat_g ?? item.fats ?? item.fat ?? 
+                       (item.nutrition_info?.fats_g) ?? 
+                       (item.nutrition_info?.fat_g) ?? 
+                       (item.nutrition_info?.fats) ?? 
+                       (item.nutrition_info?.fat) ?? 0;
+          
+          return {
+            id: item.id || `meal-${Date.now()}-${Math.random()}`,
+            name: item.item_name || item.name || 'Unknown Item',
+            restaurant: item.restaurant_name || 'Unknown Restaurant',
+            calories: item.calories || 0,
+            protein: item.protein_g || 0,
+            carbs: item.carbs_g || 0,
+            fats: typeof fats === 'number' ? fats : 0,
+            image: item.image_url || item.image || '',
+            description: item.description || '',
+            category: item.category === 'Grocery' || item.category === 'Hot Bar' ? 'grocery' as const : 'restaurant' as const,
+          };
+        });
+        
+        // Filter to same restaurant, exclude current meal, and take 3-5
+        const similar = allMeals
+          .filter((m: Meal) => 
+            m.restaurant.toLowerCase() === meal.restaurant.toLowerCase() && 
+            m.id !== meal.id &&
+            m.calories >= 150 // Only full meals
+          )
+          .slice(0, 5);
+        
+        setSimilarMeals(similar);
+      } catch (error) {
+        console.error('Failed to fetch similar meals:', error);
+        setSimilarMeals([]);
+      } finally {
+        setIsLoadingSimilar(false);
+      }
+    };
+
+    fetchSimilarMeals();
+  }, [meal.id, meal.restaurant]);
 
   const totalMacros = meal.protein + (meal.carbs || 0) + (meal.fats || 0);
   const pPercent = Math.round((meal.protein / totalMacros) * 100);
@@ -144,17 +298,40 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
 
   return (
     <div className="h-full w-full bg-background text-foreground flex flex-col relative overflow-hidden font-sans">
-      
-      {/* --- SCROLLABLE CONTENT --- */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide pb-48"> 
+      {/* --- MOBILE-FIRST CONTAINER --- */}
+      <div className="max-w-lg mx-auto shadow-2xl h-full bg-white w-full flex flex-col">
+        {/* --- SCROLLABLE CONTENT --- */}
+        <div className="flex-1 overflow-y-auto scrollbar-hide pb-6 pb-safe"> 
         
         {/* HEADER IMAGE */}
-        <div className="relative h-64 w-full shrink-0">
-          <img 
-            src={meal.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80'} 
-            alt={meal.name}
-            className="w-full h-full object-cover"
-          />
+        <div className="relative h-64 w-full shrink-0 bg-gradient-to-br from-cyan-500/20 via-blue-500/20 to-indigo-500/20">
+          {meal.image && meal.image !== '/placeholder-food.jpg' && meal.image !== '' ? (
+            <img 
+              src={meal.image} 
+              alt={meal.name}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback to default.png if meal image fails
+                e.currentTarget.src = '/logos/default.png';
+                e.currentTarget.onerror = null;
+              }}
+            />
+          ) : (
+            <img 
+              src="/logos/default.png" 
+              alt="Default meal"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Final fallback - hide image if default.png also fails
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+          <div className="absolute bottom-6 left-6 right-6 z-10">
+            <h2 className="text-white text-xl font-bold drop-shadow-lg">{meal.name}</h2>
+            <p className="text-white/80 text-sm mt-2">{meal.restaurant}</p>
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
           
           <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
@@ -177,9 +354,19 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
           
           {/* TITLE & INFO */}
           <div>
-            <div className="flex items-start justify-between">
-              <h1 className="text-foreground text-2xl font-bold flex-1 leading-tight">{meal.name}</h1>
-              <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/30 px-2 py-1 rounded-lg ml-2 shrink-0">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-foreground text-2xl font-bold leading-tight">{meal.name}</h1>
+                  {proteinDensity.badge && (
+                    <span className={`${proteinDensity.badge.bg} border px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1 shrink-0`}>
+                      <span>{proteinDensity.badge.emoji}</span>
+                      <span>{proteinDensity.badge.text}</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/30 px-2 py-1 rounded-lg shrink-0">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span className="text-emerald-300 text-[10px] font-semibold">93% Match</span>
               </div>
@@ -187,26 +374,45 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
             <p className="text-muted-foreground text-sm mt-1 italic">"{whyText}"</p>
             <div className="flex items-center gap-3 mt-3 text-xs text-foreground/80">
                <span className="font-semibold text-foreground">{meal.restaurant}</span>
-               <span className="w-1 h-1 rounded-full bg-border"></span>
-               <div className="flex items-center gap-1">
-                 <MapPin className="w-3 h-3 text-muted-foreground" />
-                 {distance} away
-               </div>
-               <span className="w-1 h-1 rounded-full bg-border"></span>
-               <div className="flex items-center gap-1">
-                 <Clock className="w-3 h-3 text-muted-foreground" />
-                 {prepTime} pickup
-               </div>
+               {distance && (
+                 <>
+                   <span className="w-1 h-1 rounded-full bg-border"></span>
+                   <div className="flex items-center gap-1">
+                     <MapPin className="w-3 h-3 text-muted-foreground" />
+                     {distance} away
+                   </div>
+                 </>
+               )}
+               {prepTime && (
+                 <>
+                   <span className="w-1 h-1 rounded-full bg-border"></span>
+                   <div className="flex items-center gap-1">
+                     <Clock className="w-3 h-3 text-muted-foreground" />
+                     {prepTime} pickup
+                   </div>
+                 </>
+               )}
+               {locationLabel && (
+                 <>
+                   <span className="w-1 h-1 rounded-full bg-border"></span>
+                   <div className="flex items-center gap-1">
+                     <span className="text-xs text-muted-foreground">{locationLabel}</span>
+                   </div>
+                 </>
+               )}
             </div>
           </div>
 
-          {/* TAGS */}
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag, i) => (
-              <span key={i} className="px-2.5 py-1 rounded-md bg-muted border border-border text-foreground/80 text-[10px] font-medium tracking-wide">
-                {tag}
-              </span>
-            ))}
+          {/* SMART TAGS */}
+          <div>
+            <p className="text-foreground text-sm font-semibold mb-3">Highlights</p>
+            <div className="flex flex-wrap gap-2">
+              {smartTags.map((tag, i) => (
+                <span key={i} className={`${tag.bg} border px-3 py-1.5 rounded-full text-xs font-medium`}>
+                  {tag.text}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* MACROS CARD */}
@@ -296,81 +502,152 @@ export function MealDetail({ meal, isFavorite, onToggleFavorite, onBack, onLogMe
               </div>
           </div>
 
-          {/* INGREDIENTS */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-foreground text-sm font-semibold">Ingredients</p>
-              <button onClick={() => setExpandIngredients(!expandIngredients)} className="text-xs text-cyan-400 flex items-center gap-1 hover:text-cyan-300">
-                {expandIngredients ? "Show Less" : "See All"}
-                {expandIngredients ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2 transition-all">
-              {visibleIngredients.map((ingredient, index) => (
-                <span key={index} className="px-3 py-1.5 rounded-full bg-muted border border-border text-foreground/80 text-xs font-medium">
-                  {ingredient}
-                </span>
-              ))}
-              {!expandIngredients && allIngredients.length > 3 && (
-                <span onClick={() => setExpandIngredients(true)} className="px-3 py-1.5 rounded-full bg-muted border border-border text-muted-foreground text-xs font-medium cursor-pointer hover:bg-muted/80">
-                  + {allIngredients.length - 3} more
-                </span>
+          {/* SIMILAR OPTIONS */}
+          {similarMeals.length > 0 && (
+            <div className="mb-6">
+              <p className="text-foreground text-sm font-semibold mb-3">Similar Options</p>
+              {isLoadingSimilar ? (
+                <div className="text-center py-4 text-muted-foreground text-sm">Loading similar meals...</div>
+              ) : (
+                <div className="grid grid-cols-2 gap-2.5">
+                  {similarMeals.map(similar => (
+                    <div 
+                      key={similar.id} 
+                      className="bg-gradient-to-br from-card to-muted dark:from-gray-900 dark:to-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer overflow-hidden hover:border-cyan-500/50 hover:scale-[1.02] group relative border border-border"
+                      onClick={() => {
+                        // Navigate to meal detail - would need to be handled by parent
+                        window.location.href = `#meal-${similar.id}`;
+                      }}
+                    >
+                      {/* Image Container */}
+                      <div 
+                        className="relative w-full overflow-hidden rounded-t-2xl bg-gradient-to-br from-muted to-muted/50"
+                        style={{
+                          aspectRatio: '16 / 9',
+                          padding: '10px'
+                        }}
+                      >
+                        {/* Meal Image */}
+                        {similar.image && similar.image !== '/placeholder-food.jpg' && similar.image !== '' ? (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <img 
+                              src={similar.image} 
+                              alt={similar.name}
+                              className="w-full h-full object-contain object-center"
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                objectPosition: 'center',
+                                display: 'block',
+                                maxWidth: '100%',
+                                maxHeight: '100%'
+                              }}
+                              onError={(e) => {
+                                // Fallback to default.png if meal image fails
+                                e.currentTarget.src = '/logos/default.png';
+                                e.currentTarget.onerror = null;
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          /* Fallback to default.png if no meal image */
+                          <div className="w-full h-full flex items-center justify-center">
+                            <img 
+                              src="/logos/default.png" 
+                              alt="Default meal"
+                              className="w-full h-full object-contain object-center"
+                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                              onError={(e) => {
+                                // Final fallback - hide image if default.png also fails
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        )}
+                        {/* Gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-background dark:from-gray-950 via-background/20 dark:via-gray-950/20 to-transparent pointer-events-none" />
+                      </div>
+
+                      <div className="p-2.5">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex-1 min-w-0 pr-1">
+                            <h3 className="text-foreground mb-0.5 font-semibold text-xs line-clamp-2 break-words leading-tight">{similar.name}</h3>
+                            <div className="flex items-center gap-1 min-w-0">
+                              <p className="text-muted-foreground text-[10px] truncate">{similar.restaurant}</p>
+                            </div>
+                            {similar.distance !== undefined && similar.distance !== null && (
+                              <p className="text-muted-foreground mt-0.5 text-[9px]">{similar.distance.toFixed(1)} mi</p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-4 gap-1 text-[9px]">
+                          <div className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 rounded-md p-1 text-center border border-pink-500/30">
+                            <div className="flex items-center justify-center mb-0.5">
+                              <Flame className="w-2 h-2 text-pink-400" />
+                            </div>
+                            <p className="text-foreground font-bold text-[10px]">{similar.calories}</p>
+                            <p className="text-pink-600 dark:text-pink-300/70 text-[8px]">cal</p>
+                          </div>
+                          <div className="bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-md p-1 text-center border border-cyan-400/30">
+                            <div className="flex items-center justify-center mb-0.5">
+                              <Zap className="w-2 h-2 text-cyan-400" />
+                            </div>
+                            <p className="text-foreground font-bold text-[10px]">{similar.protein}g</p>
+                            <p className="text-cyan-600 dark:text-cyan-300/70 text-[8px]">pro</p>
+                          </div>
+                          <div className="bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-md p-1 text-center border border-green-400/30">
+                            <div className="flex items-center justify-center mb-0.5">
+                              <TrendingUp className="w-2 h-2 text-green-400" />
+                            </div>
+                            <p className="text-foreground font-bold text-[10px]">{similar.carbs}g</p>
+                            <p className="text-green-600 dark:text-green-300/70 text-[8px]">carb</p>
+                          </div>
+                          <div className="bg-gradient-to-br from-amber-400/20 to-orange-500/20 rounded-md p-1 text-center border border-amber-400/30">
+                            <div className="flex items-center justify-center mb-0.5">
+                              <div className="w-2 h-2 rounded-full bg-amber-400" />
+                            </div>
+                            <p className="text-foreground font-bold text-[10px]">{similar.fats}g</p> 
+                            <p className="text-amber-300/70 text-[8px]">fat</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
-          </div>
-
-          {/* SIMILAR OPTIONS */}
-          <div className="mb-6">
-            <p className="text-foreground text-sm font-semibold mb-3">Similar Options</p>
-            <div className="space-y-3">
-              {similarMeals.map(similar => (
-                <div key={similar.id} className="flex gap-3 bg-card border border-border rounded-2xl p-2.5 cursor-pointer hover:border-cyan-500/30 transition-all">
-                  <img src={similar.image} alt={similar.name} className="w-16 h-16 rounded-xl object-cover bg-muted" />
-                  <div className="flex-1 min-w-0 flex flex-col justify-center">
-                    <p className="text-card-foreground text-sm font-medium truncate">{similar.name}</p>
-                    <p className="text-muted-foreground text-xs truncate mb-1">{similar.restaurant}</p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground text-[10px]">{similar.calories} cal</span>
-                      <span className="text-muted-foreground/50 text-[10px]">•</span>
-                      <span className="text-muted-foreground text-[10px]">{similar.protein}g protein</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          )}
           
-          <div className="h-12"></div>
+          {/* --- ACTION BUTTONS (Inside scrollable content, only visible when scrolled to bottom) --- */}
+          <div className="mt-6 mb-6 space-y-2" style={{ height: '120px' }}>
+            <button 
+              onClick={() => setShowLogModal(true)}
+              className="w-full bg-emerald-500 hover:bg-emerald-400 text-[#020617] font-bold text-xs py-2 rounded-full shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Log to Daily Tracker
+            </button>
+            
+            <button 
+              onClick={() => setShowManualModal(true)}
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs py-2 rounded-full shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Add Meal Manually
+            </button>
+
+            <button 
+              onClick={handleOrderOnline}
+              className="w-full rounded-full bg-muted border border-border text-foreground hover:bg-muted/80 font-medium text-xs py-2 flex items-center justify-center gap-2 transition-colors"
+            >
+              Order Online
+              <ExternalLink className="w-3.5 h-3.5 ml-1 text-muted-foreground" />
+            </button>
+          </div>
         </div>
       </div>
-
-      {/* --- STICKY BOTTOM ACTIONS --- */}
-      <div className="absolute bottom-0 left-0 w-full p-5 pt-4 bg-gradient-to-t from-background via-background to-transparent z-20 backdrop-blur-[2px]">
-        <div className="space-y-3 max-w-md mx-auto">
-          <button 
-            onClick={() => setShowLogModal(true)}
-            className="w-full bg-emerald-500 hover:bg-emerald-400 text-[#020617] font-bold text-sm py-3.5 rounded-full shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
-          >
-            <Plus className="w-4 h-4" />
-            Log to Daily Tracker
-          </button>
-          
-          <button 
-            onClick={() => setShowManualModal(true)}
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm py-3.5 rounded-full shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
-          >
-            <Plus className="w-4 h-4" />
-            Add Meal Manually
-          </button>
-
-          <button 
-            onClick={handleOrderOnline}
-            className="w-full rounded-full bg-muted border border-border text-foreground hover:bg-muted/80 font-medium text-sm py-3.5 flex items-center justify-center gap-2 transition-colors"
-          >
-            Order Online
-            <ExternalLink className="w-4 h-4 ml-1 text-muted-foreground" />
-          </button>
-        </div>
       </div>
 
       {/* --- LOG MODAL (CUSTOMIZE) --- */}

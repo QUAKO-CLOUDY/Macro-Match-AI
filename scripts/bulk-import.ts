@@ -112,16 +112,26 @@ async function processFile(filePath: string): Promise<void> {
   }
 
   // Loop items
-  let count = 0;
+  let inserted = 0;
+  let updated = 0;
   for (const item of items) {
     try {
+      const itemName = item.item_name || item.name;
+      
+      // Check if item already exists
+      const { data: existing } = await supabase
+        .from('menu_items')
+        .select('id')
+        .eq('restaurant_id', restaurantId)
+        .eq('item_name', itemName)
+        .maybeSingle();
+
       // Create the Rich Embedding
       const embedding = await generateRichEmbedding(restaurantName, item);
 
-      // Insert into DB
-      const { error } = await supabase.from('menu_items').insert({
+      const itemData = {
         restaurant_id: restaurantId,
-        item_name: item.item_name || item.name,
+        item_name: itemName,
         description: item.description,
         category: item.category,
         price: item.price,
@@ -131,11 +141,27 @@ async function processFile(filePath: string): Promise<void> {
         fats_g: item.fats_g,
         dietary_tags: item.dietary_tags,
         embedding: embedding 
-      });
+      };
 
-      if (error) throw error;
+      if (existing) {
+        // Update existing item
+        const { error } = await supabase
+          .from('menu_items')
+          .update(itemData)
+          .eq('id', existing.id);
+
+        if (error) throw error;
+        updated++;
+      } else {
+        // Insert new item
+        const { error } = await supabase
+          .from('menu_items')
+          .insert(itemData);
+
+        if (error) throw error;
+        inserted++;
+      }
       
-      count++;
       // Small delay to prevent API rate limits
       await delay(100); 
 
@@ -143,7 +169,7 @@ async function processFile(filePath: string): Promise<void> {
       console.error(`  ⚠️ Skipped item: ${item.item_name || 'Unknown'} - ${e.message}`);
     }
   }
-  console.log(`  ✅ Imported ${count} items for ${restaurantName}`);
+  console.log(`  ✅ Processed ${inserted + updated} items for ${restaurantName} (${inserted} new, ${updated} updated)`);
 }
 
 // Main Execution

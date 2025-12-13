@@ -14,14 +14,18 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark');
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('dark');
+  const [theme, setTheme] = useState<Theme>('light');
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('light');
 
   // Initial load
   useEffect(() => {
     const savedTheme = localStorage.getItem('seekeatz-theme') as Theme;
     if (savedTheme) {
       setTheme(savedTheme);
+    } else {
+      // Default to light mode if no saved theme exists
+      setTheme('light');
+      localStorage.setItem('seekeatz-theme', 'light');
     }
   }, []);
 

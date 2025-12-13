@@ -348,5 +348,224 @@
         "Vegan",
         "High-Protein"
       ]
+    },
+    {
+      "item_name": "Chicken Burrito Bowl (Standard)",
+      "description": "Cilantro-Lime White Rice, Black Beans, Chicken, Fresh Tomato Salsa, Monterey Jack Cheese, and Romaine Lettuce.",
+      "category": "Entree",
+      "price": 9.60,
+      "calories": 660,
+      "protein_g": 54,
+      "carbs_g": 73,
+      "fats_g": 18,
+      "dietary_tags": [
+        "High-Protein",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Steak Salad (Keto Build)",
+      "description": "Supergreens Lettuce Blend, Steak, Tomatillo-Red Chili Salsa, Monterey Jack Cheese, and Guacamole. No Rice, No Beans.",
+      "category": "Entree",
+      "price": 13.85,
+      "calories": 535,
+      "protein_g": 29,
+      "carbs_g": 14,
+      "fats_g": 36,
+      "dietary_tags": [
+        "Keto",
+        "Gluten-Free",
+        "High-Protein"
+      ]
+    },
+    {
+      "item_name": "High Protein Double Chicken Bowl",
+      "description": "Brown Rice, Black Beans, Double Chicken, Fajita Veggies, and Tomatillo-Green Chili Salsa.",
+      "category": "Entree",
+      "price": 13.35,
+      "calories": 725,
+      "protein_g": 76,
+      "carbs_g": 63,
+      "fats_g": 18,
+      "dietary_tags": [
+        "High-Protein",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Vegan Sofritas Bowl",
+      "description": "Brown Rice, Black Beans, Sofritas, Roasted Chili-Corn Salsa, Guacamole, and Romaine Lettuce.",
+      "category": "Entree",
+      "price": 9.60,
+      "calories": 805,
+      "protein_g": 25,
+      "carbs_g": 95,
+      "fats_g": 39,
+      "dietary_tags": [
+        "Vegan",
+        "Vegetarian",
+        "Gluten-Free",
+        "High-Fiber"
+      ]
+    },
+    {
+      "item_name": "Barbacoa Loaded Bowl",
+      "description": "White Rice, Pinto Beans, Barbacoa, Sour Cream, Cheese, and Tomatillo-Red Chili Salsa.",
+      "category": "Entree",
+      "price": 11.35,
+      "calories": 760,
+      "protein_g": 44,
+      "carbs_g": 67,
+      "fats_g": 34,
+      "dietary_tags": [
+        "High-Protein",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Carnitas Paleo Salad",
+      "description": "Supergreens Lettuce Blend, Carnitas, Fajita Veggies, Tomatillo-Green Chili Salsa, and Guacamole.",
+      "category": "Entree",
+      "price": 13.10,
+      "calories": 490,
+      "protein_g": 26,
+      "carbs_g": 17,
+      "fats_g": 34,
+      "dietary_tags": [
+        "Paleo",
+        "Keto",
+        "Gluten-Free",
+        "High-Protein"
+      ]
+    },
+    {
+      "item_name": "Vegetarian Veggie Bowl (Guac Mode)",
+      "description": "White Rice, Black Beans, Pinto Beans, Fajita Veggies, Guacamole, Fresh Tomato Salsa, and Corn Salsa.",
+      "category": "Entree",
+      "price": 9.60,
+      "calories": 825,
+      "protein_g": 25,
+      "carbs_g": 110,
+      "fats_g": 33,
+      "dietary_tags": [
+        "Vegetarian",
+        "Vegan",
+        "High-Fiber"
+      ]
+    },
+    {
+      "item_name": "Whole30 Salad Bowl",
+      "description": "Supergreens Lettuce Blend, Carnitas, Fajita Veggies, Fresh Tomato Salsa, and Guacamole.",
+      "category": "Entree",
+      "price": 13.10,
+      "calories": 500,
+      "protein_g": 26,
+      "carbs_g": 17,
+      "fats_g": 34,
+      "dietary_tags": [
+        "Paleo",
+        "Keto",
+        "Gluten-Free",
+        "Dairy-Free"
+      ]
+    },
+    {
+      "item_name": "Light Steak Burrito Bowl",
+      "description": "Light White Rice, Black Beans, Steak, Roasted Chili-Corn Salsa, and Romaine Lettuce.",
+      "category": "Entree",
+      "price": 11.35,
+      "calories": 470,
+      "protein_g": 33,
+      "carbs_g": 52,
+      "fats_g": 12,
+      "dietary_tags": [
+        "High-Protein",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Double Steak Protein Bowl",
+      "description": "White Rice, Black Beans, Double Steak, Cheese, and Sour Cream.",
+      "category": "Entree",
+      "price": 16.50,
+      "calories": 860,
+      "protein_g": 68,
+      "carbs_g": 65,
+      "fats_g": 37,
+      "dietary_tags": [
+        "High-Protein",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Spicy Chicken Bowl",
+      "description": "Brown Rice, Pinto Beans, Chicken, Tomatillo-Red Chili Salsa (Hot), Sour Cream, and Cheese.",
+      "category": "Entree",
+      "price": 9.60,
+      "calories": 770,
+      "protein_g": 52,
+      "carbs_g": 62,
+      "fats_g": 34,
+      "dietary_tags": [
+        "High-Protein",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Low Carb Chicken Bowl",
+      "description": "No Rice. Black Beans, Chicken, Fajita Veggies, Fresh Tomato Salsa, and Cheese.",
+      "category": "Entree",
+      "price": 9.60,
+      "calories": 465,
+      "protein_g": 47,
+      "carbs_g": 31,
+      "fats_g": 16,
+      "dietary_tags": [
+        "High-Protein",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Triple Bean Vegetarian",
+      "description": "Brown Rice, Double Black Beans, Pinto Beans, Corn Salsa, and Guacamole.",
+      "category": "Entree",
+      "price": 12.25,
+      "calories": 910,
+      "protein_g": 31,
+      "carbs_g": 125,
+      "fats_g": 32,
+      "dietary_tags": [
+        "Vegetarian",
+        "Vegan",
+        "High-Fiber"
+      ]
+    },
+    {
+      "item_name": "Gym Rat Bowl (Chicken & Steak)",
+      "description": "Brown Rice, Chicken, Steak (Half & Half), Black Beans, and Tomatillo-Red Chili Salsa.",
+      "category": "Entree",
+      "price": 11.35,
+      "calories": 700,
+      "protein_g": 61,
+      "carbs_g": 63,
+      "fats_g": 19,
+      "dietary_tags": [
+        "High-Protein",
+        "Gluten-Free"
+      ]
+    },
+    {
+      "item_name": "Cheesy Chicken Melt Bowl",
+      "description": "White Rice, Chicken, Queso Blanco, and Shredded Cheese.",
+      "category": "Entree",
+      "price": 12.25,
+      "calories": 650,
+      "protein_g": 47,
+      "carbs_g": 44,
+      "fats_g": 29,
+      "dietary_tags": [
+        "High-Protein",
+        "Gluten-Free"
+      ]
     }
   ]

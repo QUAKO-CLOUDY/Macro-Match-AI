@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';
 import { Navigation, type Screen } from './Navigation';
 import { HomeScreen } from './HomeScreen';
 import { LogScreen } from './LogScreen';
@@ -9,87 +11,493 @@ import { Settings } from './Settings';
 import { AIChat } from './AIChat';
 import { MealDetail } from './MealDetail';
 import { SearchScreen } from './SearchScreen';
+import { OnboardingFlow } from './OnboardingFlow';
+import { AuthScreen } from './AuthScreen';
 import type { UserProfile, Meal } from '../types';
 import type { LoggedMeal } from './LogScreen';
+import { useSessionActivity } from '../hooks/useSessionActivity';
 
 type View = 'main' | 'meal-detail';
+
+type AppState = 'loading' | 'onboarding' | 'auth' | 'app';
 
 type MainAppProps = {
   initialScreen?: Screen;
 };
 
 export function MainApp({ initialScreen = 'home' }: MainAppProps) {
+  // ========== ALL HOOKS MUST BE DECLARED FIRST ==========
+  
+  // Router and Supabase client
+  const router = useRouter();
+  const supabase = createClient();
+  
+  // Hydration fix: Track if component is mounted on client
+  const [isMounted, setIsMounted] = useState(false);
+  
+  // State machine for app flow
+  const [appState, setAppState] = useState<AppState>('loading');
+  
+  // Use default values in useState initializers (no localStorage reads)
+  // Navigation history stack to track screen navigation
+  const [navHistory, setNavHistory] = useState<Screen[]>([initialScreen || 'home']);
+  
+  // Current screen - use default value from prop
   const [currentScreen, setCurrentScreen] = useState<Screen>(initialScreen);
+  
   const [currentView, setCurrentView] = useState<View>('main');
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
+  
+  // Use default values (empty array/object) - will be populated from localStorage in useEffect
   const [favoriteMeals, setFavoriteMeals] = useState<string[]>([]);
+  const [favoriteMealsData, setFavoriteMealsData] = useState<Record<string, Meal>>({});
   const [loggedMeals, setLoggedMeals] = useState<LoggedMeal[]>([]);
+
+  // Default user profile - will be populated from localStorage in useEffect
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    target_calories: 2000,
+    target_protein_g: 150,
+    target_carbs_g: 200,
+    target_fats_g: 70,
+  });
+
+  // Session timeout handler - redirects to login on timeout
+  const handleSessionTimeout = () => {
+    setAppState('auth');
+  };
+
+  // Track session activity - updates on navigation and user interactions
+  const { updateActivity } = useSessionActivity(handleSessionTimeout);
+
+  // Hydration fix: Mark component as mounted on client
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Load all localStorage state on mount (only after component is mounted on client)
+  // Consolidated into single effect for better performance
+  useEffect(() => {
+    if (!isMounted) return;
+
+    // Load navigation history and current screen
+    try {
+      const savedHistory = localStorage.getItem('seekeatz_nav_history');
+      if (savedHistory) {
+        const parsed = JSON.parse(savedHistory);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setNavHistory(parsed);
+          setCurrentScreen(parsed[parsed.length - 1] as Screen);
+        }
+      } else {
+        // Fallback to saved screen if no history
+        const saved = localStorage.getItem('seekeatz_current_screen');
+        if (saved && ['home', 'log', 'chat', 'favorites', 'settings'].includes(saved)) {
+          setCurrentScreen(saved as Screen);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to parse navigation state:', e);
+    }
+
+    // Load favorite meals
+    try {
+      const saved = localStorage.getItem('seekeatz_favorite_meals');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setFavoriteMeals(parsed);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to parse favoriteMeals:', e);
+    }
+
+    // Load favorite meals data
+    try {
+      const saved = localStorage.getItem('seekeatz_favorite_meals_data');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed === 'object' && parsed !== null) {
+          setFavoriteMealsData(parsed);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to parse favoriteMealsData:', e);
+    }
+
+    // Load user profile
+    try {
+      const saved = localStorage.getItem('userProfile');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed === 'object' && parsed !== null) {
+          setUserProfile(parsed);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to parse userProfile:', e);
+    }
+  }, [isMounted]);
+
+  // Initialize app state: Check localStorage for 'onboarded' and Supabase session
+  useEffect(() => {
+    if (!isMounted) return;
+    
+    const initializeApp = async () => {
+      // Check localStorage for onboarding completion
+      const isOnboarded = typeof window !== 'undefined' 
+        ? localStorage.getItem('onboarded') === 'true' ||
+          localStorage.getItem('hasCompletedOnboarding') === 'true' ||
+          localStorage.getItem('macroMatch_completedOnboarding') === 'true'
+        : false;
+
+      // Check Supabase session - retry if not found initially (session might still be propagating)
+      let user = null;
+      let retries = 0;
+      while (retries < 3 && !user) {
+        const { data: { user: fetchedUser }, error } = await supabase.auth.getUser();
+        if (fetchedUser && !error) {
+          user = fetchedUser;
+          break;
+        }
+        // Wait a bit before retrying (only if we didn't get a user)
+        if (!fetchedUser && retries < 2) {
+          await new Promise(resolve => setTimeout(resolve, 200));
+        }
+        retries++;
+      }
+      
+      // If we have a user but no onboarding flag, check the database
+      if (user && !isOnboarded) {
+        try {
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("has_completed_onboarding")
+            .eq("id", user.id)
+            .single();
+          
+          if (profileData?.has_completed_onboarding) {
+            // Set localStorage flags
+            if (typeof window !== 'undefined') {
+              localStorage.setItem(`macroMatch_hasCompletedOnboarding_${user.id}`, "true");
+              localStorage.setItem("hasCompletedOnboarding", "true");
+            }
+            // User is onboarded - show app
+            setAppState('app');
+            return;
+          }
+        } catch (error) {
+          console.warn("Could not check onboarding status:", error);
+        }
+      }
+
+      // Only set state if we haven't already been set by auth state change listener
+      // This prevents overriding a successful sign-in
+      setAppState((currentState) => {
+        // If auth state change listener already set us to 'app', don't override
+        if (currentState === 'app') {
+          return currentState;
+        }
+        
+        if (!isOnboarded) {
+          // Not onboarded - show onboarding
+          return 'onboarding';
+        } else if (!user) {
+          // Onboarded but not authenticated - show auth
+          return 'auth';
+        } else {
+          // Onboarded and authenticated - show app
+          return 'app';
+        }
+      });
+    };
+
+    initializeApp();
+  }, [supabase, isMounted]);
+
+  // Set up auth state change listener - this is the primary way we react to sign-in
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.id);
+      
+      if (event === 'SIGNED_IN' && session?.user) {
+        // User logged in - check onboarding status and switch to app view
+        const userId = session.user.id;
+        
+        // Check if user has completed onboarding
+        const isOnboarded = typeof window !== 'undefined' 
+          ? localStorage.getItem('onboarded') === 'true' ||
+            localStorage.getItem('hasCompletedOnboarding') === 'true' ||
+            localStorage.getItem('macroMatch_completedOnboarding') === 'true' ||
+            localStorage.getItem(`macroMatch_hasCompletedOnboarding_${userId}`) === 'true'
+          : false;
+        
+        // If not onboarded in localStorage, check database
+        if (!isOnboarded) {
+          try {
+            const { data: profileData } = await supabase
+              .from("profiles")
+              .select("has_completed_onboarding")
+              .eq("id", userId)
+              .single();
+            
+            if (profileData?.has_completed_onboarding) {
+              // Set localStorage flags
+              if (typeof window !== 'undefined') {
+                localStorage.setItem(`macroMatch_hasCompletedOnboarding_${userId}`, "true");
+                localStorage.setItem("hasCompletedOnboarding", "true");
+              }
+              // User is onboarded - show app immediately
+              setAppState('app');
+              return;
+            } else {
+              // User not onboarded - show onboarding
+              setAppState('onboarding');
+              return;
+            }
+          } catch (error) {
+            console.warn("Could not check onboarding status:", error);
+            // If we can't check, assume not onboarded
+            setAppState('onboarding');
+            return;
+          }
+        }
+        
+        // User is onboarded - switch to app view immediately
+        setAppState('app');
+      } else if (event === 'SIGNED_OUT') {
+        // User logged out - switch to auth view
+        setAppState('auth');
+      } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+        // Session refreshed - make sure we're showing app if user is authenticated
+        const userId = session.user.id;
+        const isOnboarded = typeof window !== 'undefined' 
+          ? localStorage.getItem('onboarded') === 'true' ||
+            localStorage.getItem('hasCompletedOnboarding') === 'true' ||
+            localStorage.getItem('macroMatch_completedOnboarding') === 'true' ||
+            localStorage.getItem(`macroMatch_hasCompletedOnboarding_${userId}`) === 'true'
+          : false;
+        
+        if (isOnboarded) {
+          setAppState('app');
+        }
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   useEffect(() => {
     console.log('MainApp mounted, current screen:', currentScreen);
   }, [currentScreen]);
 
-  // Load user profile from localStorage or use defaults
-  const [userProfile, setUserProfile] = useState<UserProfile>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('userProfile');
-      if (saved) {
-        try {
-          return JSON.parse(saved);
-        } catch (e) {
-          console.error('Failed to parse userProfile:', e);
-        }
-      }
-    }
-    // Default profile
-    return {
-      goal: 'maintain',
-      dietaryType: 'None',
-      allergens: [],
-      calorieTarget: 2200,
-      proteinTarget: 150,
-      carbsTarget: 200,
-      fatsTarget: 70,
-      name: 'Alex',
-    };
-  });
-
-  // Save user profile to localStorage when it changes
+  // Handle browser back/forward navigation (swipe gestures) - use same logic as handleBack
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    const handlePopState = () => {
+      // When user swipes back, use the same handleBack logic
+      if (currentView === 'meal-detail') {
+        setCurrentView('main');
+        setSelectedMeal(null);
+      } else if (currentScreen === 'search') {
+        // Navigate to home and update history
+        setNavHistory((prev) => {
+          const newHistory = [...prev, 'home'];
+          const limited = newHistory.slice(-10);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('seekeatz_nav_history', JSON.stringify(limited));
+            localStorage.setItem('seekeatz_current_screen', 'home');
+          }
+          return limited;
+        });
+        setCurrentScreen('home');
+      } else {
+        // Go back in navigation history
+        setNavHistory((prev) => {
+          if (prev.length > 1) {
+            const newHistory = [...prev];
+            newHistory.pop(); // Remove current screen
+            const previousScreen = newHistory[newHistory.length - 1];
+            
+            // Update current screen to previous
+            setCurrentScreen(previousScreen);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('seekeatz_current_screen', previousScreen);
+              localStorage.setItem('seekeatz_nav_history', JSON.stringify(newHistory));
+            }
+            return newHistory;
+          }
+          return prev;
+        });
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [currentView, currentScreen]);
+
+  // Save user profile to localStorage when it changes (only after mounted)
+  useEffect(() => {
+    if (!isMounted) return;
+    try {
       localStorage.setItem('userProfile', JSON.stringify(userProfile));
+    } catch (e) {
+      console.error('Failed to save userProfile:', e);
     }
-  }, [userProfile]);
+  }, [userProfile, isMounted]);
+
+  // ========== ALL HOOKS END HERE - NOW HANDLERS AND CONDITIONAL RENDERS ==========
+
+  // Handle onboarding completion
+  const handleOnboardingComplete = () => {
+    // Save onboarding flag
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('onboarded', 'true');
+      localStorage.setItem('hasCompletedOnboarding', 'true');
+    }
+    // Move to auth screen
+    setAppState('auth');
+  };
+
+  // Handle auth success (fallback, but onAuthStateChange should handle it)
+  const handleAuthSuccess = () => {
+    setAppState('app');
+  };
+
+  // ========== CONDITIONAL RENDERS (after all hooks) ==========
+
+  // Hydration fix: Don't render localStorage-dependent UI until mounted
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
+        <div className="text-cyan-400 text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  // Show loading state
+  if (appState === 'loading') {
+    return (
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
+        <div className="text-cyan-400 text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  // Show onboarding
+  if (appState === 'onboarding') {
+    return (
+      <div className="min-h-screen bg-background">
+        <OnboardingFlow onComplete={handleOnboardingComplete} />
+      </div>
+    );
+  }
+
+  // Show auth screen
+  if (appState === 'auth') {
+    return <AuthScreen onSuccess={handleAuthSuccess} />;
+  }
+
+  // If we reach here, appState is 'app' - render the main app UI
 
   const handleNavigate = (screen: Screen) => {
+    // Update activity on navigation
+    updateActivity();
+    
+    // Only add to history if it's a different screen
+    if (screen !== currentScreen) {
+      setNavHistory((prev) => {
+        const newHistory = [...prev, screen];
+        // Limit history to last 10 entries
+        const limited = newHistory.slice(-10);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('seekeatz_nav_history', JSON.stringify(limited));
+        }
+        return limited;
+      });
+    }
     setCurrentScreen(screen);
     setCurrentView('main');
     setSelectedMeal(null);
+    // Save current screen to localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('seekeatz_current_screen', screen);
+    }
   };
 
   const handleMealSelect = (meal: Meal) => {
+    updateActivity(); // Update activity on meal selection
     setSelectedMeal(meal);
     setCurrentView('meal-detail');
   };
 
   const handleBack = () => {
     if (currentView === 'meal-detail') {
+      // If on meal detail, go back to main view
       setCurrentView('main');
       setSelectedMeal(null);
     } else if (currentScreen === 'search') {
+      // If on search, go to home
       handleNavigate('home');
+    } else {
+      // Otherwise, go back in navigation history
+      setNavHistory((prev) => {
+        if (prev.length > 1) {
+          const newHistory = [...prev];
+          newHistory.pop(); // Remove current screen
+          const previousScreen = newHistory[newHistory.length - 1];
+          
+          // Update current screen to previous
+          setCurrentScreen(previousScreen);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('seekeatz_current_screen', previousScreen);
+            localStorage.setItem('seekeatz_nav_history', JSON.stringify(newHistory));
+          }
+          return newHistory;
+        }
+        // If no history, stay on current screen
+        return prev;
+      });
     }
   };
 
-  const handleToggleFavorite = (mealId: string) => {
-    setFavoriteMeals((prev) =>
-      prev.includes(mealId)
+  const handleToggleFavorite = (mealId: string, meal?: Meal) => {
+    updateActivity(); // Update activity on favorite toggle
+    setFavoriteMeals((prev) => {
+      const isCurrentlyFavorite = prev.includes(mealId);
+      const updated = isCurrentlyFavorite
         ? prev.filter((id) => id !== mealId)
-        : [...prev, mealId]
-    );
+        : [...prev, mealId];
+      // Persist to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('seekeatz_favorite_meals', JSON.stringify(updated));
+        
+        // Also store/remove meal data
+        if (meal) {
+          setFavoriteMealsData((prevData) => {
+            const updatedData = isCurrentlyFavorite
+              ? (() => {
+                  const newData = { ...prevData };
+                  delete newData[mealId];
+                  return newData;
+                })()
+              : { ...prevData, [mealId]: meal };
+            localStorage.setItem('seekeatz_favorite_meals_data', JSON.stringify(updatedData));
+            return updatedData;
+          });
+        }
+      }
+      return updated;
+    });
   };
 
   const handleLogMeal = (meal: Meal) => {
+    updateActivity(); // Update activity on meal logging
     const loggedMeal: LoggedMeal = {
       id: `log-${Date.now()}-${Math.random()}`,
       meal,
@@ -117,7 +525,7 @@ export function MainApp({ initialScreen = 'home' }: MainAppProps) {
         <MealDetail
           meal={selectedMeal}
           isFavorite={favoriteMeals.includes(selectedMeal.id)}
-          onToggleFavorite={() => handleToggleFavorite(selectedMeal.id)}
+          onToggleFavorite={() => handleToggleFavorite(selectedMeal.id, selectedMeal)}
           onBack={handleBack}
           onLogMeal={() => handleLogMeal(selectedMeal)}
         />
@@ -142,13 +550,20 @@ export function MainApp({ initialScreen = 'home' }: MainAppProps) {
   
   return (
     <div className="flex flex-col h-screen bg-background overflow-hidden">
-      <div className="flex-1 overflow-hidden">
+      <div className={`flex-1 ${currentScreen === 'home' ? 'overflow-y-auto' : 'overflow-hidden'}`}>
         {currentScreen === 'home' && (
           <HomeScreen
             userProfile={userProfile}
             onMealSelect={handleMealSelect}
             favoriteMeals={favoriteMeals}
             onSearch={() => handleNavigate('search')}
+            onNavigateToChat={(message) => {
+              if (message && typeof window !== 'undefined') {
+                localStorage.setItem('seekeatz_pending_chat_message', message);
+              }
+              handleNavigate('chat');
+            }}
+            onToggleFavorite={(mealId, meal) => handleToggleFavorite(mealId, meal)}
           />
         )}
         {currentScreen === 'log' && (
@@ -162,13 +577,17 @@ export function MainApp({ initialScreen = 'home' }: MainAppProps) {
           <AIChat
             userProfile={userProfile}
             onMealSelect={handleMealSelect}
+            favoriteMeals={favoriteMeals}
+            onToggleFavorite={(mealId, meal) => handleToggleFavorite(mealId, meal)}
           />
         )}
         {currentScreen === 'favorites' && (
           <Favorites
             favoriteMeals={favoriteMeals}
+            favoriteMealsData={favoriteMealsData}
+            loggedMeals={loggedMeals}
             onMealSelect={handleMealSelect}
-            onToggleFavorite={handleToggleFavorite}
+            onToggleFavorite={(mealId, meal) => handleToggleFavorite(mealId, meal)}
           />
         )}
         {currentScreen === 'settings' && (

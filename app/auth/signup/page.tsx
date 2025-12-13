@@ -97,33 +97,29 @@ export default function SignupPage() {
           }
         }
 
-        // Save profile to Supabase
-        if (profile) {
-          try {
-            await supabase
-              .from("profiles")
-              .upsert({
-                id: signUpData.user.id,
-                has_completed_onboarding: true,
-                last_login: new Date(now).toISOString(),
-                user_profile: profile,
-                updated_at: new Date().toISOString(),
-              }, {
-                onConflict: "id",
-              });
-          } catch (profileErr) {
-            console.warn("Error saving profile:", profileErr);
-          }
+        // Save profile to Supabase (don't mark onboarding as complete yet - that happens after location step)
+        try {
+          await supabase
+            .from("profiles")
+            .upsert({
+              id: signUpData.user.id,
+              has_completed_onboarding: false, // Will be true after location step
+              last_login: new Date(now).toISOString(),
+              user_profile: profile || undefined,
+              updated_at: new Date().toISOString(),
+            }, {
+              onConflict: "id",
+            });
+        } catch (profileErr) {
+          console.warn("Error saving profile:", profileErr);
         }
 
-        // Mark onboarding complete + set last login
-        localStorage.setItem(`macroMatch_hasCompletedOnboarding_${signUpData.user.id}`, "true");
+        // Set last login (but don't mark onboarding as complete yet - that happens after location step)
         localStorage.setItem(`macroMatch_lastLogin_${signUpData.user.id}`, now.toString());
-        localStorage.setItem("macroMatch_completedOnboarding", "true");
         localStorage.setItem("macroMatch_lastLogin", now.toString());
-        localStorage.setItem("hasCompletedOnboarding", "true");
-        // Clear the questions-complete flag since onboarding is now fully complete
-        localStorage.removeItem("macroMatch_onboardingQuestionsComplete");
+        
+        // Mark that onboarding questions are complete (but not full onboarding yet)
+        localStorage.setItem("macroMatch_onboardingQuestionsComplete", "true");
         
         if (profile) {
           localStorage.setItem("userProfile", JSON.stringify(profile));
@@ -132,8 +128,8 @@ export default function SignupPage() {
         // Wait a moment for database to propagate
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // Redirect to chat (AI chatbot)
-        router.replace("/chat");
+        // Redirect to onboarding flow (skip welcome and auth, start with onboarding screens)
+        router.replace("/onboarding");
       }
     } catch (err: any) {
       setError(err?.message || "Something went wrong. Please try again.");

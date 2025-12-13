@@ -13,7 +13,15 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "source.unsplash.com", // Unsplash Source API
+      },
+      {
+        protocol: "https",
         hostname: "placehold.co", // For your fallback placeholders
+      },
+      {
+        protocol: "https",
+        hostname: "foodish-api.herokuapp.com", // Foodish API for food images
       },
     ],
   },

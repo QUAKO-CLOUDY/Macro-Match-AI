@@ -81,15 +81,21 @@
 /* Custom Utilities from your Figma Design */
 @layer utilities {
   /* Hides scrollbar but allows scrolling */
-  .scrollbar-hide {
+  .scrollbar-hide,
+  .no-scrollbar {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
-  .scrollbar-hide::-webkit-scrollbar {
+  .scrollbar-hide::-webkit-scrollbar,
+  .no-scrollbar::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
   }
 
   .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
   }
 

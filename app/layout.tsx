@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./contexts/ThemeContext"; // <--- Import this
@@ -11,6 +11,12 @@ export const metadata: Metadata = {
   description: "AI-Powered Meal Recommendations",
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,10 +25,27 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning> 
       {/* suppressHydrationWarning is needed for theme switching to not throw warnings */}
-      <body className={inter.className}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('seekeatz-theme') || 'light';
+                  document.documentElement.classList.remove('light', 'dark');
+                  document.documentElement.classList.add(theme === 'auto' ? 'light' : theme);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className={`${inter.className} bg-gray-100`}>
         <ThemeProvider> {/* <--- Wrap children with this */}
           <DevHelpers /> {/* Development-only helpers (console utilities) */}
-          {children}
+          <main className="max-w-md mx-auto min-h-screen bg-white shadow-2xl overflow-x-hidden">
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>

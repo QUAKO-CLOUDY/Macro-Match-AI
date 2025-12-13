@@ -91,11 +91,19 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
     { calories: 0, protein: 0, carbs: 0, fats: 0 }
   );
 
+  // Helper to safely get numeric value or default to 0
+  const safeGet = (value: number | undefined | null, defaultValue: number = 0): number => {
+    if (value === undefined || value === null || isNaN(value)) {
+      return defaultValue;
+    }
+    return typeof value === 'number' ? value : Number(value) || defaultValue;
+  };
+
   const remaining = {
-    calories: userProfile.calorieTarget - totals.calories,
-    protein: userProfile.proteinTarget - totals.protein,
-    carbs: userProfile.carbsTarget - totals.carbs,
-    fats: userProfile.fatsTarget - totals.fats,
+    calories: safeGet(userProfile.target_calories, 0) - totals.calories,
+    protein: safeGet(userProfile.target_protein_g, 0) - totals.protein,
+    carbs: safeGet(userProfile.target_carbs_g, 0) - totals.carbs,
+    fats: safeGet(userProfile.target_fats_g, 0) - totals.fats,
   };
 
   const isTodaySelected = selectedDate === todayStr;
@@ -145,9 +153,11 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
   }, [dayMeals, remaining.calories, remaining.protein]);
 
   return (
-    <div className="flex flex-col h-full w-full bg-background text-foreground">
+    <div className="flex flex-col h-full w-full bg-background text-foreground overflow-hidden">
+      {/* SCROLLABLE CONTENT */}
+      <div className="flex-1 overflow-y-auto overscroll-contain">
       {/* TOP SECTION – RINGS + MACROS */}
-      <div className="bg-gradient-to-br from-card via-purple-900/30 to-card text-foreground p-6 pb-4 relative">
+      <div className="bg-gradient-to-br from-card via-muted/40 to-card text-foreground p-6 pb-4 relative">
         <div className="flex items-center justify-between mb-6">
           <div>
             <p className="text-muted-foreground mb-1">Daily Tracking</p>
@@ -237,42 +247,50 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
         {/* Circular Progress */}
         <div className="flex items-center justify-center mb-6 relative">
           <div className="relative w-48 h-48 transition-all duration-300">
-            {/* Calories - Outermost Ring - Pink/Purple */}
+            {/* Calories - Outermost Ring - Pink/Purple (matching macro box: pink-400/rose-500) */}
             <CircularProgress
               percentage={
-                (totals.calories / userProfile.calorieTarget) * 100 || 0
+                safeGet(userProfile.target_calories, 1) > 0
+                  ? (totals.calories / safeGet(userProfile.target_calories, 1)) * 100
+                  : 0
               }
-              colorStart="#ec4899"
-              colorEnd="#d946ef"
+              colorStart="#f472b6"
+              colorEnd="#f43f5e"
               size={192}
               strokeWidth={14}
             />
-            {/* Protein - Second Ring - Cyan/Blue */}
+            {/* Protein - Second Ring - Cyan/Blue (matching macro box: cyan-400/blue-500) */}
             <CircularProgress
               percentage={
-                (totals.protein / userProfile.proteinTarget) * 100 || 0
+                safeGet(userProfile.target_protein_g, 1) > 0
+                  ? (totals.protein / safeGet(userProfile.target_protein_g, 1)) * 100
+                  : 0
               }
-              colorStart="#06b6d4"
-              colorEnd="#0ea5e9"
+              colorStart="#22d3ee"
+              colorEnd="#3b82f6"
               size={164}
               strokeWidth={13}
             />
-            {/* Carbs - Third Ring - Green */}
+            {/* Carbs - Third Ring - Green (matching macro box: green-400/emerald-500) */}
             <CircularProgress
               percentage={
-                (totals.carbs / userProfile.carbsTarget) * 100 || 0
+                safeGet(userProfile.target_carbs_g, 1) > 0
+                  ? (totals.carbs / safeGet(userProfile.target_carbs_g, 1)) * 100
+                  : 0
               }
-              colorStart="#22c55e"
-              colorEnd="#16a34a"
+              colorStart="#4ade80"
+              colorEnd="#10b981"
               size={138}
               strokeWidth={12}
             />
-            {/* Fats - Innermost Ring - Amber/Orange */}
+            {/* Fats - Innermost Ring - Amber/Orange (matching macro box: amber-400/orange-500) */}
             <CircularProgress
               percentage={
-                (totals.fats / userProfile.fatsTarget) * 100 || 0
+                safeGet(userProfile.target_fats_g, 1) > 0
+                  ? (totals.fats / safeGet(userProfile.target_fats_g, 1)) * 100
+                  : 0
               }
-              colorStart="#f59e0b"
+              colorStart="#fbbf24"
               colorEnd="#f97316"
               size={114}
               strokeWidth={11}
@@ -282,7 +300,7 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
               <p className="text-xs font-medium text-muted-foreground dark:text-muted-foreground mb-0.5">
                 {remaining.calories >= 0 ? "Remaining" : "Over"}
               </p>
-              <p className="text-3xl font-bold text-foreground dark:text-foreground leading-none my-1">
+              <p className="text-2xl font-bold text-foreground dark:text-foreground leading-none my-1">
                 {Math.abs(remaining.calories).toLocaleString()}
               </p>
               <p className="text-[10px] uppercase tracking-wide text-muted-foreground dark:text-muted-foreground/70">
@@ -297,48 +315,78 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
             <div className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 backdrop-blur-sm rounded-2xl p-3 border border-pink-500/30 text-center [&>p]:!text-black dark:[&>p]:!text-white">
             <Flame className="w-4 h-4 text-pink-400 mx-auto mb-1" />
             <p className="font-semibold" style={{ color: resolvedTheme === 'dark' ? '#ffffff' : '#000000' }}>{totals.calories}</p>
-            <p className="text-pink-400/70 dark:text-pink-300/70 text-sm">/{userProfile.calorieTarget}</p>
+            <p className="text-pink-400/70 dark:text-pink-300/70 text-sm">/{safeGet(userProfile.target_calories, 0)}</p>
           </div>
           <div className="bg-gradient-to-br from-cyan-400/20 to-blue-500/20 backdrop-blur-sm rounded-2xl p-3 border border-cyan-400/30 text-center [&>p]:!text-black dark:[&>p]:!text-white">
             <Zap className="w-4 h-4 text-cyan-400 mx-auto mb-1" />
             <p className="font-semibold" style={{ color: resolvedTheme === 'dark' ? '#ffffff' : '#000000' }}>{totals.protein}g</p>
             <p className="text-cyan-400/70 dark:text-cyan-300/70 text-sm">
-              /{userProfile.proteinTarget}g
+              /{safeGet(userProfile.target_protein_g, 0)}g
             </p>
           </div>
           <div className="bg-gradient-to-br from-green-400/20 to-emerald-500/20 backdrop-blur-sm rounded-2xl p-3 border border-green-400/30 text-center [&>p]:!text-black dark:[&>p]:!text-white">
             <TrendingUp className="w-4 h-4 text-green-400 mx-auto mb-1" />
             <p className="font-semibold" style={{ color: resolvedTheme === 'dark' ? '#ffffff' : '#000000' }}>{totals.carbs}g</p>
             <p className="text-green-400/70 dark:text-green-300/70 text-sm">
-              /{userProfile.carbsTarget}g
+              /{safeGet(userProfile.target_carbs_g, 0)}g
             </p>
           </div>
           <div className="bg-gradient-to-br from-amber-400/20 to-orange-500/20 backdrop-blur-sm rounded-2xl p-3 border border-amber-400/30 text-center [&>p]:!text-black dark:[&>p]:!text-white">
             <div className="w-4 h-4 rounded-full bg-amber-400 mx-auto mb-1" />
             <p className="font-semibold" style={{ color: resolvedTheme === 'dark' ? '#ffffff' : '#000000' }}>{totals.fats}g</p>
             <p className="text-amber-400/70 dark:text-amber-300/70 text-sm">
-              /{userProfile.fatsTarget}g
+              /{safeGet(userProfile.target_fats_g, 0)}g
             </p>
           </div>
         </div>
       </div>
 
       {/* BOTTOM SECTION – RECOMMENDATIONS, MEALS, HISTORY */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-background">
+      <div className="p-6 pb-32 space-y-6 bg-background" style={{ paddingBottom: `calc(8rem + env(safe-area-inset-bottom, 0px))` }}>
         {/* AI Recommendations */}
         {recommendations.length > 0 && (
-          <div>
+          <div className="mt-4">
             <p className="text-foreground mb-3">Recommendations</p>
             <div className="space-y-2">
               {recommendations.map((rec, index) => {
                 const Icon = rec.icon;
+                const getColorClasses = (color: string) => {
+                  switch (color) {
+                    case "purple":
+                      return {
+                        container: "bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/30",
+                        icon: "bg-gradient-to-br from-purple-500 to-purple-600",
+                      };
+                    case "amber":
+                      return {
+                        container: "bg-gradient-to-br from-amber-500/10 to-amber-600/10 border border-amber-500/30",
+                        icon: "bg-gradient-to-br from-amber-500 to-amber-600",
+                      };
+                    case "cyan":
+                      return {
+                        container: "bg-gradient-to-br from-cyan-500/10 to-cyan-600/10 border border-cyan-500/30",
+                        icon: "bg-gradient-to-br from-cyan-500 to-cyan-600",
+                      };
+                    case "green":
+                      return {
+                        container: "bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/30",
+                        icon: "bg-gradient-to-br from-green-500 to-green-600",
+                      };
+                    default:
+                      return {
+                        container: "bg-gradient-to-br from-gray-500/10 to-gray-600/10 border border-gray-500/30",
+                        icon: "bg-gradient-to-br from-gray-500 to-gray-600",
+                      };
+                  }
+                };
+                const colorClasses = getColorClasses(rec.color);
                 return (
                   <div
                     key={index}
-                    className={`bg-gradient-to-br from-${rec.color}-500/10 to-${rec.color}-600/10 border border-${rec.color}-500/30 rounded-2xl p-4 flex items-start gap-3`}
+                    className={`${colorClasses.container} rounded-2xl p-4 flex items-start gap-3`}
                   >
                     <div
-                      className={`w-8 h-8 bg-gradient-to-br from-${rec.color}-500 to-${rec.color}-600 rounded-lg flex items-center justify-center flex-shrink-0`}
+                      className={`w-8 h-8 ${colorClasses.icon} rounded-lg flex items-center justify-center flex-shrink-0`}
                     >
                       <Icon className="w-4 h-4 text-white" />
                     </div>
@@ -378,9 +426,13 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
                 >
                   <div className="flex gap-3">
                     <img
-                      src={log.meal.image}
+                      src={log.meal.image && log.meal.image !== '/placeholder-food.jpg' && log.meal.image !== '' ? log.meal.image : '/logos/default.png'}
                       alt={log.meal.name}
                       className="w-20 h-20 rounded-xl object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = '/logos/default.png';
+                        e.currentTarget.onerror = null;
+                      }}
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-1">
@@ -495,9 +547,13 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
                             className="flex gap-3 p-2 rounded-xl hover:bg-muted/50"
                           >
                             <img
-                              src={log.meal.image}
+                              src={log.meal.image && log.meal.image !== '/placeholder-food.jpg' && log.meal.image !== '' ? log.meal.image : '/logos/default.png'}
                               alt={log.meal.name}
                               className="w-12 h-12 rounded-lg object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src = '/logos/default.png';
+                                e.currentTarget.onerror = null;
+                              }}
                             />
                             <div className="flex-1 min-w-0">
                               <p className="text-card-foreground truncate">
@@ -518,6 +574,9 @@ export function LogScreen({ userProfile, loggedMeals, onRemoveMeal }: Props) {
             </div>
           </div>
         )}
+      </div>
+      {/* Extra spacer to ensure all content is scrollable above navigation */}
+      <div className="h-24" />
       </div>
     </div>
   );

@@ -37,16 +37,10 @@ export function SimplifiedOnboarding({ onComplete }: Props) {
     if (goal === 'maintain') finalGoal = 'maintain';
 
     const profile: UserProfile = {
-      goal: finalGoal,
-      dietaryType: 'Balanced',
-      allergens: [],
-      calorieTarget: 2000,
-      proteinTarget: 150,
-      carbsTarget: 200,
-      fatsTarget: 65,
-      name: "Guest",
-      nutritionGoals: [goal], // We can keep the specific string here if needed
-      preferredCuisines: [],
+      target_calories: 2000,
+      target_protein_g: 150,
+      target_carbs_g: 200,
+      target_fats_g: 65,
       preferredMealTypes: [],
       eatingStyles: [],
       dietaryPreferences: [],

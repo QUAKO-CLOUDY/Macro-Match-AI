@@ -6,20 +6,33 @@ import { Badge } from "./ui/badge";
 import { MealCard } from "./MealCard"; 
 import { mockMeals } from "../data/mockData";
 import type { Meal } from "../types"; // <--- IMPORT SHARED TYPES
+import type { LoggedMeal } from "./LogScreen";
 
 type Props = {
   favoriteMeals?: string[];
+  favoriteMealsData?: Record<string, Meal>;
+  loggedMeals?: LoggedMeal[];
   onMealSelect: (meal: Meal) => void;
-  onToggleFavorite?: (mealId: string) => void;
+  onToggleFavorite?: (mealId: string, meal?: Meal) => void;
 };
 
 export function Favorites({ 
   favoriteMeals = [], 
+  favoriteMealsData = {},
+  loggedMeals = [],
   onMealSelect, 
   onToggleFavorite 
 }: Props) {
-  const favoriteMealsList = mockMeals.filter(meal => favoriteMeals.includes(meal.id));
-  const recentMeals = mockMeals.slice(0, 3);
+  // Get favorite meals - first from stored data (API meals), then from mockMeals
+  const favoriteMealsList = favoriteMeals
+    .map(id => favoriteMealsData[id] || mockMeals.find(meal => meal.id === id))
+    .filter((meal): meal is Meal => meal !== undefined);
+  
+  // Get recent meals from logged meals (last 10, most recent first)
+  const recentMeals = loggedMeals
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    .slice(0, 10)
+    .map(loggedMeal => loggedMeal.meal);
 
   return (
     <div className="flex-1 flex flex-col h-full w-full bg-background">
@@ -37,7 +50,7 @@ export function Favorites({
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto -mt-4 bg-background rounded-t-3xl border-t border-white/5 relative z-10">
+      <div className="flex-1 overflow-y-auto -mt-4 bg-background rounded-t-3xl border-t border-white/5 relative z-10 pb-20 pb-safe">
         <div className="p-6 space-y-8">
           
           {/* Favorites Section */}
@@ -55,6 +68,7 @@ export function Favorites({
                     meal={meal}
                     isFavorite={true}
                     onClick={() => onMealSelect(meal)}
+                    onToggleFavorite={onToggleFavorite ? () => onToggleFavorite(meal.id, meal) : undefined}
                   />
                 ))}
               </div>
@@ -74,18 +88,36 @@ export function Favorites({
               <h2 className="font-semibold text-lg">Recent Meals</h2>
             </div>
             
-            <div className="space-y-3">
-              {recentMeals.map(meal => (
-                <div
-                  key={meal.id}
-                  onClick={() => onMealSelect(meal)}
-                  className="group flex gap-4 p-4 rounded-2xl border bg-card/50 hover:bg-card hover:border-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/10 transition-all cursor-pointer"
-                >
-                  <img
-                    src={meal.image}
-                    alt={meal.name}
-                    className="h-20 w-20 rounded-xl object-cover"
-                  />
+            {recentMeals.length > 0 ? (
+              <div className="space-y-3">
+                {recentMeals.map(meal => (
+                  <div
+                    key={meal.id}
+                    onClick={() => onMealSelect(meal)}
+                    className="group flex gap-4 p-4 rounded-2xl border bg-card/50 hover:bg-card hover:border-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/10 transition-all cursor-pointer"
+                  >
+                    {meal.image && meal.image !== '/placeholder-food.jpg' && meal.image !== '' ? (
+                      <img
+                        src={meal.image}
+                        alt={meal.name}
+                        className="h-20 w-20 rounded-xl object-cover flex-shrink-0"
+                        onError={(e) => {
+                          // Fallback to default.png if meal image fails
+                          e.currentTarget.src = '/logos/default.png';
+                          e.currentTarget.onerror = null;
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src="/logos/default.png"
+                        alt="Default meal"
+                        className="h-20 w-20 rounded-xl object-cover flex-shrink-0"
+                        onError={(e) => {
+                          // Final fallback - hide image if default.png also fails
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    )}
                   <div className="flex-1 min-w-0 py-1">
                     <p className="font-medium text-foreground mb-1 truncate group-hover:text-cyan-500 transition-colors">
                       {meal.name}
@@ -103,6 +135,13 @@ export function Favorites({
                 </div>
               ))}
             </div>
+            ) : (
+              <div className="text-center py-12 border-2 border-dashed rounded-3xl bg-muted/30">
+                <Clock className="h-10 w-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+                <p className="text-muted-foreground font-medium">No recent meals</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">Start logging meals to see them here</p>
+              </div>
+            )}
           </section>
 
         </div>

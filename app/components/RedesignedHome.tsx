@@ -17,11 +17,11 @@ import { mockMeals } from "../data/mockData";
 
 // Define UserProfile locally since we don't have an App.tsx file
 export type UserProfile = {
-  name: string;
-  calorieTarget: number;
-  proteinTarget: number;
-  carbsTarget: number;
-  fatsTarget: number;
+  full_name?: string;
+  target_calories: number;
+  target_protein_g: number;
+  target_carbs_g: number;
+  target_fats_g: number;
 };
 
 type Props = {
@@ -29,6 +29,7 @@ type Props = {
   onMealSelect: (meal: Meal) => void;
   onOpenAI: () => void;
   favoriteMeals: string[];
+  onToggleFavorite?: (mealId: string, meal?: Meal) => void;
 };
 
 export function RedesignedHome({
@@ -36,6 +37,7 @@ export function RedesignedHome({
   onMealSelect,
   onOpenAI,
   favoriteMeals,
+  onToggleFavorite,
 }: Props) {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [showMacroTooltip, setShowMacroTooltip] = useState(false);
@@ -46,10 +48,10 @@ export function RedesignedHome({
   const currentCarbs = 0;
   const currentFats = 0;
 
-  const calorieProgress = (currentCalories / userProfile.calorieTarget) * 100;
-  const proteinProgress = (currentProtein / userProfile.proteinTarget) * 100;
-  const carbsProgress = (currentCarbs / userProfile.carbsTarget) * 100;
-  const fatsProgress = (currentFats / userProfile.fatsTarget) * 100;
+  const calorieProgress = (currentCalories / userProfile.target_calories) * 100;
+  const proteinProgress = (currentProtein / userProfile.target_protein_g) * 100;
+  const carbsProgress = (currentCarbs / userProfile.target_carbs_g) * 100;
+  const fatsProgress = (currentFats / userProfile.target_fats_g) * 100;
 
   const handleSearchFocus = () => {
     setHasInteracted(true);
@@ -165,7 +167,7 @@ export function RedesignedHome({
                 </div>
                 <p className="text-xs text-gray-400 mt-2">Calories</p>
                 <p className="text-sm text-white">
-                  {currentCalories}/{userProfile.calorieTarget}
+                  {currentCalories}/{userProfile.target_calories}
                 </p>
               </div>
               <div className="text-center">
@@ -181,7 +183,7 @@ export function RedesignedHome({
                 </div>
                 <p className="text-xs text-gray-400 mt-2">Protein</p>
                 <p className="text-sm text-white">
-                  {currentProtein}g/{userProfile.proteinTarget}g
+                  {currentProtein}g/{userProfile.target_protein_g}g
                 </p>
               </div>
               <div className="text-center">
@@ -197,7 +199,7 @@ export function RedesignedHome({
                 </div>
                 <p className="text-xs text-gray-400 mt-2">Carbs</p>
                 <p className="text-sm text-white">
-                  {currentCarbs}g/{userProfile.carbsTarget}g
+                  {currentCarbs}g/{userProfile.target_carbs_g}g
                 </p>
               </div>
               <div className="text-center">
@@ -213,7 +215,7 @@ export function RedesignedHome({
                 </div>
                 <p className="text-xs text-gray-400 mt-2">Fat</p>
                 <p className="text-sm text-white">
-                  {currentFats}g/{userProfile.fatsTarget}g
+                  {currentFats}g/{userProfile.target_fats_g}g
                 </p>
               </div>
             </div>
@@ -257,6 +259,7 @@ export function RedesignedHome({
                     onClick={() => onMealSelect(meal)}
                     isFavorite={favoriteMeals.includes(meal.id)}
                     showMatchScore={true}
+                    onToggleFavorite={onToggleFavorite ? () => onToggleFavorite(meal.id, meal) : undefined}
                   />
                 ))}
               </div>

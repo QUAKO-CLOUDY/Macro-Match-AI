@@ -13,25 +13,25 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
   const isAIChatActive = currentScreen === "chat";
 
   return (
-    <div className="flex items-end justify-around px-2 pb-3 pt-1 relative bg-card border-t border-border">
+    <nav className="fixed bottom-0 left-0 right-0 flex items-end justify-around px-2 pt-0.5 bg-card border-t border-border z-[100]" style={{ paddingBottom: `calc(0.5rem + env(safe-area-inset-bottom, 0px))` }}>
       {/* Home */}
       <button
         onClick={() => onNavigate("home")}
-        className="flex flex-col items-center gap-1 py-2 px-3 transition-all flex-1"
+        className="flex flex-col items-center gap-0.5 py-1 px-2 transition-all flex-1"
       >
         <div
-          className={`p-2 rounded-xl ${
+          className={`p-1.5 rounded-lg ${
             currentScreen === "home" ? "bg-muted" : ""
           }`}
         >
           <Home
-            className={`w-5 h-5 ${
+            className={`w-4 h-4 ${
               currentScreen === "home" ? "text-cyan-400" : "text-muted-foreground"
             }`}
           />
         </div>
         <span
-          className={`text-[11px] ${
+          className={`text-[10px] ${
             currentScreen === "home" ? "text-cyan-400" : "text-muted-foreground"
           }`}
         >
@@ -42,21 +42,21 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
       {/* Log */}
       <button
         onClick={() => onNavigate("log")}
-        className="flex flex-col items-center gap-1 py-2 px-3 transition-all flex-1"
+        className="flex flex-col items-center gap-0.5 py-1 px-2 transition-all flex-1"
       >
         <div
-          className={`p-2 rounded-xl ${
+          className={`p-1.5 rounded-lg ${
             currentScreen === "log" ? "bg-muted" : ""
           }`}
         >
           <Activity
-            className={`w-5 h-5 ${
+            className={`w-4 h-4 ${
               currentScreen === "log" ? "text-green-400" : "text-muted-foreground"
             }`}
           />
         </div>
         <span
-          className={`text-[11px] ${
+          className={`text-[10px] ${
             currentScreen === "log" ? "text-green-400" : "text-muted-foreground"
           }`}
         >
@@ -65,10 +65,10 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
       </button>
 
       {/* Center AI Chat FAB */}
-      <div className="flex flex-col items-center -mt-6 flex-1">
+      <div className="flex flex-col items-center -mt-4 flex-1">
         <button
           onClick={() => onNavigate("chat")}
-          className="relative group mb-1"
+          className="relative group mb-0.5"
         >
           {/* Cyan/blue glow layers */}
           <div
@@ -76,31 +76,31 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
             style={{
               background:
                 "radial-gradient(circle, rgba(6,182,212,0.6) 0%, rgba(59,130,246,0.4) 50%, transparent 70%)",
-              filter: "blur(20px)",
-              transform: "scale(1.6)",
+              filter: "blur(16px)",
+              transform: "scale(1.5)",
             }}
           />
           <div
             className="absolute inset-0 rounded-full opacity-70 group-hover:opacity-90 transition-opacity"
             style={{
               boxShadow:
-                "0 0 30px 6px rgba(6,182,212,0.6), 0 0 60px 12px rgba(59,130,246,0.4)",
+                "0 0 24px 5px rgba(6,182,212,0.6), 0 0 48px 10px rgba(59,130,246,0.4)",
             }}
           />
 
           {/* Main FAB */}
           <div
-            className={`relative w-14 h-14 rounded-full flex items-center justify-center transition-all ${
+            className={`relative w-12 h-12 rounded-full flex items-center justify-center transition-all ${
               isAIChatActive ? "scale-110" : "scale-100"
             }`}
             style={{
               background:
                 "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
               boxShadow:
-                "0 6px 24px rgba(6,182,212,0.5), 0 3px 12px rgba(59,130,246,0.3), inset 0 1px 0 rgba(255,255,255,0.3)",
+                "0 4px 20px rgba(6,182,212,0.5), 0 2px 10px rgba(59,130,246,0.3), inset 0 1px 0 rgba(255,255,255,0.3)",
             }}
           >
-            <Sparkles className="w-7 h-7 text-white" strokeWidth={2.5} />
+            <Sparkles className="w-6 h-6 text-white" strokeWidth={2.5} />
 
             {/* Active ring pulse */}
             {isAIChatActive && (
@@ -109,7 +109,7 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
           </div>
         </button>
         <span
-          className={`text-[11px] font-medium ${
+          className={`text-[10px] font-medium ${
             isAIChatActive ? "text-cyan-400" : "text-muted-foreground"
           }`}
         >
@@ -120,15 +120,15 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
       {/* Favorites */}
       <button
         onClick={() => onNavigate("favorites")}
-        className="flex flex-col items-center gap-1 py-2 px-3 transition-all flex-1"
+        className="flex flex-col items-center gap-0.5 py-1 px-2 transition-all flex-1"
       >
         <div
-          className={`p-2 rounded-xl ${
+          className={`p-1.5 rounded-lg ${
             currentScreen === "favorites" ? "bg-muted" : ""
           }`}
         >
           <Heart
-            className={`w-5 h-5 ${
+            className={`w-4 h-4 ${
               currentScreen === "favorites"
                 ? "text-pink-400"
                 : "text-muted-foreground"
@@ -136,7 +136,7 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
           />
         </div>
         <span
-          className={`text-[11px] ${
+          className={`text-[10px] ${
             currentScreen === "favorites" ? "text-pink-400" : "text-muted-foreground"
           }`}
         >
@@ -147,15 +147,15 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
       {/* Settings */}
       <button
         onClick={() => onNavigate("settings")}
-        className="flex flex-col items-center gap-1 py-2 px-3 transition-all flex-1"
+        className="flex flex-col items-center gap-0.5 py-1 px-2 transition-all flex-1"
       >
         <div
-          className={`p-2 rounded-xl ${
+          className={`p-1.5 rounded-lg ${
             currentScreen === "settings" ? "bg-muted" : ""
           }`}
         >
           <SettingsIcon
-            className={`w-5 h-5 ${
+            className={`w-4 h-4 ${
               currentScreen === "settings"
                 ? "text-foreground"
                 : "text-muted-foreground"
@@ -163,13 +163,13 @@ export function Navigation({ currentScreen, onNavigate }: Props) {
           />
         </div>
         <span
-          className={`text-[11px] ${
+          className={`text-[10px] ${
             currentScreen === "settings" ? "text-foreground" : "text-muted-foreground"
           }`}
         >
           Settings
         </span>
       </button>
-    </div>
+    </nav>
   );
 }

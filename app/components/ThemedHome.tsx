@@ -6,7 +6,7 @@ import { MealCard } from './MealCard';
 import { CircularProgress } from './CircularProgress';
 import { mockMeals } from './mockData';
 
-export function ThemedHome({ userProfile, onMealSelect, onOpenAI, favoriteMeals }: any) {
+export function ThemedHome({ userProfile, onMealSelect, onOpenAI, favoriteMeals, onToggleFavorite }: any) {
     const { resolvedTheme, setTheme, theme } = useTheme();
   const isDark = resolvedTheme === "dark";
 
@@ -16,10 +16,10 @@ export function ThemedHome({ userProfile, onMealSelect, onOpenAI, favoriteMeals 
 
   // Default targets if userProfile is missing
   const targets = {
-    cal: userProfile?.calorieTarget || 2000,
-    pro: userProfile?.proteinTarget || 150,
-    carbs: userProfile?.carbsTarget || 200,
-    fats: userProfile?.fatsTarget || 65
+    cal: userProfile?.target_calories || 2000,
+    pro: userProfile?.target_protein_g || 150,
+    carbs: userProfile?.target_carbs_g || 200,
+    fats: userProfile?.target_fats_g || 65
   };
 
   const current = { cal: 845, pro: 62, carbs: 78, fats: 28 }; // Mock current data
@@ -46,10 +46,10 @@ export function ThemedHome({ userProfile, onMealSelect, onOpenAI, favoriteMeals 
            {/* Background Glow */}
            <div className="absolute w-40 h-40 bg-blue-500/20 blur-3xl rounded-full"></div>
            
-           {/* Rings - Using absolute positioning to stack them */}
-           <CircularProgress percentage={(current.cal / targets.cal) * 100} colorStart="#ec4899" size={180} strokeWidth={12} />
-           <CircularProgress percentage={(current.pro / targets.pro) * 100} colorStart="#06b6d4" size={150} strokeWidth={12} />
-           <CircularProgress percentage={(current.carbs / targets.carbs) * 100} colorStart="#22c55e" size={120} strokeWidth={12} />
+           {/* Rings - Using absolute positioning to stack them (matching macro box colors) */}
+           <CircularProgress percentage={(current.cal / targets.cal) * 100} colorStart="#f472b6" colorEnd="#f43f5e" size={180} strokeWidth={12} />
+           <CircularProgress percentage={(current.pro / targets.pro) * 100} colorStart="#22d3ee" colorEnd="#3b82f6" size={150} strokeWidth={12} />
+           <CircularProgress percentage={(current.carbs / targets.carbs) * 100} colorStart="#4ade80" colorEnd="#10b981" size={120} strokeWidth={12} />
            
            {/* Center Text */}
            <div className="absolute text-center">
@@ -107,7 +107,7 @@ export function ThemedHome({ userProfile, onMealSelect, onOpenAI, favoriteMeals 
         <h3 className="text-white font-bold mb-4">Recommended for You</h3>
         <div className="space-y-4 pb-24">
           {filteredMeals.map(meal => (
-             <MealCard key={meal.id} meal={meal} isFavorite={favoriteMeals?.includes(meal.id)} onClick={() => onMealSelect(meal)} />
+             <MealCard key={meal.id} meal={meal} isFavorite={favoriteMeals?.includes(meal.id)} onClick={() => onMealSelect(meal)} onToggleFavorite={onToggleFavorite ? () => onToggleFavorite(meal.id, meal) : undefined} />
           ))}
         </div>
 
